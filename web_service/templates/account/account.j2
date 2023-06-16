@@ -1,0 +1,61 @@
+{% extends "base.j2" %}
+
+{% block content %}
+
+    <div class="Middle Middle_top">
+        <div class="Section Section_column Section_columnLeft">
+            <div class="wrap">
+                <div class="Section-column">
+                    <div class="Section-columnSection">
+                        <header class="Section-header">
+                            <strong class="Section-title">Навигация
+                            </strong>
+                        </header>
+                        <div class="Section-columnContent">
+                            <div class="NavigateProfile">
+                                <ul class="menu menu_vt">
+                                    {% if messages %}
+                                        <ul class="messages">
+                                            {% for message in messages %}
+                                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        <br>
+                                    {% endif %}
+
+                                    <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{{ url('account:account_user', request.user.pk) }}">Личный кабинет</a>
+                                    </li>
+                                    <li class="menu-item"><a class="menu-link" href="{{ url('account:profile_user', request.user.pk) }}">Профиль</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="Section-content">
+                    <div class="Account">
+                        <div class="Account-group">
+                            <div class="Account-column">
+                                {% if user.photo %}
+                                    <div class="Account-avatar"><img src="{{ user.photo.url }}" alt="фото нет" width="200" height="170"/>
+                                    </div>
+                                {% else %}
+                                    <div class="Account-avatar"><img src="{{ static('assets/img/content/home/card.jpg') }}" alt="фото нет"/>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="Account-column">
+                                <div class="Account-name">{{ user.last_name or 'Ф' }} {{ user.first_name or 'И' }} {{ user.surname or 'О' }}
+                                </div>
+                                <a class="Account-editLink" href="{{ url('account:profile_user', user.pk) }}">Редактировать профиль</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
