@@ -85,7 +85,7 @@ class RegisterView(SuccessMessageMixin, FormView):
                 )
                 user_auth = authenticate(email=email, password=password)
                 login(request, user_auth)
-                group = Group.objects.get(name='buyer')
+                group = Group.objects.get(name='users')
                 user.groups.add(group)
                 messages.add_message(
                     self.request, messages.INFO,

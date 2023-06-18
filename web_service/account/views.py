@@ -61,63 +61,6 @@ class ProfileUser(SuccessMessageMixin, View):
         return HttpResponseRedirect(self.get_success_url())
 
 
-# class RegShopView(SuccessMessageMixin, View):
-#     """Представление для регистрации магазина."""
-#
-#     template_name = 'account/reg_shop.j2'
-#
-#     def get_success_url(self):
-#         """Возвращаемый URL при успешном выполнении методов."""
-#         return reverse_lazy('account:account_user', kwargs={'pk': self.kwargs['pk']})
-#
-#     def get(self, request, *args, **kwargs):
-#         """Получение страницы для добавления магазина."""
-#         return render(self.request, template_name=self.template_name)
-#
-#     def post(self, request, *args, **kwargs):
-#         """Добавление магазина."""
-#         data = self.request.POST
-#         user_pk = self.request.user.pk
-#
-#         shop = ShopManager(data=data, user_pk=user_pk)
-#         shop_create = shop.create()
-#
-#         messages.add_message(self.request, messages.INFO, shop_create)
-#         return HttpResponseRedirect(self.get_success_url())
-
-
-# class UpdateShopView(SuccessMessageMixin, View):
-#     """Представление для редактирования магазина."""
-#
-#     template_name = 'account/update_shop.j2'
-#
-#     def get_queryset(self, queryset=None):
-#         """Возвращение объекта магазина."""
-#         return Shop.objects.filter(user_id=self.kwargs.get('pk')).get()
-#
-#     def get_success_url(self):
-#         """Возвращаемый URL при успешном выполнении методов."""
-#         return reverse_lazy('account:update_shop', kwargs={'pk': self.kwargs['pk']})
-#
-#     def get(self, request, *args, **kwargs):
-#         """Получение страницы для редактирования магазина."""
-#         context = {
-#             'shop': self.get_queryset()
-#         }
-#         return render(self.request, template_name=self.template_name, context=context)
-#
-#     def post(self, request, *args, **kwargs):
-#         """Редактирование магазина."""
-#         data = self.request.POST
-#         user_pk = self.request.user.pk
-#
-#         shop = ShopManager(data=data, user_pk=user_pk)
-#         shop_update = shop.update()
-#
-#         messages.add_message(self.request, messages.INFO, shop_update)
-#         return HttpResponseRedirect(self.get_success_url())
-#
-#
 # class HistorySearchView(ListView):
 #     """ Представление для отображения страницы истории просмотров пользователя """
 #     template_name = 'account/history.j2'
