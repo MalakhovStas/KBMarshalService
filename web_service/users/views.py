@@ -22,7 +22,7 @@ from django.views.generic import DetailView, TemplateView
 
 class HomePageView(TemplateView):
     """ Отображение главной страницы сайта """
-    template_name = "base.j2"
+    template_name = "home.j2"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
