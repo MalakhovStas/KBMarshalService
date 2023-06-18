@@ -93,7 +93,7 @@ class RegisterView(SuccessMessageMixin, FormView):
                 )
                 return HttpResponseRedirect(reverse('account:profile_user', kwargs={'pk': user.pk}))
         except ObjectDoesNotExist:
-            messages.add_message(self.request, messages.INFO, _('К сожалению запрос не удался, попробуйте позже!'))
+            messages.add_message(self.request, messages.INFO, _('К сожалению, запрос не удался, попробуйте позже!'))
             return HttpResponseRedirect(reverse('users:register_user'))
         except IntegrityError:
             messages.add_message(self.request, messages.INFO, _('Вы уже зарегистрированы!'))

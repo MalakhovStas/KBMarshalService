@@ -6,7 +6,7 @@
       <div class="section_columnLeft">
         <strong class="section-title">Навигация
         </strong>
-        <ul class="menu">
+        <ul class="menu list-reset">
           <li class="menu-item"><a class="menu-link" href="{{ url('account:account_user', request.user.pk) }}">Личный кабинет</a>
           </li>
           <li class="menu-item"><a class="menu-link" href="{{ url('account:profile_user', request.user.pk) }}">Профиль</a>
@@ -14,7 +14,7 @@
         </ul>
       </div>
       <div class="section-content">
-        <div class="account">
+        <div class="account flex">
           <div class="account-column">
             {% if user.photo %}
           <div class="account-avatar"><img src="{{ user.photo.url }}" alt="фото нет" width="200" height="170"/>
@@ -25,9 +25,9 @@
             {% endif %}
         </div>
         <div class="account-column">
-          <div class="Account-name">{{ user.last_name or 'Ф' }} {{ user.first_name or 'И' }} {{ user.surname or 'О' }}
+          <div class="account-name">{{ user.last_name or 'Ф' }} {{ user.first_name or 'И' }} {{ user.surname or 'О' }}
           </div>
-          <a class="Account-editLink" href="{{ url('account:profile_user', user.pk) }}">Редактировать профиль</a>
+          <a class="account-editLink" href="{{ url('account:profile_user', user.pk) }}">Редактировать профиль</a>
         </div>
       </div>
     </div>

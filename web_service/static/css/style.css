@@ -148,7 +148,7 @@ body {
 
 .header__link:focus {
   color: var(--light-light-grey);
-  outline: 1px solid var(--orange);
+  outline: none;
   outline-offset: 2px;
 }
 
@@ -231,7 +231,7 @@ body {
 
 .header-bottom__link:focus {
   outline-offset: 5px;
-  outline: 1px solid var(--orange);
+  outline: none;
 }
 
 .header-bottom__link::after {
@@ -325,7 +325,7 @@ h1 {
 
 .footer__link:focus {
   color: var(--light-light-grey);
-  outline: 1px solid var(--orange);
+  outline: none;
   outline-offset: 2px;
 }
 
@@ -351,7 +351,7 @@ h1 {
 }
 
 .social-icons__link:focus {
-  outline: 1px solid var(--orange);
+  outline: none;
   outline-offset: 2px;
 }
 
@@ -373,4 +373,48 @@ h1 {
 
 .social-icons__link:active svg path {
   fill: var(--brown);
+}
+ /*account*/
+
+.section-account {
+  display: flex;
+  padding: 50px 0;
+ }
+
+.section_columnLeft {
+  margin-right: 400px;
+}
+
+.section-title {
+  display: inline-block;
+  margin-bottom: 25px;
+  font-size: 23px;
+  font-weight: 700;
+  color: #000;
+}
+
+.menu-item:not(:last-child) {
+  margin-bottom: 15px;
+}
+
+.menu-link {
+  font-size: 20px;
+  font-weight: 500;
+  color: #000;
+}
+
+.account-avatar {
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+  border: 1px solid #000;
+  margin-right: 25px;
+}
+
+.account-name {
+  margin-bottom: 25px;
+  font-family: Pattaya;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: 1;
 }
