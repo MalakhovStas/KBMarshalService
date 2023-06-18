@@ -165,8 +165,8 @@ body {
 .header__link-reg {
   padding-left: 30px;
   background-position: left;
-	background-repeat: no-repeat;
-  background-image: url(../img/user.svg);
+  background-repeat: no-repeat;
+  /*background-image: url(../img/user.svg);*/
 }
 
 .header__link-lang {
@@ -174,9 +174,9 @@ body {
 }
 
 .wrapper {
-  height: 35px;
   position: relative;
   width: 35px;
+  height: 35px;
   margin-right: 10px;
 }
 
@@ -197,6 +197,12 @@ body {
   );
   text-align: center;
   color: white;
+}
+
+.header__link-svg {
+  width: 30px;
+  height: 30px;
+  fill: white;
 }
 
 .header__icon {
@@ -263,7 +269,6 @@ body {
   min-height: 500px;
   width: 100%;
   background-size: cover;
-  background-position: ;
   background-repeat: no-repeat;
   background-image: url(../img/1674312417_foni-club-p-svetlo-serii-fon-1.jpg);
 }
@@ -342,7 +347,7 @@ h1 {
   display: inline-flex;
   width: 30px;
   height: 30px;
-  fill: rgba(0, 128, 172, 1);
+  fill: var(--light-grey);
 }
 
 .social-icons__link:focus {
