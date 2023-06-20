@@ -57,16 +57,18 @@
     {%  if  request.user.groups.filter(name__in=['users', 'admins']).exists() or request.user.is_superuser %}
       <ul class="header-bottom__list list-reset flex">
         <li class="header-bottom__item">
-          <a href="#" class="header-bottom__link">Найти должника</a>
+          <a href="#" class="header-bottom__link">{% trans %}Должники{% endtrans %}</a>
         </li>
         <li class="header-bottom__item">
-          <a href="#" class="header-bottom__link">Парсинг ФНС</a>
+          <a href="#" class="header-bottom__link">{{ _('Сервис ФНС') }}</a>
         </li>
         <li class="header-bottom__item">
-          <a href="#" class="header-bottom__link">Парсинг ФССП</a>
+          <a href="#" class="header-bottom__link">{% trans %}Сервис ФССП{% endtrans %}</a>
         </li>
       </ul>
     {% endif %}
+    {% include "includes/header/language.html" %}
+
   </div>
 </header>
 

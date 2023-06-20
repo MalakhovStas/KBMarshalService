@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+
+import django.conf
 from dotenv import dotenv_values
 from django.utils.translation import gettext_lazy as _
 import os
@@ -52,13 +54,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'web_service.urls'
@@ -78,12 +80,57 @@ TEMPLATES = [
             "match_extension": ".j2",
             "match_regex": None,
             "app_dirname": "templates",
-            "constants": {},
-            "globals": {},
+
+            # Can be set to "jinja2.Undefined" or any other subclass.
+            "undefined": None,
+            "newstyle_gettext": True,
+            "tests": {
+                # "mytest": "path.to.my.test",
+            },
+            "filters": {
+                # "myfilter": "path.to.my.filter",
+            },
+            "globals": {
+                # "myglobal": "path.to.my.globalfunc",
+            },
+            "constants": {
+                'settings': django.conf.settings
+                # "foo": "bar",
+            },
+            "policies": {
+                # "ext.i18n.trimmed": True,
+            },
+
+            "extensions": [
+                "jinja2.ext.do",
+                "jinja2.ext.loopcontrols",
+                "jinja2.ext.i18n",
+                "django_jinja.builtins.extensions.CsrfExtension",
+                "django_jinja.builtins.extensions.CacheExtension",
+                "django_jinja.builtins.extensions.DebugExtension",
+                "django_jinja.builtins.extensions.TimezoneExtension",
+                "django_jinja.builtins.extensions.UrlsExtension",
+                "django_jinja.builtins.extensions.StaticFilesExtension",
+                "django_jinja.builtins.extensions.DjangoFiltersExtension",
+            ],
+
+            "bytecode_cache": {
+                "name": "default",
+                "backend": "django_jinja.cache.BytecodeCache",
+                "enabled": False,
+            },
+
+            "autoescape": True,
+            "auto_reload": DEBUG,
+            "translation_engine": "django.utils.translation",
+
             "context_processors": [
-                # "context_processors.categories_context.categories",
-                # "context_processors.properties_context.properties",
-                # "context_processors.cart_context.cart",
+                "django.contrib.auth.context_processors.auth",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.media",
+                "django.template.context_processors.static",
+                "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
             ],
 
@@ -140,7 +187,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
+# https://docs.ndjagoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
@@ -153,7 +200,7 @@ LOCALE_PATHS = [
 ]
 
 LANGUAGES = [
-    ('en', _('Engglish')),
+    ('en', _('English')),
     ('ru', _('Russian'))
 ]
 

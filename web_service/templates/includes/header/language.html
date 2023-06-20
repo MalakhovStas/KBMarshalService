@@ -1,3 +1,4 @@
+{% load i18n %}
 <form action="{{ url('set_language') }}" method="post" style="text-align: right; display: inline-block">
     {% csrf_token %}
     <input name="next" type="hidden" value="{{ redirect_to }}">
