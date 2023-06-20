@@ -6,12 +6,10 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, ListView
 
-# from order.models import Order
-# from shops.models import Shop
 from users.models import User
 # from account.models import HistorySearch
-from .services import change_profile #, ShopManager
-
+from .services import change_profile
+from datetime import datetime
 
 class AccountUser(DetailView):
     """Представления для отображения информации о пользователе на странице аккаунта. """
@@ -23,11 +21,7 @@ class AccountUser(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = User.objects.get(pk=self.request.user.pk)
-        # context['last_order'] = Order.objects.select_related('user').filter(user=self.request.user).last()
-        if hasattr(user, 'shop'):
-            context['shop'] = True
-            return context
-        context['shop'] = False
+        context['date_joined'] = datetime.strftime(user.date_joined, '%d.%m.%Y %H:%M')
         return context
 
 

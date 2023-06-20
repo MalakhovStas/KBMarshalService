@@ -17,12 +17,18 @@ def change_profile(request: HttpRequest, user: QuerySet):
 
     # изменение ФИО
     if request.POST.get('name'):
-        data = request.POST.get('name').split()
+        fio = request.POST.get('name').split()
+        while len(fio) < 3:
+            fio.append('')
         user.update(
-            last_name=data[0],
-            first_name=data[1],
-            surname=data[2]
+            last_name=fio[0],
+            first_name=fio[1],
+            surname=fio[2]
         )
+
+    # изменение Никнейм
+    if request.POST.get('username'):
+        user.update(username=request.POST.get('username'))
 
     # изменение номера телефона
     if request.POST.get('phone'):
@@ -34,8 +40,8 @@ def change_profile(request: HttpRequest, user: QuerySet):
     # изменение аватарки
     if request.FILES:
         file = request.FILES['avatar']
-        fail_system = FileSystemStorage()
-        filename = fail_system.save(file.name, file)
+        file_system = FileSystemStorage()
+        filename = file_system.save(file.name, file)
         user.update(
             photo=filename
         )

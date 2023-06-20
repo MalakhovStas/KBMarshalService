@@ -3,9 +3,8 @@
 {% block content %}
 
             <div class="wrapper">
-                <div class="header">
+                <div class="register-title">
                     <h3 class="sign-in">Регистрация</h3>
-
                 </div>
                 {% if messages %}
                     <ul class="messages">
@@ -18,27 +17,24 @@
                 <form action="{{ url('users:register_user') }}" method="post">
                     {% csrf_token %}
                     <div>
-                        <input class="user-input" type="text" name="username" id="name" placeholder="Никнейм" />
+                        <input class="form-input" type="text" name="username" id="name" placeholder="Никнейм" />
                     </div>
                     <div>
-                        <input class="user-input" type="email" name="login" id="name" placeholder="E-mail" />
+                        <input class="form-input" type="email" name="login" id="name" placeholder="E-mail" />
                     </div>
                     <div>
 
-                        <input type="password" name="pass" id="name" placeholder="Пароль" />
+                        <input class="form-input" type="password" name="pass" id="name" placeholder="Пароль" autocomplete="new-password"/>
                     </div>
-                    <input type="submit" value="Зарегистрироваться" />
-
-                    <a class="registr" href="{{ url('users:login_user') }}">
+                    <input class="btn btn_success" type="submit" value="Зарегистрироваться" />
+                    <div class="offset">
+                      <a class="a-active registr" href="{{ url('users:login_user') }}">
                         Вход
-                    </a>
+                      </a>
+                    </div>
                     <div class="clear"></div>
                 </form>
             </div>
-
-        </div>
-
-    </main>
 
 
 {% endblock %}

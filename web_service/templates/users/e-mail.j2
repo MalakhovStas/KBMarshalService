@@ -4,9 +4,9 @@
 
 
             <div class="wrapper">
-                <div class="header">
+                <div class="e-mail-title">
                     <h3 class="sign-in">Восстановление пароля (1/2)</h3>
-                    <h5>Для восстановления пароля введите адрес электронной почты, на которую зарегистрирована учетная запись</h5>
+                    <h5 class="e-mail-subtitle">Для восстановления пароля введите адрес электронной почты, на которую зарегистрирована учетная запись</h5>
                 </div>
                 {% if messages %}
                     <ul class="messages">
@@ -15,20 +15,20 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
-                <form action="{{ url('users:password_reset') }}" method="post">
+                <form action="{{ url('users:password_reset') }}" method="post" autocomplete="off">
                     {% csrf_token %}
                     <div>
-                        <input class="user-input" type="email" name="email" id="name" placeholder="E-mail" />
+                        <input class="form-input" type="email" name="email" id="name" placeholder="E-mail" autocomplete="off"/>
                     </div>
                     <div>
-                        <input type="submit" value="Получить проверочный код" />
+                        <input class="btn btn_success" type="submit" value="Получить проверочный код"/>
                     </div>
-                    <a class="registr" href="{{ url('users:register_user') }}">
-                        Вход
-                    </a>
                 </form>
+                <div class="offset">
+                  <a class="a-active registr" href="{{ url('users:login_user') }}">Вход</a>
+                </div>
             </div>
 
-        </div>
+
 
 {% endblock %}

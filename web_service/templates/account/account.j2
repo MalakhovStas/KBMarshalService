@@ -3,16 +3,7 @@
 {% block content %}
 
     <div class="section-account">
-      <div class="section_columnLeft">
-        <strong class="section-title">Навигация
-        </strong>
-        <ul class="menu list-reset">
-          <li class="menu-item"><a class="menu-link" href="{{ url('account:account_user', request.user.pk) }}">Личный кабинет</a>
-          </li>
-          <li class="menu-item"><a class="menu-link" href="{{ url('account:profile_user', request.user.pk) }}">Профиль</a>
-          </li>
-        </ul>
-      </div>
+      {% include "account/navigation.j2" %}
       <div class="section-content">
         <div class="account flex">
           <div class="account-column">
@@ -20,14 +11,24 @@
           <div class="account-avatar"><img src="{{ user.photo.url }}" alt="фото нет" width="200" height="170"/>
           </div>
             {% else %}
-          <div class="account-avatar"><img src="{{ static('assets/img/content/home/card.jpg') }}" alt="фото нет"/>
+          <div class="account-avatar"><img src="{{  static('img/none_avatar.png') }}" alt="фото нет"/>
           </div>
             {% endif %}
         </div>
         <div class="account-column">
-          <div class="account-name">{{ user.last_name or 'Ф' }} {{ user.first_name or 'И' }} {{ user.surname or 'О' }}
+          <div class="account-name">
+            {% if not user.last_name and not user.first_nme and not user.surname %}
+              Ф И О
+            {% else %}
+              {{ user.last_name }} {{ user.first_name }} {{ user.surname }}
+            {% endif %}
           </div>
-          <a class="account-editLink" href="{{ url('account:profile_user', user.pk) }}">Редактировать профиль</a>
+           <div>Дата регистрации: {{ date_joined }}</div>
+
+          {% if user.username %}
+            <div>Никнейм: {{ user.username }}</div>
+          {% endif %}
+          <a class="account-editLink a-active" href="{{ url('account:profile_user', user.pk) }}">Редактировать профиль</a>
         </div>
       </div>
     </div>

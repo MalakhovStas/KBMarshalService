@@ -34,6 +34,10 @@ class HomePageView(TemplateView):
         context["hours"] = hours
         context["minutes"] = minutes
         context["seconds"] = seconds
+        print(self.request.user)
+        print(self.request.user.user_permissions)
+        print(self.request.user.groups)
+        print(self.request.user.groups.filter(name__in=['users']).exists())
         # context["hot_deals"] = hot_deals()
         # context["limited_edition_products"] = limited_edition_products()
         return context

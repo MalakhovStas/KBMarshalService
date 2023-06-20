@@ -1,0 +1,15 @@
+<div class="navigation">
+  <strong class="navigation-title">Навигация
+  </strong>
+  <ul class="menu list-reset">
+    {%  if  request.user.groups.filter(name='admin').exists() or request.user.is_superuser %}
+      <li class="menu-item"><a class="menu-link a-active" href="/admin">Административная панель</a>
+      </li>
+    {% endif %}
+    <li class="menu-item"><a class="menu-link a-active" href="{{ url('account:account_user', request.user.pk) }}">Личный кабинет</a>
+    </li>
+    <li class="menu-item"><a class="menu-link a-active" href="{{ url('account:profile_user', request.user.pk) }}">Профиль</a>
+    </li>
+
+  </ul>
+</div>

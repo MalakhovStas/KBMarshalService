@@ -10,6 +10,7 @@ class CustomSetPasswordForm(SetPasswordForm):
         label=_('Новый пароль'),
         widget=forms.PasswordInput(
             attrs={
+                'class': 'form-input',
                 'autocomplete': 'new-password',
                 'placeholder': _('новый пароль'),
             },
@@ -22,6 +23,7 @@ class CustomSetPasswordForm(SetPasswordForm):
         strip=False,
         widget=forms.PasswordInput(
             attrs={
+                'class': 'form-input',
                 'autocomplete': 'new-password',
                 'placeholder': _('повторите новый пароль'),
             },

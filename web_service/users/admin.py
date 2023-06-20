@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import AdminSite
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 
@@ -41,3 +42,4 @@ class UserRegAdmin(UserAdmin):
 
 
 admin.site.register(User, UserRegAdmin)
+AdminSite.site_header = 'Административная панель "КБ Маршал" сервис'
