@@ -94,11 +94,11 @@ TEMPLATES = [
                 # "myglobal": "path.to.my.globalfunc",
             },
             "constants": {
-                'settings': django.conf.settings
+                # 'settings': django.conf.settings
                 # "foo": "bar",
             },
             "policies": {
-                # "ext.i18n.trimmed": True,
+                "ext.i18n.trimmed": True,
             },
 
             "extensions": [
