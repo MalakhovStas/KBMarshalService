@@ -1,0 +1,214 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-21 12:28+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+
+#: .\web_service\settings.py:35
+msgid "Collection department"
+msgstr "Отдел взыскания"
+
+#: .\web_service\settings.py:36
+msgid "Contact department"
+msgstr "Отдел обращений"
+
+#: .\web_service\settings.py:37
+msgid "Legal service"
+msgstr "Юридическая служба"
+
+#: .\web_service\settings.py:40
+msgid "Address"
+msgstr "Адрес"
+
+#: .\web_service\settings.py:40
+msgid "Moscow, st.Narodnogo Opolcheniya.34, build.1, room.1/1"
+msgstr "Москва, ул.Народного Ополчения, д.34, стр.1, помещ. 1/1"
+
+#: .\web_service\settings.py:41
+msgid "Working time"
+msgstr "Режим работы"
+
+#: .\web_service\settings.py:41
+msgid "weekdays from 10:00 to 19:00"
+msgstr "по будням с 10:00 до 19:00"
+
+#: .\web_service\settings.py:223
+msgid "English"
+msgstr "Английский"
+
+#: .\web_service\settings.py:224
+msgid "Russian"
+msgstr "Русский"
+
+#: .\templates\account\account.j2:11 .\templates\account\account.j2:13
+msgid "no avatar"
+msgstr "нет аватара"
+
+#: .\templates\account\account.j2:19 .\templates\account\profile.j2:28
+msgid "Full name"
+msgstr "Ф И О"
+
+#: .\templates\account\account.j2:24
+msgid "Registration date"
+msgstr "Дата регистрации"
+
+#: .\templates\account\account.j2:26 .\templates\account\profile.j2:36
+#: .\templates\users\register.j2:19
+msgid "Nickname"
+msgstr "Никнейм"
+
+#: .\templates\account\account.j2:28
+msgid "Edit profile"
+msgstr "Редактировать профиль"
+
+#: .\templates\account\navigation.j2:2
+msgid "Navigation"
+msgstr "Навигация"
+
+#: .\templates\account\navigation.j2:6
+msgid "Admin panel"
+msgstr "Административная панель"
+
+#: .\templates\account\navigation.j2:9
+msgid "Personal cabinet"
+msgstr "Личный кабинет"
+
+#: .\templates\account\navigation.j2:11
+msgid "Profile"
+msgstr "Профиль"
+
+#: .\templates\account\profile.j2:14 .\templates\account\profile.j2:17
+#: .\templates\account\profile.j2:20
+msgid "Avatar"
+msgstr "Аватар"
+
+#: .\templates\account\profile.j2:17
+msgid "Upload another avatar"
+msgstr "Загрузить другой аватар"
+
+#: .\templates\account\profile.j2:20
+msgid "Upload avatar"
+msgstr "Загрузить аватар"
+
+#: .\templates\account\profile.j2:45
+msgid "Phone"
+msgstr "Телефон"
+
+#: .\templates\account\profile.j2:46
+msgid "Phone number"
+msgstr "Номер телефона"
+
+#: .\templates\account\profile.j2:53 .\templates\users\register.j2:25
+msgid "Password"
+msgstr "Пароль"
+
+#: .\templates\account\profile.j2:54
+msgid "Enter new password"
+msgstr "Введите новый пароль"
+
+#: .\templates\account\profile.j2:57
+msgid "Password confirmation"
+msgstr "Подтверждение пароля"
+
+#: .\templates\account\profile.j2:58
+msgid "Enter your password again"
+msgstr "Введите пароль повторно"
+
+#: .\templates\account\profile.j2:62
+msgid "Save"
+msgstr "Сохранить"
+
+#: .\templates\base.j2:8 .\templates\includes\footer\footer.j2:4
+#: .\templates\includes\header\header.j2:58
+msgid "KB"
+msgstr "КБ"
+
+#: .\templates\base.j2:8 .\templates\includes\footer\footer.j2:4
+#: .\templates\includes\header\header.j2:59
+msgid "Marshal"
+msgstr "Маршал"
+
+#: .\templates\includes\header\header.j2:46
+msgid "Logout"
+msgstr "Выйти"
+
+#: .\templates\includes\header\header.j2:50 .\templates\users\e-mail.j2:26
+#: .\templates\users\login.j2:6 .\templates\users\login.j2:25
+#: .\templates\users\register.j2:29
+msgid "Login"
+msgstr "Войти"
+
+#: .\templates\includes\header\header.j2:50 .\templates\users\login.j2:30
+#: .\templates\users\register.j2:6
+msgid "Registration"
+msgstr "Регистрация"
+
+#: .\templates\includes\header\header.j2:64
+msgid "Debtors"
+msgstr "Должники"
+
+#: .\templates\includes\header\header.j2:67
+#: .\templates\includes\header\header.j2:70
+msgid "Service"
+msgstr "Сервис"
+
+#: .\templates\includes\header\header.j2:67
+msgid "FNS"
+msgstr "ФНС"
+
+#: .\templates\includes\header\header.j2:70
+msgid "FSSP"
+msgstr "ФССП"
+
+#: .\templates\users\e-mail.j2:6
+msgid "Password recovery (1/2)"
+msgstr "Восстановление пароля (1/2)"
+
+#: .\templates\users\e-mail.j2:7
+msgid ""
+"To reset your password, enter the email address you registered your account "
+"with"
+msgstr ""
+"Чтобы сбросить пароль, введите адрес электронной почты, на который вы "
+"зарегистрировали свою учетную запись"
+
+#: .\templates\users\e-mail.j2:22
+msgid "Get verification code"
+msgstr "Получить код подтверждения"
+
+#: .\templates\users\login.j2:29
+msgid "Forgot password?"
+msgstr "Забыли пароль?"
+
+#: .\templates\users\password.j2:6
+msgid "Password recovery (2/2)"
+msgstr "Восстановление пароля (2/2)"
+
+#: .\templates\users\password.j2:7
+msgid "Create new account password"
+msgstr "Придумайте новый пароль"
+
+#: .\templates\users\password.j2:18
+msgid "Save password"
+msgstr "Сохранить пароль"
+
+#: .\templates\users\register.j2:27
+msgid "Register"
+msgstr "Зарегистрироваться"

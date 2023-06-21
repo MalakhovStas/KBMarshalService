@@ -1,40 +1,33 @@
 {% extends "base.j2" %}
 
 {% block content %}
-
-            <div class="wrapper">
-                <div class="login-title">
-                    <h3 class="sign-in">Вход</h3>
-                </div>
-                {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                <div class="clear"></div>
-                <form action="{{ url('users:login_user') }}" method="post" autocomplete="off">
-                    {% csrf_token %}
-                    <div>
-                        <input class="form-input" type="text" name="email" id="name" placeholder="E-mail" autocomplete="off"/>
-                    </div>
-                    <div>
-                        <input class="form-input" type="password" name="password" id="name" placeholder="*********" autocomplete="new-password"/>
-                    </div>
-                    <div>
-                        <input class="btn btn_success" type="submit" value="Войти" />
-                    </div>
-
-                </form>
-                <div class="offset">
-                  <a class="a-active forgot-label" href="{{ url('users:password_reset') }}">Забыли пароль?</a>
-                  <a class="a-active registr" href="{{ url('users:register_user') }}">Регистрация</a>
-                </div>
+    <div class="wrapper">
+        <div class="login-title">
+            <h3 class="sign-in">{{ _('Login') }}</h3>
+        </div>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <div class="clear"></div>
+        <form action="{{ url('users:login_user') }}" method="post" autocomplete="off">
+            {% csrf_token %}
+            <div>
+                <input class="form-input" type="text" name="email" id="name" placeholder="E-mail" autocomplete="off"/>
             </div>
-
-
-
-
-
+            <div>
+                <input class="form-input" type="password" name="password" id="name" placeholder="*********" autocomplete="new-password"/>
+            </div>
+            <div>
+                <input class="btn btn_success" type="submit" value="{{ _('Login') }}" />
+            </div>
+        </form>
+        <div class="offset">
+          <a class="a-active forgot-label" href="{{ url('users:password_reset') }}">{{ _('Forgot password?') }}</a>
+          <a class="a-active registr" href="{{ url('users:register_user') }}">{{ _('Registration') }}</a>
+        </div>
+    </div>
 {% endblock %}

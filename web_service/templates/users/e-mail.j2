@@ -1,34 +1,29 @@
 {% extends "base.j2" %}
 
 {% block content %}
-
-
-            <div class="wrapper">
-                <div class="e-mail-title">
-                    <h3 class="sign-in">Восстановление пароля (1/2)</h3>
-                    <h5 class="e-mail-subtitle">Для восстановления пароля введите адрес электронной почты, на которую зарегистрирована учетная запись</h5>
-                </div>
-                {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                <form action="{{ url('users:password_reset') }}" method="post" autocomplete="off">
-                    {% csrf_token %}
-                    <div>
-                        <input class="form-input" type="email" name="email" id="name" placeholder="E-mail" autocomplete="off"/>
-                    </div>
-                    <div>
-                        <input class="btn btn_success" type="submit" value="Получить проверочный код"/>
-                    </div>
-                </form>
-                <div class="offset">
-                  <a class="a-active registr" href="{{ url('users:login_user') }}">Вход</a>
-                </div>
+    <div class="wrapper">
+        <div class="e-mail-title">
+            <h3 class="sign-in">{{ _('Password recovery (1/2)') }}</h3>
+            <h5 class="e-mail-subtitle">{{ _('To reset your password, enter the email address you registered your account with') }}</h5>
+        </div>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form action="{{ url('users:password_reset') }}" method="post" autocomplete="off">
+            {% csrf_token %}
+            <div>
+                <input class="form-input" type="email" name="email" id="name" placeholder="E-mail" autocomplete="off"/>
             </div>
-
-
-
+            <div>
+                <input class="btn btn_success" type="submit" value="{{ _('Get verification code') }}"/>
+            </div>
+        </form>
+        <div class="offset">
+          <a class="a-active registr" href="{{ url('users:login_user') }}">{{ _('Login') }}</a>
+        </div>
+    </div>
 {% endblock %}

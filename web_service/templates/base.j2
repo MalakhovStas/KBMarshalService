@@ -23,13 +23,6 @@
           <section class="base">
               <div class="container">
                   {% block content %}
-                    {{ LANGUAGE_CODE }}
-                    {% for language in LANGUAGES %}
-                      {% if language[1] == LANGUAGE_CODE %}{{ language[1] }}{% endif %}
-                    {% endfor %}
-                    <h2>{{ _('Эта строка для проверки работы переводчика') }}</h2>
-                    <h3>{{ _('Вторая строка для проверки работы переводчика') }}</h3>
-                    {{ company_phones }}
                   {% endblock %}
               </div>
           </section>

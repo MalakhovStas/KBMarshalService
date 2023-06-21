@@ -11,14 +11,13 @@
             <div class="row flex">
               <div class="row-block">
                 <div class="form-group">
-                  <label class="form-label" for="avatar">Аватар
-                  </label>
+                  <label class="form-label" for="avatar">{{ _('Avatar') }}</label>
                   <div class="p-avatar profile-avatar_noimg">
                     {% if user.photo %}
-                        <label class="profile-fileLabel" for="avatar"><img class="avatar-img" src="{{ user.photo.url }}" alt="Аватар" /> Загрузить другой аватар</label>
+                        <label class="profile-fileLabel" for="avatar"><img class="avatar-img" src="{{ user.photo.url }}" alt="{{ _('Avatar') }}" />{{ _('Upload another avatar') }}</label>
                         <input class="form-input" id="avatar" name="avatar" type="file" data-validate="onlyImgAvatar" hidden="hidden"/>
                     {% else %}
-                      <label class="profile-fileLabel" for="avatar"><img class="avatar-img" src="{{ static('img/download.svg') }}" alt="Аватар" />Загрузить аватар</label>
+                      <label class="profile-fileLabel" for="avatar"><img class="avatar-img" src="{{ static('img/download.svg') }}" alt="{{ _('Avatar') }}" />{{ _('Upload avatar') }}</label>
                       <input class="form-input" id="avatar" name="avatar" type="file" data-validate="onlyImgAvatar" hidden="hidden"/>
                     {% endif %}
                   </div>
@@ -26,8 +25,7 @@
               </div>
               <div class="row-block">
                 <div class="form-group">
-                  <label class="form-label" for="name">ФИО
-                  </label>
+                  <label class="form-label" for="name">{{ _('Full name') }}</label>
                   {% if user.last_name %}
                     <input class="form-input" id="name" name="name" type="text" value="{{user.last_name}} {{user.first_name}} {{user.surname}}" data-validate="require"/>
                   {% else %}
@@ -35,7 +33,7 @@
                   {% endif %}
                 </div>
                 <div class="form-group">
-                  <label class="form-label" for="username">Никнейм
+                  <label class="form-label" for="username">{{ _('Nickname') }}
                   </label>
                   {% if user.username %}
                     <input class="form-input" id="name" name="username" type="text" value="{{user.username}}" data-validate="require"/>
@@ -44,24 +42,24 @@
                   {% endif %}
                 </div>
                 <div class="form-group">
-                  <label class="form-label" for="phone">Телефон</label>
-                  <input class="form-input" id="phone" name="phone" type="text" value="{{ user.phone_number }}" placeholder="номер телефона" autocomplete="off"/>
+                  <label class="form-label" for="phone">{{ _('Phone') }}</label>
+                  <input class="form-input" id="phone" name="phone" type="text" value="{{ user.phone_number }}" placeholder="{{ _('Phone number') }}" autocomplete="off"/>
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="mail">E-mail</label>
                   <input class="form-input" id="mail" name="mail" type="text" value="{{ user.email }}" data-validate="require" autocomplete="off"/>
                 </div>
                 <div class="form-group">
-                  <label class="form-label" for="password">Пароль</label>
-                  <input class="form-input" id="password" name="password" type="password" placeholder="Тут можно изменить пароль" autocomplete="off"/>
+                  <label class="form-label" for="password">{{ _('Password') }}</label>
+                  <input class="form-input" id="password" name="password" type="password" placeholder="{{ _('Enter new password') }}" autocomplete="off"/>
                 </div>
                 <div class="form-group">
-                  <label class="form-label" for="passwordReply">Подтверждение пароля</label>
-                  <input class="form-input" id="passwordReply" name="passwordReply" type="password" placeholder="Введите пароль повторно" autocomplete="off"/>
+                  <label class="form-label" for="passwordReply">{{ _('Password confirmation') }}</label>
+                  <input class="form-input" id="passwordReply" name="passwordReply" type="password" placeholder="{{ _('Enter your password again') }}" autocomplete="off"/>
                 </div>
                 <div class="form-group">
                   <div class="profile-btn">
-                    <button class="btn btn_success" type="submit">Сохранить</button>
+                    <button class="btn btn_success" type="submit">{{ _('Save') }}</button>
                   </div>
                   <div class="profile-success">
                     {% if messages %}

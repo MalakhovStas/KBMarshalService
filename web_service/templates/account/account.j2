@@ -8,29 +8,26 @@
         <div class="account flex">
           <div class="account-column">
             {% if user.photo %}
-          <div class="account-avatar"><img src="{{ user.photo.url }}" alt="фото нет" width="200" height="170"/>
-          </div>
+              <div class="account-avatar"><img src="{{ user.photo.url }}" alt="{{ _('no avatar') }}" width="200" height="170"/></div>
             {% else %}
-          <div class="account-avatar"><img src="{{  static('img/none_avatar.png') }}" alt="фото нет"/>
-          </div>
-            {% endif %}
-        </div>
-        <div class="account-column">
-          <div class="account-name">
-            {% if not user.last_name and not user.first_nme and not user.surname %}
-              Ф И О
-            {% else %}
-              {{ user.last_name }} {{ user.first_name }} {{ user.surname }}
+              <div class="account-avatar"><img src="{{  static('img/none_avatar.png') }}" alt="{{ _('no avatar') }}"/></div>
             {% endif %}
           </div>
-           <div>Дата регистрации: {{ date_joined }}</div>
-
-          {% if user.username %}
-            <div>Никнейм: {{ user.username }}</div>
-          {% endif %}
-          <a class="account-editLink a-active" href="{{ url('account:profile_user', user.pk) }}">Редактировать профиль</a>
+          <div class="account-column">
+            <div class="account-name">
+              {% if not user.last_name and not user.first_nme and not user.surname %}
+                {{ _('Full name') }}
+              {% else %}
+                {{ user.last_name }} {{ user.first_name }} {{ user.surname }}
+              {% endif %}
+            </div>
+            <div>{{ _('Registration date') }}: {{ date_joined }}</div>
+            {% if user.username %}
+              <div>{{ _('Nickname') }}: {{ user.username }}</div>
+            {% endif %}
+            <a class="account-editLink a-active" href="{{ url('account:profile_user', user.pk) }}">{{ _('Edit profile') }}</a>
+          </div>
         </div>
       </div>
     </div>
-
 {% endblock %}
