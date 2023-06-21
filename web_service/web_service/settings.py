@@ -29,6 +29,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-%r@6@4js*-&ie)y+kd03cqr^b4^5bpy+()^!53qo*sf3#i8qtx'
 
+# Данные о компании
+# COMPANY_EMAIL = ('E-mail', 'kbmarshal@mail.ru')
+COMPANY_PHONES = [
+    (_('Collection department'), '+7 (495) 513-11-46'),  # Отдел взыскания
+    (_('Contact department'), '+7 (931) 521-13-46'),  # Отдел обращений
+    (_('Legal service'), '+7 (495) 927-58-32'),  # Юридическая служба
+]
+COMPANY_EMAIL = ('E-mail', 'kbmarshal@mail.ru')
+COMPANY_ADDRESS = (_('Address'), _('Moscow, st.Narodnogo Opolcheniya.34, build.1, room.1/1'))
+COMPANY_WORKING_HOURS = (_('Working time'), _('weekdays from 10:00 to 19:00'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -54,8 +64,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -88,12 +98,17 @@ TEMPLATES = [
                 # "mytest": "path.to.my.test",
             },
             "filters": {
+                'myi18n': django
                 # "myfilter": "path.to.my.filter",
             },
             "globals": {
                 # "myglobal": "path.to.my.globalfunc",
             },
             "constants": {
+                'company_phones': COMPANY_PHONES,
+                'company_email': COMPANY_EMAIL,
+                'company_address': COMPANY_ADDRESS,
+                'company_working_hours': COMPANY_WORKING_HOURS,
                 # 'settings': django.conf.settings
                 # "foo": "bar",
             },
@@ -112,6 +127,7 @@ TEMPLATES = [
                 "django_jinja.builtins.extensions.UrlsExtension",
                 "django_jinja.builtins.extensions.StaticFilesExtension",
                 "django_jinja.builtins.extensions.DjangoFiltersExtension",
+                "django_jinja.builtins.extensions.DjangoExtraFiltersExtension",
             ],
 
             "bytecode_cache": {
@@ -189,21 +205,24 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.ndjagoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
 LOCALE_PATHS = [
-    BASE_DIR / 'locale/'
+    os.path.join(BASE_DIR, 'locale'),
 ]
 
+# LANGUAGES = [
+#     ('en', _('English')),
+#     ('ru', _('Russian'))
+# ]
 LANGUAGES = [
     ('en', _('English')),
-    ('ru', _('Russian'))
+    ('ru', _('Russian')),
 ]
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
@@ -234,15 +253,43 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 
+# Данные для отправки сообщений на почту пользователя.
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = config['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+            'console': {'format': '%(asctime)s %(name)-12s %(levelname)-6s %(message)s'},
+            'file': {'format': '%(asctime)s %(name)-12s %(levelname)-6s %(message)s'}
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': 'debug.log'
+        }
+    },
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': 'DEBUG',
+        'propagate': True
+    }
+}
 
 # с тем что ниже пока не разобрался
-# Данные для отправки сообщений на почту пользователя.
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = "service.megano@gmail.com"
-# EMAIL_HOST_PASSWORD = "riuqnqydepsshhmj"
-# EMAIL_USE_TLS = True
-# EMAIL_USE_SSL = False
 #
 # CART_SESSION_ID = 'cart'
 # DELIVERY_SESSION_ID = 'delivery_id'

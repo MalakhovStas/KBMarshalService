@@ -1,9 +1,13 @@
 <footer class="footer">
   <div class="footer__container flex">
     <div class="footer__list">
-      <p class="footer-title">КБ Маршал</p>
-      <a href="phone:+74959999999" class="footer__link">Телефон: +7 495 999 99 99</a>
-      <a href="mailto:kbmarshal@mail.ru" class="footer__link">E-mail: kbmarshal@admin.ru</a>
+      <p class="footer-title">{{ _('KB') }} {{ _('Marshal') }}</p>
+      {% for phone in company_phones %}
+        <a href="phone:{{ phone[0] }}" class="footer__link">{{ phone[0] }}: {{ phone[1] }}</a>
+      {% endfor %}
+       <a href="mailto:{{ company_email[1] }}" class="footer__link">{{ company_email[0] }}: {{ company_email[1] }}</a>
+       <a href="#" class="footer__link">{{ company_address[0].title() }}: {{ company_address[1] }}</a>
+       <a href="#" class="footer__link">{{ company_working_hours[0].title() }}: {{ company_working_hours[1] }}</a>
     </div>
   </div>
 </footer>

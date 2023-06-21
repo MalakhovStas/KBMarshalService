@@ -21,12 +21,13 @@ from django.conf.urls.static import static
 import debug_toolbar
 
 urlpatterns = [
+    path('i18n', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
     path("", include("users.urls", namespace="users")),
     path("account/", include("account.urls", namespace="account")),
-
 ]
 
 if settings.DEBUG:
     urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
+    urlpatterns.extend(static(settings.STATIC_URL, document_root=settings.STATIC_ROOT))
     urlpatterns.append(path("__debug__/", include(debug_toolbar.urls)))
