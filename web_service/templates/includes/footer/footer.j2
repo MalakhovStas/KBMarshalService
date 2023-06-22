@@ -1,13 +1,29 @@
 <footer class="footer">
   <div class="footer__container flex">
-    <div class="footer__list">
-      <p class="footer-title">{{ _('KB') }} {{ _('Marshal') }}</p>
-      {% for phone in company_phones %}
-        <a href="phone:{{ phone[0] }}" class="footer__link">{{ phone[0] }}: {{ phone[1] }}</a>
-      {% endfor %}
-       <a href="mailto:{{ company_email[1] }}" class="footer__link">{{ company_email[0] }}: {{ company_email[1] }}</a>
-       <a href="#" class="footer__link">{{ company_address[0] }}: {{ company_address[1] }}</a>
-       <a href="#" class="footer__link">{{ company_working_hours[0] }}: {{ company_working_hours[1] }}</a>
+    <div class="footer__privacy-policy">
+      <p class="footer__privacy-policy-text">
+        {{ _('LLC "Collection Bureau "Marshal" - all rights reserved © 2023') }}
+      </p>
+
+      <a href="{{ url('privacy_policy') }}" class="footer__privacy-policy-link a-active">
+        {{ _('Privacy policy') }}
+      </a>
+    </div>
+    <div class="footer__contacts flex">
+      <p class="footer-title"><a href="{{ url('home') }}">{{ _('KB') }} {{ _('Marshal') }}</a></p>
+      <ul class="footer__list list-reset">
+       <li>
+        {% for phone in company_phones %}
+          <a href="phone:{{ phone[0] }}" class="footer__link">{{ phone[0] }}: {{ phone[1] }}</a></li>
+        {% endfor %}
+       <li>
+         <a href="mailto:{{ company_email[1] }}" class="footer__link">{{ company_email[0] }}: {{ company_email[1] }}</a>
+       </li>
+      </ul>
+      <ul class="footer__list-text list-reset">
+         <p class="footer__text">{{ company_address[0] }}: {{ company_address[1] }}</p>
+         <p class="footer__text">{{ company_working_hours[0] }}: {{ company_working_hours[1] }}</p>
+      </ul>
     </div>
   </div>
 </footer>

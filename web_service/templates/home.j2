@@ -1,1 +1,8 @@
 {% extends "base.j2" %}
+{% block content %}
+  {% if LANGUAGE_CODE == 'ru' %}
+    {% include 'includes/home/ru_home_page_text.html' %}
+  {% else %}
+    {% include 'includes/home/en_home_page_text.html' %}
+  {% endif %}
+{% endblock %}

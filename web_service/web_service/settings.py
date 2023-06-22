@@ -30,7 +30,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%r@6@4js*-&ie)y+kd03cqr^b4^5bpy+()^!53qo*sf3#i8qtx'
 
 # Данные о компании
-# COMPANY_EMAIL = ('E-mail', 'kbmarshal@mail.ru')
 COMPANY_PHONES = [
     (_('Collection department'), '+7 (495) 513-11-46'),  # Отдел взыскания
     (_('Contact department'), '+7 (931) 521-13-46'),  # Отдел обращений
@@ -39,11 +38,12 @@ COMPANY_PHONES = [
 COMPANY_EMAIL = ('E-mail', 'kbmarshal@mail.ru')
 COMPANY_ADDRESS = (_('Address'), _('Moscow, st.Narodnogo Opolcheniya.34, build.1, room.1/1'))
 COMPANY_WORKING_HOURS = (_('Working time'), _('weekdays from 10:00 to 19:00'))
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
+LOGIC_IN_DEV = _('Functionality of this block is under development')
 
 # Application definition
 
@@ -59,7 +59,9 @@ INSTALLED_APPS = [
     'django_jinja',
     'phonenumber_field',
     'users',
-    'account'
+    'account',
+    'debtors',
+    'services',
 ]
 
 MIDDLEWARE = [
@@ -109,6 +111,7 @@ TEMPLATES = [
                 'company_email': COMPANY_EMAIL,
                 'company_address': COMPANY_ADDRESS,
                 'company_working_hours': COMPANY_WORKING_HOURS,
+                'logic_in_dev': LOGIC_IN_DEV,
                 # 'settings': django.conf.settings
                 # "foo": "bar",
             },

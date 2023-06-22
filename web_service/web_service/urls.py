@@ -19,12 +19,17 @@ from django.conf import settings
 from django.urls import path, include
 from django.conf.urls.static import static
 import debug_toolbar
-
+from .views import HomePageView, PrivacyPolicyPageView
 urlpatterns = [
     path('i18n', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
-    path("", include("users.urls", namespace="users")),
+    path("", HomePageView.as_view(), name="home"),
+    path("privacy_policy", PrivacyPolicyPageView.as_view(), name="privacy_policy"),
+    path("users/", include("users.urls", namespace="users")),
     path("account/", include("account.urls", namespace="account")),
+    path("debtors/", include("debtors.urls", namespace="debtors")),
+    path("services/", include("services.urls", namespace="services")),
+
 ]
 
 if settings.DEBUG:

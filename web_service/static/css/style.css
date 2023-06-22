@@ -162,42 +162,44 @@ body {
   color: var(--brown);
 }
 
-.header__link-reg {
+/*.header__link-reg {
   padding-left: 30px;
   background-position: left;
   background-repeat: no-repeat;
-  /*background-image: url(../img/user.svg);*/
+  background-image: url(../img/user.svg);
 }
-
 .header__link-lang {
   height: 100%;
-}
-
+}*/
+/*
 .wrap {
   position: relative;
   width: 35px;
   height: 35px;
   margin-right: 10px;
-}
+}*/
 
 .entrance {
   justify-content: space-between;
   text-align: center;
 }
 
-.text {
-  position: relative;
-  margin: 0;
-  height: 100%;
-  width: 100%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(0, 128, 172, 1) 0%,
-    rgba(0, 128, 172, 0) 70.3%
-  );
+.header__btn {
+  display: inline-block;
+  border: none;
+  padding: 5px;
   text-align: center;
-  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  color: #FFF;
+  border-radius: 50%;
+  background: radial-gradient(rgba(0, 128, 172, 1),
+    rgba(0, 128, 172, 0));
 }
+   /*       radial-gradient
+    rgba(0, 128, 172, 1) 0%,
+    rgba(0, 128, 172, 0) 70.3%;
+}*/
 
 .header__link-svg {
   width: 30px;
@@ -285,22 +287,46 @@ h1 {
 
 .footer {
   width: 100%;
+  height: 100%;
   background-color: var(--black);
 }
 
 .footer__container {
   display: flex;
-  flex-direction: row-reverse;
+  justify-content: space-between;
   text-align: end;
   align-items: center;
   width: 100%;
-  padding: 15px 75px;
-  height: 150px;
+  height: 100%;
+  padding: 25px 75px;
+}
+
+.footer__privacy-policy {
+  text-align: left;
+}
+
+.footer__privacy-policy-text {
+  color: var(--light-light-grey);
+}
+
+.footer__privacy-policy-link {
+  text-decoration: underline;
+  color: var(--light-light-grey);
+}
+
+.footer__privacy-policy-link:hover {
+  text-decoration: none;
+}
+
+.footer__contacts {
+  display: flex;
+  flex-direction: column;
 }
 
 .footer-title {
   margin: 0;
   padding: 0;
+  margin-bottom: 25px;
   font-weight: 700;
   font-size: 23px;
   line-height: 28px;
@@ -310,6 +336,7 @@ h1 {
 .footer__list {
   display: flex;
   flex-direction: column;
+  margin-bottom: 15px;
 }
 
 .footer__link {
@@ -336,6 +363,20 @@ h1 {
   color: var(--brown);
 }
 
+.footer__list-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer__text {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 32px;
+  color: var(--light-light-grey);
+}
+
 .social-icons__item:not(:last-child) {
   margin-right: 10px;
 }
@@ -344,7 +385,7 @@ h1 {
   display: inline-flex;
   width: 30px;
   height: 30px;
-  fill: var(--light-grey);
+  fill: rgb(64, 134, 134);
 }
 
 .social-icons__link:focus {

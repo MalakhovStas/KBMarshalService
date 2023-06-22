@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-21 12:28+0300\n"
+"POT-Creation-Date: 2023-06-23 00:52+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,43 +19,6 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
-
-
-#: .\web_service\settings.py:35
-msgid "Collection department"
-msgstr "Отдел взыскания"
-
-#: .\web_service\settings.py:36
-msgid "Contact department"
-msgstr "Отдел обращений"
-
-#: .\web_service\settings.py:37
-msgid "Legal service"
-msgstr "Юридическая служба"
-
-#: .\web_service\settings.py:40
-msgid "Address"
-msgstr "Адрес"
-
-#: .\web_service\settings.py:40
-msgid "Moscow, st.Narodnogo Opolcheniya.34, build.1, room.1/1"
-msgstr "Москва, ул.Народного Ополчения, д.34, стр.1, помещ. 1/1"
-
-#: .\web_service\settings.py:41
-msgid "Working time"
-msgstr "Режим работы"
-
-#: .\web_service\settings.py:41
-msgid "weekdays from 10:00 to 19:00"
-msgstr "по будням с 10:00 до 19:00"
-
-#: .\web_service\settings.py:223
-msgid "English"
-msgstr "Английский"
-
-#: .\web_service\settings.py:224
-msgid "Russian"
-msgstr "Русский"
 
 #: .\templates\account\account.j2:11 .\templates\account\account.j2:13
 msgid "no avatar"
@@ -135,27 +98,35 @@ msgstr "Введите пароль повторно"
 msgid "Save"
 msgstr "Сохранить"
 
-#: .\templates\base.j2:8 .\templates\includes\footer\footer.j2:4
-#: .\templates\includes\header\header.j2:58
+#: .\templates\base.j2:8 .\templates\includes\footer\footer.j2:13
+#: .\templates\includes\header\header.j2:57
 msgid "KB"
 msgstr "КБ"
 
-#: .\templates\base.j2:8 .\templates\includes\footer\footer.j2:4
-#: .\templates\includes\header\header.j2:59
+#: .\templates\base.j2:8 .\templates\includes\footer\footer.j2:13
+#: .\templates\includes\header\header.j2:58
 msgid "Marshal"
 msgstr "Маршал"
 
-#: .\templates\includes\header\header.j2:46
+#: .\templates\includes\footer\footer.j2:5
+msgid "LLC \"Collection Bureau \"Marshal\" - all rights reserved © 2023"
+msgstr "ООО \"Коллекторское Бюро \"Маршал\" - все права защищены © 2023"
+
+#: .\templates\includes\footer\footer.j2:9
+msgid "Privacy policy"
+msgstr "Политика конфиденциальности"
+
+#: .\templates\includes\header\header.j2:44
 msgid "Logout"
 msgstr "Выйти"
 
-#: .\templates\includes\header\header.j2:50 .\templates\users\e-mail.j2:26
+#: .\templates\includes\header\header.j2:49 .\templates\users\e-mail.j2:26
 #: .\templates\users\login.j2:6 .\templates\users\login.j2:25
 #: .\templates\users\register.j2:29
 msgid "Login"
 msgstr "Войти"
 
-#: .\templates\includes\header\header.j2:50 .\templates\users\login.j2:30
+#: .\templates\includes\header\header.j2:49 .\templates\users\login.j2:30
 #: .\templates\users\register.j2:6
 msgid "Registration"
 msgstr "Регистрация"
@@ -212,3 +183,43 @@ msgstr "Сохранить пароль"
 #: .\templates\users\register.j2:27
 msgid "Register"
 msgstr "Зарегистрироваться"
+
+#: .\web_service\settings.py:34
+msgid "Collection department"
+msgstr "Отдел взыскания"
+
+#: .\web_service\settings.py:35
+msgid "Contact department"
+msgstr "Отдел обращений"
+
+#: .\web_service\settings.py:36
+msgid "Legal service"
+msgstr "Юридическая служба"
+
+#: .\web_service\settings.py:39
+msgid "Address"
+msgstr "Адрес"
+
+#: .\web_service\settings.py:39
+msgid "Moscow, st.Narodnogo Opolcheniya.34, build.1, room.1/1"
+msgstr "Москва, ул.Народного Ополчения, д.34, стр.1, помещ. 1/1"
+
+#: .\web_service\settings.py:40
+msgid "Working time"
+msgstr "Режим работы"
+
+#: .\web_service\settings.py:40
+msgid "weekdays from 10:00 to 19:00"
+msgstr "по будням с 10:00 до 19:00"
+
+#: .\web_service\settings.py:46
+msgid "Functionality of this block is under development"
+msgstr "Функционал этого блока находится в разработке"
+
+#: .\web_service\settings.py:226
+msgid "English"
+msgstr "Английский"
+
+#: .\web_service\settings.py:227
+msgid "Russian"
+msgstr "Русский"

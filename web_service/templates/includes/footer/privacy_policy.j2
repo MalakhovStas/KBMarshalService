@@ -1,0 +1,9 @@
+{% extends 'base.j2' %}
+
+{% block content %}
+  {% if LANGUAGE_CODE == 'ru' %}
+    {% include 'includes/privacy_policy/ru_privacy_policy.html' %}
+  {% else %}
+    {% include 'includes/privacy_policy/en_privacy_policy.html' %}
+  {% endif %}
+{% endblock %}
