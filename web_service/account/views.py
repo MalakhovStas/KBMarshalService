@@ -11,9 +11,9 @@ from users.models import User
 from .services import change_profile
 from datetime import datetime
 
+
 class AccountUser(DetailView):
     """Представления для отображения информации о пользователе на странице аккаунта. """
-
     template_name = 'account/account.j2'
     context_object_name = 'user'
     model = User
@@ -27,7 +27,6 @@ class AccountUser(DetailView):
 
 class ProfileUser(SuccessMessageMixin, View):
     """Представления для редактирования профиля пользователя. """
-
     template_name = 'account/profile.j2'
 
     def get_success_url(self):
@@ -41,16 +40,12 @@ class ProfileUser(SuccessMessageMixin, View):
 
     def get(self, request, *args, **kwargs):
         """Получение страницы для редактирования профиля."""
-        context = {
-            'user': self.get_queryset().get()
-        }
+        context = {'user': self.get_queryset().get()}
         return render(self.request, template_name=self.template_name, context=context)
 
     def post(self, request, *args, **kwargs):
         """Метод изменения данных пользователя."""
-
         info = change_profile(request, self.get_queryset())
-
         messages.add_message(self.request, messages.INFO, info)
         return HttpResponseRedirect(self.get_success_url())
 

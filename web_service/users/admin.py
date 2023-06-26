@@ -12,10 +12,10 @@ class UserRegAdmin(UserAdmin):
     list_display = 'email', 'is_superuser', 'is_staff', 'is_active',
     fieldsets = (
         (None, {'fields': ('email', 'password',)}),
-        (_('персональная информация'),
+        (_('personal information'),
          {'fields': ('username', 'first_name', 'last_name', 'surname', 'phone_number', 'photo',)}),
         (
-            _('разрешения'),
+            _('permissions'),
             {
                 'fields': (
                     'is_active',
@@ -26,7 +26,7 @@ class UserRegAdmin(UserAdmin):
                 ),
             },
         ),
-        (_('важные даты'), {'fields': ('last_login', 'date_joined',)}),
+        (_('important dates'), {'fields': ('last_login', 'date_joined',)}),
     )
     add_fieldsets = (
         (
@@ -42,4 +42,4 @@ class UserRegAdmin(UserAdmin):
 
 
 admin.site.register(User, UserRegAdmin)
-AdminSite.site_header = 'Административная панель "КБ Маршал" сервис'
+AdminSite.site_header = _('Admin panel "KB Marshal" service')

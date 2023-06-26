@@ -10,7 +10,7 @@ class CustomUserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
         """Добавление обычного пользователя."""
         if not email:
-            raise ValueError(_('Не указана электронная почта'))
+            raise ValueError(_('Email not specified'))
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -24,7 +24,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_active', True)
 
         if extra_fields.get('is_staff') is not True:
-            raise ValueError(_('У суперпользователя должно быть is_staff=True.'))
+            raise ValueError(_('The superuser must have is_staff=True.'))
         if extra_fields.get('is_superuser') is not True:
-            raise ValueError(_('Суперпользователь должен иметь is_superuser=True.'))
+            raise ValueError(_('The superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)

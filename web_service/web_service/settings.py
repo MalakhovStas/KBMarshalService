@@ -31,9 +31,9 @@ SECRET_KEY = 'django-insecure-%r@6@4js*-&ie)y+kd03cqr^b4^5bpy+()^!53qo*sf3#i8qtx
 
 # Данные о компании
 COMPANY_PHONES = [
-    (_('Collection department'), '+7 (495) 513-11-46'),  # Отдел взыскания
-    (_('Contact department'), '+7 (931) 521-13-46'),  # Отдел обращений
-    (_('Legal service'), '+7 (495) 927-58-32'),  # Юридическая служба
+    (_('Collection department'), '+7-495-513-11-46'),  # Отдел взыскания
+    (_('Contact department'), '+7-931-521-13-46'),  # Отдел обращений
+    (_('Legal service'), '+7-495-927-58-32'),  # Юридическая служба
 ]
 COMPANY_EMAIL = ('E-mail', 'kbmarshal@mail.ru')
 COMPANY_ADDRESS = (_('Address'), _('Moscow, st.Narodnogo Opolcheniya.34, build.1, room.1/1'))
@@ -218,10 +218,6 @@ LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
 
-# LANGUAGES = [
-#     ('en', _('English')),
-#     ('ru', _('Russian'))
-# ]
 LANGUAGES = [
     ('en', _('English')),
     ('ru', _('Russian')),

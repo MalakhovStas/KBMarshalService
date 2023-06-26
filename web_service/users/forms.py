@@ -4,28 +4,28 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CustomSetPasswordForm(SetPasswordForm):
-    """Кастомная форма установки нового пароля."""
+    """ Кастомная форма установки нового пароля """
 
     new_password1 = forms.CharField(
-        label=_('Новый пароль'),
+        label=_('New password'),
         widget=forms.PasswordInput(
             attrs={
                 'class': 'form-input',
                 'autocomplete': 'new-password',
-                'placeholder': _('новый пароль'),
+                'placeholder': _('new password'),
             },
         ),
         strip=False,
         help_text=password_validation.password_validators_help_text_html(),
     )
     new_password2 = forms.CharField(
-        label=_('Повторите новый пароль'),
+        label=_('Repeat new password'),
         strip=False,
         widget=forms.PasswordInput(
             attrs={
                 'class': 'form-input',
                 'autocomplete': 'new-password',
-                'placeholder': _('повторите новый пароль'),
+                'placeholder': _('repeat new password'),
             },
         ),
     )

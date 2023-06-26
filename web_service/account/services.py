@@ -59,7 +59,7 @@ def change_profile(request: HttpRequest, user: QuerySet):
             user_login = authenticate(email=email, password=password)
             login(request, user_login)
         except ValidationError:
-            return _('Email не соответствует требованиям!')
+            return _('Email does not meet the requirements!')
 
     # изменение пароля
     if request.POST.get('password') and request.POST.get('passwordReply'):
@@ -73,8 +73,8 @@ def change_profile(request: HttpRequest, user: QuerySet):
             user_login = authenticate(email=email, password=password1)
             login(request, user_login)
         else:
-            return _('Пароли не совпадают!')
-    return _('Профиль успешно изменён.')
+            return _('Password mismatch!')
+    return _('Profile changed successfully.')
 
 
 # class ShopManager:

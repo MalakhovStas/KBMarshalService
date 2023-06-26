@@ -18,12 +18,12 @@ from .models import User
 
 
 class LoginUserView(SuccessMessageMixin, LoginView):
-    """Аутентификация пользователя"""
+    """ Аутентификация пользователя """
     template_name = 'users/login.j2'
     success_url = reverse_lazy('home')
 
     def post(self, request, *args, **kwargs):
-        """Метод, проверяющий существование пользователя и перенаправляющий его на соответствующую страницу."""
+        """ Метод, проверяющий существование пользователя и перенаправляющий его на соответствующую страницу """
         email = request.POST.get('email')
         password = request.POST.get('password')
         user = authenticate(email=email, password=password)
@@ -32,24 +32,24 @@ class LoginUserView(SuccessMessageMixin, LoginView):
             return HttpResponseRedirect(self.success_url)
 
         messages.add_message(
-            self.request, messages.INFO, _('Неверный логин или пароль. Проверьте введённые данные'))
+            self.request, messages.INFO, _('Wrong login or password. Check the entered data'))
         return HttpResponseRedirect(reverse('users:login_user'))
 
 
 class LogoutUserView(LogoutView):
-    """Представления для выхода пользователя из аккаунта."""
+    """ Представления для выхода пользователя из аккаунта """
     template_name = 'includes/header/wrap.j2'
 
 
 class RegisterView(SuccessMessageMixin, FormView):
-    """Регистрация пользователя. При методе POST, функция сохраняет полученные данные в кастомной модели User."""
+    """ Регистрация пользователя. При методе POST, функция сохраняет полученные данные в кастомной модели User """
     template_name = 'users/register.j2'
     form_class = UserCreationForm
     queryset = User.objects.all()
     success_url = reverse_lazy('users:login_user')
 
     def post(self, request, *args, **kwargs):
-        """После регистрации, пользователю добавляется группа с разрешениями "покупатель"."""
+        """ После регистрации, пользователю добавляется группа с разрешениями "покупатель" """
         username = request.POST.get('username')
         email = request.POST.get('login')
         password = request.POST.get('pass')
@@ -67,29 +67,30 @@ class RegisterView(SuccessMessageMixin, FormView):
                 user.groups.add(group)
                 messages.add_message(
                     self.request, messages.INFO,
-                    _('Вы успешно зарегистрированы! Введите пожалуйста ФИО.')
+                    _('You have successfully registered! Please enter your full name.')
                 )
                 return HttpResponseRedirect(reverse('account:profile_user', kwargs={'pk': user.pk}))
         except ObjectDoesNotExist:
-            messages.add_message(self.request, messages.INFO, _('К сожалению, запрос не удался, попробуйте позже!'))
+            messages.add_message(
+                self.request, messages.INFO, _('Unfortunately, the request failed, please try again later!'))
             return HttpResponseRedirect(reverse('users:register_user'))
         except IntegrityError:
-            messages.add_message(self.request, messages.INFO, _('Вы уже зарегистрированы!'))
+            messages.add_message(self.request, messages.INFO, _('You are already registered!'))
             return HttpResponseRedirect(self.success_url)
 
 
 class PasswordResetRequestView(SuccessMessageMixin, PasswordResetView):
-    """Представление по сбросу пароля по почте."""
+    """ Представление по сбросу пароля по почте """
     template_name = 'users/e-mail.j2'
     success_url = reverse_lazy('users:password_reset')
     subject_template_name = 'users/email/password_subject_reset_mail.txt'
     email_template_name = 'users/email/password_reset_mail.html'
-    success_message = _('Письмо для восстановления пароля отправлено Вам на почту.')
+    success_message = _('A password recovery email has been sent to your email.')
 
 
 class SetNewPasswordView(SuccessMessageMixin, PasswordResetConfirmView):
-    """Представление установки нового пароля."""
+    """ Представление установки нового пароля """
     form_class = CustomSetPasswordForm
     template_name = 'users/password.j2'
     success_url = reverse_lazy('users:login_user')
-    success_message = _('Пароль успешно изменён')
+    success_message = _('Password changed successfully')

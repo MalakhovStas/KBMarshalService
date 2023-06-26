@@ -14,10 +14,16 @@
                   <label class="form-label" for="avatar">{{ _('Avatar') }}</label>
                   <div class="p-avatar profile-avatar_noimg">
                     {% if user.photo %}
-                        <label class="profile-fileLabel" for="avatar"><img class="avatar-img" src="{{ user.photo.url }}" alt="{{ _('Avatar') }}" />{{ _('Upload another avatar') }}</label>
+                        <label for="avatar">
+                          <img class="avatar-img-photo" src="{{ user.photo.url }}" alt="{{ _('Avatar') }}" />
+                          <p class="avatar-text a-active">{{ _('Upload another avatar') }}</p>
+                        </label>
                         <input class="form-input" id="avatar" name="avatar" type="file" data-validate="onlyImgAvatar" hidden="hidden"/>
                     {% else %}
-                      <label class="profile-fileLabel" for="avatar"><img class="avatar-img" src="{{ static('img/download.svg') }}" alt="{{ _('Avatar') }}" />{{ _('Upload avatar') }}</label>
+                      <label class="profile-fileLabel" for="avatar">
+                        <img class="avatar-img" src="{{ static('img/download.svg') }}" alt="{{ _('Avatar') }}" />
+                        <p class="avatar-text">{{ _('Upload avatar') }}</p>
+                      </label>
                       <input class="form-input" id="avatar" name="avatar" type="file" data-validate="onlyImgAvatar" hidden="hidden"/>
                     {% endif %}
                   </div>
