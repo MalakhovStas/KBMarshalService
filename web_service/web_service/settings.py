@@ -39,14 +39,15 @@ COMPANY_EMAIL = ('E-mail', 'kbmarshal@mail.ru')
 COMPANY_ADDRESS = (_('Address'), _('Moscow, st.Narodnogo Opolcheniya.34, build.1, room.1/1'))
 COMPANY_WORKING_HOURS = (_('Working time'), _('weekdays from 10:00 to 19:00'))
 
+# Вспомогательные тексты
+LOGIC_IN_DEV = _('Functionality of this block is under development')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = []
-
-LOGIC_IN_DEV = _('Functionality of this block is under development')
+from web_service.local_settings import *
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
