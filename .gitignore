@@ -162,4 +162,5 @@ cython_debug/
 
 # directory with media files
 media/
-dev
+/dev
+/static
