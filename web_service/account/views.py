@@ -21,7 +21,7 @@ class AccountUser(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = User.objects.get(pk=self.request.user.pk)
-        context['date_joined'] = datetime.strftime(user.date_joined, '%d.%m.%Y %H:%M')
+        context['date_joined'] = datetime.strftime(user.date_joined, '%d.%m.%Y-%H:%M')
         return context
 
 

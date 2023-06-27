@@ -18,12 +18,12 @@
               {% if not user.last_name and not user.first_nme and not user.surname %}
                 {{ _('Full name') }}
               {% else %}
-                {{ user.last_name }} {{ user.first_name }} {{ user.surname }}
+                {{ user.last_name }}&nbsp;{{ user.first_name }}&nbsp;{{ user.surname }}
               {% endif %}
             </div>
-            <div>{{ _('Registration date') }}: {{ date_joined }}</div>
+            <div>{{ _('Registration date') }}:&nbsp;{{ date_joined }}</div>
             {% if user.username %}
-              <div>{{ _('Nickname') }}: {{ user.username }}</div>
+              <div>{{ _('Nickname') }}:&nbsp;{{ user.username }}</div>
             {% endif %}
             <a class="account-editLink a-active" href="{{ url('account:profile_user', user.pk) }}">{{ _('Edit profile') }}</a>
           </div>
