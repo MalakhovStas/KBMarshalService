@@ -49,7 +49,7 @@ class RegisterView(SuccessMessageMixin, FormView):
     success_url = reverse_lazy('users:login_user')
 
     def post(self, request, *args, **kwargs):
-        """ После регистрации, пользователю добавляется группа с разрешениями "покупатель" """
+        """ После регистрации, пользователю добавляется группа "гость" """
         username = request.POST.get('username')
         email = request.POST.get('login')
         password = request.POST.get('pass')
@@ -63,7 +63,8 @@ class RegisterView(SuccessMessageMixin, FormView):
                 )
                 user_auth = authenticate(email=email, password=password)
                 login(request, user_auth)
-                group = Group.objects.get(name='users')
+                # group = Group.objects.get(name='users')
+                group = Group.objects.get(name='guests')
                 user.groups.add(group)
                 messages.add_message(
                     self.request, messages.INFO,
