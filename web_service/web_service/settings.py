@@ -45,7 +45,6 @@ LOGIC_IN_DEV = _('Functionality of this block is under development')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = []
-from web_service.local_settings import *
 
 # Application definition
 INSTALLED_APPS = [
@@ -288,6 +287,9 @@ LOGGING = {
         'propagate': True
     }
 }
+# Переопределение переменных в local_settings
+from web_service.local_settings import *
+
 
 # с тем что ниже пока не разобрался
 #
