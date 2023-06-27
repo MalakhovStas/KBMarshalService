@@ -2,8 +2,8 @@
 myvenv
 venv
 /web_service/db.sqlite3
-/web_service/database/db.sqlite3
 /web_service/db.sqlite3-journal
+/web_service/database/db.sqlite3
 /web_service/database/db.sqlite3-journal
 
 /.idea/
@@ -157,13 +157,9 @@ dmypy.json
 cython_debug/
 
 # django modules of migrations
-**/migrations/**
-!**/migrations
+**/migrations/*.*
 !**/migrations/__init__.py
 
 # directory with media files
 media/
-*/migrations/
-/migrations/
-migrations/
 dev
