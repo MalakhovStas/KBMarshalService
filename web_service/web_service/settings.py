@@ -263,33 +263,34 @@ EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-            'console': {'format': '%(asctime)s %(name)-12s %(levelname)-6s %(message)s'},
-            'file': {'format': '%(asctime)s %(name)-12s %(levelname)-6s %(message)s'}
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'console'
-        },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'formatter': 'file',
-            'filename': 'debug.log'
-        }
-    },
-    'root': {
-        'handlers': ['console', 'file'],
-        'level': 'DEBUG',
-        'propagate': True
-    }
-}
+# FIXME - ValueError: Unable to configure handler 'file'
+#  такая ошибка из-за логирования, позже разобраться
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#             'console': {'format': '%(asctime)s %(name)-12s %(levelname)-6s %(message)s'},
+#             'file': {'format': '%(asctime)s %(name)-12s %(levelname)-6s %(message)s'}
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'console'
+#         },
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'formatter': 'file',
+#             'filename': 'debug.log'
+#         }
+#     },
+#     'root': {
+#         'handlers': ['console', 'file'],
+#         'level': 'DEBUG',
+#         'propagate': True
+#     }
+# }
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'unsafe-none'
 CORS_ALLOW_ALL_ORIGINS = True  # Добавляет заголовок "Access-Control-Allow-Headers: * "
