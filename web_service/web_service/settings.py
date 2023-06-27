@@ -14,6 +14,7 @@ from pathlib import Path
 
 import django.conf
 from dotenv import dotenv_values
+from corsheaders.defaults import default_headers
 from django.utils.translation import gettext_lazy as _
 import os
 
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # "django.contrib.sites",
     # "django_extensions",
+    'corsheaders',
     'django_jinja',
     'phonenumber_field',
     'users',
@@ -67,6 +69,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -287,6 +290,25 @@ LOGGING = {
         'propagate': True
     }
 }
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'unsafe-none'
+CORS_ALLOW_ALL_ORIGINS = True  # Добавляет заголовок "Access-Control-Allow-Headers: * "
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = ['OPTIONS', 'GET', 'POST']
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "Access-Control-Allow-Headers",
+    "Access-Control-Allow-Credentials",
+    "accept",
+    "accept-encoding",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "X-Amz-Date"
+]
+
 # Переопределение переменных в local_settings
 from web_service.local_settings import *
 
