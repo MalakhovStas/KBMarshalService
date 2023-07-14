@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-27 00:02+0300\n"
+"POT-Creation-Date: 2023-07-05 11:27+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,20 +183,20 @@ msgstr "Войти"
 msgid "Registration"
 msgstr "Регистрация"
 
-#: .\templates\includes\header\header.j2:53
+#: .\templates\includes\header\header.j2:54
 msgid "Debtors"
 msgstr "Должники"
 
-#: .\templates\includes\header\header.j2:56
-#: .\templates\includes\header\header.j2:59
+#: .\templates\includes\header\header.j2:57
+#: .\templates\includes\header\header.j2:60
 msgid "Service"
 msgstr "Сервис"
 
-#: .\templates\includes\header\header.j2:56
+#: .\templates\includes\header\header.j2:57
 msgid "FNS"
 msgstr "ФНС"
 
-#: .\templates\includes\header\header.j2:59
+#: .\templates\includes\header\header.j2:60
 msgid "FSSP"
 msgstr "ФССП"
 
@@ -308,62 +308,62 @@ msgstr "пользователи"
 msgid "Wrong login or password. Check the entered data"
 msgstr "Не верный логин или пароль. Проверьте введенные данные"
 
-#: .\users\views.py:70
+#: .\users\views.py:71
 msgid "You have successfully registered! Please enter your full name."
 msgstr "Вы успешно зарегистрировались! Пожалуйста введите ФИО."
 
-#: .\users\views.py:75
+#: .\users\views.py:76
 msgid "Unfortunately, the request failed, please try again later!"
 msgstr "К сожалению, запрос не выполнен, повторите попытку позже!"
 
-#: .\users\views.py:78
+#: .\users\views.py:79
 msgid "You are already registered!"
 msgstr "Вы уже зарегистрированы!"
 
-#: .\users\views.py:88
+#: .\users\views.py:89
 msgid "A password recovery email has been sent to your email."
 msgstr "На вашу электронную почту отправлено письмо для восстановления пароля."
 
-#: .\users\views.py:96
+#: .\users\views.py:97
 msgid "Password changed successfully"
 msgstr "Пароль успешно изменен"
 
-#: .\web_service\settings.py:34
+#: .\web_service\settings.py:35
 msgid "Collection department"
 msgstr "Отдел взыскания"
 
-#: .\web_service\settings.py:35
+#: .\web_service\settings.py:36
 msgid "Contact department"
 msgstr "Отдел обращений"
 
-#: .\web_service\settings.py:36
+#: .\web_service\settings.py:37
 msgid "Legal service"
 msgstr "Юридическая служба"
 
-#: .\web_service\settings.py:39
+#: .\web_service\settings.py:40
 msgid "Address"
 msgstr "Адрес"
 
-#: .\web_service\settings.py:39
+#: .\web_service\settings.py:40
 msgid "Moscow, st.Narodnogo Opolcheniya.34, build.1, room.1/1"
 msgstr "Москва, ул.Народного Ополчения, д.34, стр.1, помещ. 1/1"
 
-#: .\web_service\settings.py:40
+#: .\web_service\settings.py:41
 msgid "Working time"
 msgstr "Режим работы"
 
-#: .\web_service\settings.py:40
+#: .\web_service\settings.py:41
 msgid "weekdays from 10:00 to 19:00"
 msgstr "по будням с 10:00 до 19:00"
 
-#: .\web_service\settings.py:46
+#: .\web_service\settings.py:44
 msgid "Functionality of this block is under development"
 msgstr "Функционал этого блока находится в разработке"
 
-#: .\web_service\settings.py:222
+#: .\web_service\settings.py:225
 msgid "English"
 msgstr "Английский"
 
-#: .\web_service\settings.py:223
+#: .\web_service\settings.py:226
 msgid "Russian"
 msgstr "Русский"

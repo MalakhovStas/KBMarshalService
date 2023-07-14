@@ -8,9 +8,9 @@
         <div class="account flex">
           <div class="account-column">
             {% if user.photo %}
-              <div class="account-avatar"><img src="{{ user.photo.url }}" alt="{{ _('no avatar') }}" width="200" height="170"/></div>
+              <div class="account-avatar flex"><img src="{{ user.photo.url }}" alt="{{ _('no avatar') }}" width="200" height="170"/></div>
             {% else %}
-              <div class="account-avatar"><img src="{{  static('img/none_avatar.png') }}" alt="{{ _('no avatar') }}"/></div>
+              <div class="account-avatar flex"><img src="{{  static('img/none_avatar.png') }}" alt="{{ _('no avatar') }}"/></div>
             {% endif %}
           </div>
           <div class="account-column">

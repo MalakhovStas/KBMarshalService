@@ -1,18 +1,20 @@
 <footer class="footer">
   <div class="footer__container flex">
-    <div class="footer__privacy-policy">
-      <p class="footer__privacy-policy-text">
-        {{ _('LLC "Collection Bureau "Marshal" - all rights reserved © 2023') }}
-      </p>
-      <a href="{{ url('privacy_policy') }}" class="footer__privacy-policy-link a-active">
-        {{ _('Privacy policy') }}
-      </a>
-    </div>
-    <div class="footer__address">
-      <ul class="footer__list-text list-reset">
-         <li class="footer__text">{{ company_address[0] }}: {{ company_address[1] }}</li>
-         <li class="footer__text">{{ company_working_hours[0] }}: {{ company_working_hours[1] }}</li>
-      </ul>
+    <div class="footer__column">
+      <div class="footer__privacy-policy">
+        <p class="footer__privacy-policy-text">
+          {{ _('LLC "Collection Bureau "Marshal" - all rights reserved © 2023') }}
+        </p>
+        <a href="{{ url('privacy_policy') }}" class="footer__privacy-policy-link a-active">
+          {{ _('Privacy policy') }}
+        </a>
+      </div>
+      <div class="footer__address">
+        <ul class="footer__list-text list-reset">
+           <li class="footer__text">{{ company_address[0] }}: {{ company_address[1] }}</li>
+           <li class="footer__text">{{ company_working_hours[0] }}: {{ company_working_hours[1] }}</li>
+        </ul>
+      </div>
     </div>
     <div class="footer__contacts flex">
       <p class="footer-title"><a href="{{ url('home') }}" class="footer-title-link">{{ _('KB') }} {{ _('Marshal') }}</a></p>
