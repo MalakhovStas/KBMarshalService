@@ -22,6 +22,7 @@ import debug_toolbar
 from .views import HomePageView, PrivacyPolicyPageView
 urlpatterns = [
     path('i18n', include('django.conf.urls.i18n')),
+    path('celery-progress/', include('celery_progress.urls')),
     path('admin/', admin.site.urls),
     path("", HomePageView.as_view(), name="home"),
     path("privacy_policy", PrivacyPolicyPageView.as_view(), name="privacy_policy"),

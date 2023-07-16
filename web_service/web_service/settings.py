@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 
 import django.conf
+import redis
 from dotenv import dotenv_values
 from corsheaders.defaults import default_headers
 from django.utils.translation import gettext_lazy as _
@@ -57,6 +58,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # "django.contrib.sites",
     # "django_extensions",
+    'django_celery_results',
+    'celery_progress',
     'corsheaders',
     'django_jinja',
     'phonenumber_field',
@@ -313,6 +316,34 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 # Переопределение переменных в local_settings
 from web_service.local_settings import *
 
+from redis import StrictRedis
+
+REDIS_URL = f"redis://{config['REDIS_HOST']}:{config['REDIS_PORT']}/{config['REDIS_DATABASE']}"
+redis_cache = StrictRedis(
+    host=config['REDIS_HOST'],
+    port=int(config['REDIS_PORT']),
+    db=int(config['REDIS_DATABASE']),
+    decode_responses=True,
+    charset="utf-8",
+)
+
+# CELERY
+CELERY_BROKER_URL = REDIS_URL  # для rabbitmq, поменяйте адрес брокера на amqp://guest:guest@127.0.0.1:5672
+CELERY_TASK_TRACK_STARTED = True  # запускает трекинг задач Celery
+
+# # Планировщик задач
+#
+# # Celery настроен на использование планировщика из базы данных
+# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+#
+# CELERY_BROKER_TRANSPORT_OPTION = {'visibility_timeout': 3600}  # время ожидания видимости 1 час
+CELERY_ACCEPT_CONTENT = ['application/json']  # это тип содержимого, разрешенный к получению
+CELERY_TASK_SERIALIZER = 'json'  # это строка, используемая для определения метода сериализации по умолчанию
+CELERY_RESULT_BACKEND = 'django-db'  # указание для django_celery_results куда записывать результат выполнения задач
+
+# это не из видео а интуитивно
+CELERY_RESULT_SERIALIZER = 'json'  # является типом формата сериализации результатов
+CELERY_TASK_DEFAULT_QUEUE = 'default-queue'  # celery будет использовать это имя очереди
 
 # с тем что ниже пока не разобрался
 #
@@ -337,23 +368,7 @@ from web_service.local_settings import *
 # SHELL_PLUS_PYGMENTS_FORMATTER_KWARGS = {}
 #
 # LOGIN_URL = reverse_lazy('users:login_user')
-#
-# # CELERY
-# CELERY_BROKER_URL = REDIS_URL  # для rabbitmq, поменяйте адрес брокера на amqp://guest:guest@127.0.0.1:5672
-# CELERY_TASK_TRACK_STARTED = True  # запускает трекинг задач Celery
-#
-# # Планировщик задач
-#
-# # Celery настроен на использование планировщика из базы данных
-# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-#
-# CELERY_BROKER_TRANSPORT_OPTION = {'visibility_timeout': 3600}  # время ожидания видимости 1 час
-# CELERY_RESULT_BACKEND = 'django-db'  # указание для django_celery_results куда записывать результат выполнения задач
-# CELERY_ACCEPT_CONTENT = ['application/json']  # это тип содержимого, разрешенный к получению
-# CELERY_TASK_SERIALIZER = 'json'  # это строка, используемая для определения метода сериализации по умолчанию
-# CELERY_RESULT_SERIALIZER = 'json'  # является типом формата сериализации результатов
-#
-# CELERY_TASK_DEFAULT_QUEUE = 'default'  # celery будет использовать это имя очереди
+
 #
 # # Данные почты получателя уведомлений о проведённом импорте
 # RECIPIENTS_EMAIL = ['service.megano@gmail.com']   # список получателей по умолчанию
