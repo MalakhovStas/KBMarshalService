@@ -1,19 +1,11 @@
-import time
-from datetime import datetime
-from pprint import pprint
 from typing import Iterable, Generator
 
-from celery.bin.control import inspect
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpRequest
-from django.utils.translation import gettext_lazy as _
 from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUploadedFile
-# from services.tasks import file_to_data
 from celery.result import AsyncResult
 from web_service.settings import redis_cache
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
-import time
 from datetime import datetime, timedelta
 
 from django.core.files.storage import FileSystemStorage
@@ -141,12 +133,6 @@ class DateIssuePassport(BaseField):
 
 
 class Checker:
-    trans_fields = {
-        'fullname': _('Fullname'),
-        'date_birth': _('Date birth'),
-        'date_issue_pass': _('Date issue passport'),
-        'ser_num_pass': _('Serial and passport number'),
-    }
     rows_for_check = 30
     max_title_row = 10
 
@@ -156,6 +142,12 @@ class Checker:
             'date_birth': {'column': None, 'row': None, 'class_field': DateBirthPerson()},
             'date_issue_pass': {'column': None, 'row': None, 'class_field': DateIssuePassport()},
             'ser_num_pass': {'column': None, 'row': None, 'class_field': SerNumPassport()},
+        }
+        self.trans_fields = {
+            'fullname': _('Fullname'),
+            'date_birth': _('Date birth'),
+            'date_issue_pass': _('Date issue passport'),
+            'ser_num_pass': _('Serial and passport number'),
         }
         self.detected_columns = set()
 
@@ -195,10 +187,10 @@ class Checker:
         if snpc := self.fields_table.get("ser_num_pass")["column"]:
             snpc_str = f'{snpc} [ {sheet.cell(row=1, column=snpc).column_letter} ]'
 
-        return f'<ul><li>{self.trans_fields["fullname"]} - {column}: {fc_str if fc_str else bad_result}</li>' \
-               f'<li>{self.trans_fields["date_birth"]} - {column}: {dbc_str if dbc_str else bad_result}</li>' \
-               f'<li>{self.trans_fields["date_issue_pass"]} - {column}: {dipc_str if dipc_str else bad_result}</li>' \
-               f'<li>{self.trans_fields["ser_num_pass"]} - {column}: {snpc_str if snpc_str else bad_result}</li></ul>'
+        return f'<ul><li>' + _("Fullname") + f' - {column}: {fc_str if fc_str else bad_result}</li>' \
+               f'<li>' + _("Date birth") + f' - {column}: {dbc_str if dbc_str else bad_result}</li>' \
+               f'<li>' + _("Date issue pas1sport") + f' - {column}: {dipc_str if dipc_str else bad_result}</li>' \
+               f'<li>' + _("Serial and passport number") + f' - {column}: {snpc_str if snpc_str else bad_result}</li></ul>'
 
 
 @shared_task(bind=True)
@@ -244,11 +236,10 @@ def load_data_file(request: HttpRequest) -> tuple[str, AsyncResult]:
 
         if file.name.endswith(('.xls', '.xlsx')):
             file_system = FileSystemStorage()
-            filename = file_system.save(
-                f'services/FNS/date-{date}_user-pk-{request.user.pk}_filename-{file.name}', file)
+            filename = file_system.save(f'services/FNS/date-{date}_user-pk-{request.user.pk}_filename-{file.name}', file)
             task: AsyncResult = check_fields.delay(path=f'media/{filename}') #, request=serialize('json', [request]))
             redis_cache.set(f'last_task_user-{request.user.pk}', task.task_id)
-            msg = _(f"File verification: {file.name}")
+            msg = _(f"File verification") + f": {file.name}"
         else:
             msg = _('Unsupported file, .xls .xlsx only')
     else:

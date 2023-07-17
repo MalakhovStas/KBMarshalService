@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-05 11:27+0300\n"
+"POT-Creation-Date: 2023-07-16 23:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,195 +16,263 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
-"%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: .\account\services.py:62
+#: account/services.py:62
 msgid "Email does not meet the requirements!"
 msgstr "Электронная почта не соответствует требованиям!"
 
-#: .\account\services.py:76
+#: account/services.py:76
 msgid "Password mismatch!"
 msgstr "Пароли не совпадают!"
 
-#: .\account\services.py:77
+#: account/services.py:77
 msgid "Profile changed successfully."
 msgstr "Профиль успешно изменен."
 
-#: .\debtors\models.py:8
+#: debtors/models.py:8
 msgid "surname"
 msgstr "фамилия"
 
-#: .\debtors\models.py:9
+#: debtors/models.py:9
 msgid "name"
 msgstr "имя"
 
-#: .\debtors\models.py:10 .\users\models.py:13
+#: debtors/models.py:10 users/models.py:13
 msgid "patronymic"
 msgstr "фамилия"
 
-#: .\debtors\models.py:11
+#: debtors/models.py:11
 msgid "birthdate"
 msgstr "дата рождения"
 
-#: .\debtors\models.py:13
+#: debtors/models.py:13
 msgid "series passport number"
 msgstr "серия номер паспорта"
 
-#: .\debtors\models.py:14
+#: debtors/models.py:14
 msgid "passport issue date"
 msgstr "дата выдачи паспорта"
 
-#: .\debtors\models.py:16
+#: debtors/models.py:16
 msgid "name of the organization issuing the passport"
 msgstr "наименование организации, выдавшей паспорт"
 
-#: .\debtors\models.py:18
+#: debtors/models.py:18
 msgid "enforcement proceedings"
 msgstr "исполнительное производство"
 
-#: .\debtors\models.py:21
+#: debtors/models.py:21
 msgid "debtor"
 msgstr "должник"
 
-#: .\debtors\models.py:22
+#: debtors/models.py:22
 msgid "debtors"
 msgstr "должники"
 
-#: .\templates\account\account.j2:11 .\templates\account\account.j2:13
+#: services/busness_logic.py:155 services/busness_logic.py:198
+msgid "Fullname"
+msgstr "Ф И О"
+
+#: services/busness_logic.py:156 services/busness_logic.py:199
+msgid "Date birth"
+msgstr "Дата рождения"
+
+#: services/busness_logic.py:157 services/busness_logic.py:200
+msgid "Date issue passport"
+msgstr "Дата выдачи паспорта"
+
+#: services/busness_logic.py:158 services/busness_logic.py:201
+msgid "Serial and passport number"
+msgstr "Серия номер паспорта"
+
+#: services/busness_logic.py:182
+msgid "not found"
+msgstr "не найдена"
+
+#: services/busness_logic.py:183
+msgid "column"
+msgstr "колонка"
+
+#: services/busness_logic.py:221
+msgid "Searching"
+msgstr "Поиск"
+
+#: services/busness_logic.py:251
+msgid "File verification"
+msgstr "Проверка файла"
+
+#: services/busness_logic.py:253
+msgid "Unsupported file, .xls .xlsx only"
+msgstr "Неподдерживаемый тип файла, только .xls .xlsx"
+
+#: services/busness_logic.py:255
+msgid "Select File"
+msgstr "Выбрать файл"
+
+#: templates/account/account.j2:11 templates/account/account.j2:13
 msgid "no avatar"
 msgstr "нет аватара"
 
-#: .\templates\account\account.j2:19 .\templates\account\profile.j2:34
+#: templates/account/account.j2:19 templates/account/profile.j2:34
 msgid "Full name"
 msgstr "Ф И О"
 
-#: .\templates\account\account.j2:24
+#: templates/account/account.j2:24
 msgid "Registration date"
 msgstr "Дата регистрации"
 
-#: .\templates\account\account.j2:26 .\templates\account\profile.j2:42
-#: .\templates\users\register.j2:19
+#: templates/account/account.j2:26 templates/account/profile.j2:42
+#: templates/users/register.j2:19
 msgid "Nickname"
 msgstr "Никнейм"
 
-#: .\templates\account\account.j2:28
+#: templates/account/account.j2:28
 msgid "Edit profile"
 msgstr "Редактировать профиль"
 
-#: .\templates\account\navigation.j2:2
+#: templates/account/navigation.j2:2
 msgid "Navigation"
 msgstr "Навигация"
 
-#: .\templates\account\navigation.j2:6
+#: templates/account/navigation.j2:6
 msgid "Admin panel"
 msgstr "Административная панель"
 
-#: .\templates\account\navigation.j2:9
+#: templates/account/navigation.j2:9
 msgid "Personal cabinet"
 msgstr "Личный кабинет"
 
-#: .\templates\account\navigation.j2:11
+#: templates/account/navigation.j2:11
 msgid "Profile"
 msgstr "Профиль"
 
-#: .\templates\account\profile.j2:14 .\templates\account\profile.j2:18
-#: .\templates\account\profile.j2:24
+#: templates/account/profile.j2:14 templates/account/profile.j2:18
+#: templates/account/profile.j2:24
 msgid "Avatar"
 msgstr "Аватар"
 
-#: .\templates\account\profile.j2:19
+#: templates/account/profile.j2:19
 msgid "Upload another avatar"
 msgstr "Загрузить другой аватар"
 
-#: .\templates\account\profile.j2:25
+#: templates/account/profile.j2:25
 msgid "Upload avatar"
 msgstr "Загрузить аватар"
 
-#: .\templates\account\profile.j2:51
+#: templates/account/profile.j2:51
 msgid "Phone"
 msgstr "Телефон"
 
-#: .\templates\account\profile.j2:52
+#: templates/account/profile.j2:52
 msgid "Phone number"
 msgstr "Номер телефона"
 
-#: .\templates\account\profile.j2:59 .\templates\users\register.j2:25
+#: templates/account/profile.j2:59 templates/users/register.j2:25
 msgid "Password"
 msgstr "Пароль"
 
-#: .\templates\account\profile.j2:60
+#: templates/account/profile.j2:60
 msgid "Enter new password"
 msgstr "Введите новый пароль"
 
-#: .\templates\account\profile.j2:63
+#: templates/account/profile.j2:63
 msgid "Password confirmation"
 msgstr "Подтверждение пароля"
 
-#: .\templates\account\profile.j2:64
+#: templates/account/profile.j2:64
 msgid "Enter your password again"
 msgstr "Введите пароль повторно"
 
-#: .\templates\account\profile.j2:68
+#: templates/account/profile.j2:68
 msgid "Save"
 msgstr "Сохранить"
 
-#: .\templates\base.j2:8 .\templates\includes\footer\footer.j2:18
-#: .\templates\includes\header\header.j2:46
+#: templates/base.j2:8 templates/includes/footer/footer.j2:20
+#: templates/includes/header/header.j2:46
 msgid "KB"
 msgstr "КБ"
 
-#: .\templates\base.j2:8 .\templates\includes\footer\footer.j2:18
-#: .\templates\includes\header\header.j2:47
+#: templates/base.j2:8 templates/includes/footer/footer.j2:20
+#: templates/includes/header/header.j2:47
 msgid "Marshal"
 msgstr "Маршал"
 
-#: .\templates\includes\footer\footer.j2:5
+#: templates/includes/footer/footer.j2:6
 msgid "LLC \"Collection Bureau \"Marshal\" - all rights reserved © 2023"
 msgstr "ООО \"Коллекторское Бюро \"Маршал\" - все права защищены © 2023"
 
-#: .\templates\includes\footer\footer.j2:8
+#: templates/includes/footer/footer.j2:9
 msgid "Privacy policy"
 msgstr "Политика конфиденциальности"
 
-#: .\templates\includes\header\header.j2:35
+#: templates/includes/header/header.j2:35
 msgid "Logout"
 msgstr "Выйти"
 
-#: .\templates\includes\header\header.j2:38 .\templates\users\e-mail.j2:26
-#: .\templates\users\login.j2:6 .\templates\users\login.j2:25
-#: .\templates\users\register.j2:29
+#: templates/includes/header/header.j2:38 templates/users/e-mail.j2:26
+#: templates/users/login.j2:6 templates/users/login.j2:25
+#: templates/users/register.j2:29
 msgid "Login"
 msgstr "Войти"
 
-#: .\templates\includes\header\header.j2:38 .\templates\users\login.j2:30
-#: .\templates\users\register.j2:6
+#: templates/includes/header/header.j2:38 templates/users/login.j2:30
+#: templates/users/register.j2:6
 msgid "Registration"
 msgstr "Регистрация"
 
-#: .\templates\includes\header\header.j2:54
+#: templates/includes/header/header.j2:53
 msgid "Debtors"
 msgstr "Должники"
 
-#: .\templates\includes\header\header.j2:57
-#: .\templates\includes\header\header.j2:60
+#: templates/includes/header/header.j2:56
+#: templates/includes/header/header.j2:59
 msgid "Service"
 msgstr "Сервис"
 
-#: .\templates\includes\header\header.j2:57
+#: templates/includes/header/header.j2:56
 msgid "FNS"
 msgstr "ФНС"
 
-#: .\templates\includes\header\header.j2:60
+#: templates/includes/header/header.j2:59
 msgid "FSSP"
 msgstr "ФССП"
 
-#: .\templates\users\e-mail.j2:6
+#: templates/services/FNS/fns_service.j2:21
+msgid "Start progress"
+msgstr "Запуск прогресса"
+
+#: templates/services/FNS/fns_service.j2:35
+msgid "Loading data"
+msgstr "Загрузка данных"
+
+#: templates/services/FNS/fns_service.j2:56
+msgid "Success"
+msgstr "Успешно"
+
+#: templates/services/FNS/fns_service.j2:61
+msgid "Failure"
+msgstr "Неудача"
+
+#: templates/services/FNS/fns_service.j2:64
+msgid "Result"
+msgstr "Результат"
+
+#: templates/services/FNS/fns_service.j2:78
+msgid "Select a file with initial data"
+msgstr "Выберите файл с начальными данными"
+
+#: templates/services/FNS/fns_service.j2:79
+msgid "Download"
+msgstr "Загрузить"
+
+#: templates/users/e-mail.j2:6
 msgid "Password recovery (1/2)"
 msgstr "Восстановление пароля (1/2)"
 
-#: .\templates\users\e-mail.j2:7
+#: templates/users/e-mail.j2:7
 msgid ""
 "To reset your password, enter the email address you registered your account "
 "with"
@@ -212,158 +280,158 @@ msgstr ""
 "Чтобы сбросить пароль, введите адрес электронной почты, на который вы "
 "зарегистрировали свою учетную запись"
 
-#: .\templates\users\e-mail.j2:22
+#: templates/users/e-mail.j2:22
 msgid "Get verification code"
 msgstr "Получить код подтверждения"
 
-#: .\templates\users\login.j2:29
+#: templates/users/login.j2:29
 msgid "Forgot password?"
 msgstr "Забыли пароль?"
 
-#: .\templates\users\password.j2:6
+#: templates/users/password.j2:6
 msgid "Password recovery (2/2)"
 msgstr "Восстановление пароля (2/2)"
 
-#: .\templates\users\password.j2:7
+#: templates/users/password.j2:7
 msgid "Create new account password"
 msgstr "Придумайте новый пароль"
 
-#: .\templates\users\password.j2:18
+#: templates/users/password.j2:18
 msgid "Save password"
 msgstr "Сохранить пароль"
 
-#: .\templates\users\register.j2:27
+#: templates/users/register.j2:27
 msgid "Register"
 msgstr "Зарегистрироваться"
 
-#: .\users\admin.py:15
+#: users/admin.py:15
 msgid "personal information"
 msgstr "персональная информация"
 
-#: .\users\admin.py:18
+#: users/admin.py:18
 msgid "permissions"
 msgstr "разрешения"
 
-#: .\users\admin.py:29
+#: users/admin.py:29
 msgid "important dates"
 msgstr "важные даты"
 
-#: .\users\admin.py:45
+#: users/admin.py:45
 msgid "Admin panel \"KB Marshal\" service"
 msgstr "Админ-панель сервиса \"КБ Маршал\""
 
-#: .\users\forms.py:10
+#: users/forms.py:10
 msgid "New password"
 msgstr "Новый пароль"
 
-#: .\users\forms.py:15
+#: users/forms.py:15
 msgid "new password"
 msgstr "новый пароль"
 
-#: .\users\forms.py:22
+#: users/forms.py:22
 msgid "Repeat new password"
 msgstr "Повторите новый пароль"
 
-#: .\users\forms.py:28
+#: users/forms.py:28
 msgid "repeat new password"
 msgstr "повторите новый пароль"
 
-#: .\users\manager.py:13
+#: users/manager.py:13
 msgid "Email not specified"
 msgstr "Электронная почта не указана"
 
-#: .\users\manager.py:27
+#: users/manager.py:27
 msgid "The superuser must have is_staff=True."
 msgstr "У суперпользователя должно быть is_staff=True."
 
-#: .\users\manager.py:29
+#: users/manager.py:29
 msgid "The superuser must have is_superuser=True."
 msgstr "Суперпользователь должен иметь is_superuser=True."
 
-#: .\users\models.py:11
+#: users/models.py:11
 msgid "email"
 msgstr "электронная почта"
 
-#: .\users\models.py:12
+#: users/models.py:12
 msgid "nickname"
 msgstr "никнейм"
 
-#: .\users\models.py:14
+#: users/models.py:14
 msgid "phone number"
 msgstr "номер телефона"
 
-#: .\users\models.py:15
+#: users/models.py:15
 msgid "photo"
 msgstr "фотография"
 
-#: .\users\models.py:24
+#: users/models.py:24
 msgid "user"
 msgstr "пользователь"
 
-#: .\users\models.py:25
+#: users/models.py:25
 msgid "users"
 msgstr "пользователи"
 
-#: .\users\views.py:35
+#: users/views.py:35
 msgid "Wrong login or password. Check the entered data"
 msgstr "Не верный логин или пароль. Проверьте введенные данные"
 
-#: .\users\views.py:71
+#: users/views.py:71
 msgid "You have successfully registered! Please enter your full name."
 msgstr "Вы успешно зарегистрировались! Пожалуйста введите ФИО."
 
-#: .\users\views.py:76
+#: users/views.py:76
 msgid "Unfortunately, the request failed, please try again later!"
 msgstr "К сожалению, запрос не выполнен, повторите попытку позже!"
 
-#: .\users\views.py:79
+#: users/views.py:79
 msgid "You are already registered!"
 msgstr "Вы уже зарегистрированы!"
 
-#: .\users\views.py:89
+#: users/views.py:89
 msgid "A password recovery email has been sent to your email."
 msgstr "На вашу электронную почту отправлено письмо для восстановления пароля."
 
-#: .\users\views.py:97
+#: users/views.py:97
 msgid "Password changed successfully"
 msgstr "Пароль успешно изменен"
 
-#: .\web_service\settings.py:35
+#: web_service/settings.py:36
 msgid "Collection department"
 msgstr "Отдел взыскания"
 
-#: .\web_service\settings.py:36
+#: web_service/settings.py:37
 msgid "Contact department"
 msgstr "Отдел обращений"
 
-#: .\web_service\settings.py:37
+#: web_service/settings.py:38
 msgid "Legal service"
 msgstr "Юридическая служба"
 
-#: .\web_service\settings.py:40
+#: web_service/settings.py:41
 msgid "Address"
 msgstr "Адрес"
 
-#: .\web_service\settings.py:40
+#: web_service/settings.py:41
 msgid "Moscow, st.Narodnogo Opolcheniya.34, build.1, room.1/1"
 msgstr "Москва, ул.Народного Ополчения, д.34, стр.1, помещ. 1/1"
 
-#: .\web_service\settings.py:41
+#: web_service/settings.py:42
 msgid "Working time"
 msgstr "Режим работы"
 
-#: .\web_service\settings.py:41
+#: web_service/settings.py:42
 msgid "weekdays from 10:00 to 19:00"
 msgstr "по будням с 10:00 до 19:00"
 
-#: .\web_service\settings.py:44
+#: web_service/settings.py:45
 msgid "Functionality of this block is under development"
 msgstr "Функционал этого блока находится в разработке"
 
-#: .\web_service\settings.py:225
+#: web_service/settings.py:228
 msgid "English"
 msgstr "Английский"
 
-#: .\web_service\settings.py:226
+#: web_service/settings.py:229
 msgid "Russian"
 msgstr "Русский"

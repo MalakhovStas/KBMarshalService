@@ -14,7 +14,6 @@
      </div>
 
     {% if task and not task.status in ['SUCCESS', 'FAILURE', 'ERROR'] %}
-{#      {{ task.status }}#}
       <div class='progress-wrapper'>
         <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
       </div>
@@ -61,7 +60,8 @@
             progressBarMessageElement.innerHTML = ( "{{ _('Failure') }}" )
         }
         function customResult(resultElement, result) {
-          resultElement.innerHTML += "<p>{{ _('Result') }}:" + result + "</p>";
+          {#resultElement.innerHTML += "<p>{{ _('Result') }}:" + result + "</p>";#}
+          resultElement.innerHTML += result
         }
 
 

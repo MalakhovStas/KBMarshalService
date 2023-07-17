@@ -127,7 +127,7 @@ redis-server
 ````
 - Запуск Celery для выполнения задачи по импорту
 ````shell
-celery -A config worker -l info
+celery -A web_service worker -l info
 ````
 - Запускаем службу beat
 ````shell
