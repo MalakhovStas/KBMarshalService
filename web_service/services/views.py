@@ -25,11 +25,11 @@ class ServiceFNSPageView(TemplateView):
     def get(self, request, *args, **kwargs):
         if request.user.groups.filter(name__in=['users', 'admins']).exists() or request.user.is_superuser:
             task = None
-            key = f'last_task_user-{request.user.pk}'
-            if task_id := redis_cache.get(key):
+            redis_key = f'{request.path}_last_task_user-{request.user.pk}'
+            if task_id := redis_cache.get(redis_key):
                 task = AsyncResult(id=task_id)
                 if task.status in ['SUCCESS', 'FAILURE', 'ERROR']:
-                    redis_cache.delete(key)
+                    redis_cache.delete(redis_key)
             return render(request, self.template_name, {'task': task})
         else:
             return HttpResponseForbidden()
@@ -55,6 +55,24 @@ class ServiceFSSPPageView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if request.user.groups.filter(name__in=['users', 'admins']).exists() or request.user.is_superuser:
-            return render(request, self.template_name)
+            task = None
+            redis_key = f'{request.path}_last_task_user-{request.user.pk}'
+            if task_id := redis_cache.get(redis_key):
+                task = AsyncResult(id=task_id)
+                if task.status in ['SUCCESS', 'FAILURE', 'ERROR']:
+                    redis_cache.delete(redis_key)
+            return render(request, self.template_name, {'task': task})
         else:
             return HttpResponseForbidden()
+
+    def post(self, request, *args, **kwargs):
+        """Метод изменения данных пользователя."""
+        msg, task = load_data_file(request)
+        # messages.add_message(request, messages.WARNING, 'Загрузка файла, валидация данных...')
+
+        messages.add_message(self.request, messages.INFO, msg)
+        return render(
+            request,
+            self.template_name,
+            {'task': task}
+        )

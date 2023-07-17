@@ -15,6 +15,7 @@ from django.contrib import messages
 from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUploadedFile
 import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
+from django.utils import translation
 
 BAD_result_FNS_file = 'media/services/FNS/fns_BAD_result.xlsx'
 
@@ -133,6 +134,12 @@ class DateIssuePassport(BaseField):
 
 
 class Checker:
+    trans_fields = {
+        'fullname': _('Fullname'),
+        'date_birth': _('Date birth'),
+        'date_issue_pass': _('Date issue passport'),
+        'ser_num_pass': _('Serial and passport number'),
+    }
     rows_for_check = 30
     max_title_row = 10
 
@@ -142,12 +149,6 @@ class Checker:
             'date_birth': {'column': None, 'row': None, 'class_field': DateBirthPerson()},
             'date_issue_pass': {'column': None, 'row': None, 'class_field': DateIssuePassport()},
             'ser_num_pass': {'column': None, 'row': None, 'class_field': SerNumPassport()},
-        }
-        self.trans_fields = {
-            'fullname': _('Fullname'),
-            'date_birth': _('Date birth'),
-            'date_issue_pass': _('Date issue passport'),
-            'ser_num_pass': _('Serial and passport number'),
         }
         self.detected_columns = set()
 
@@ -187,23 +188,19 @@ class Checker:
         if snpc := self.fields_table.get("ser_num_pass")["column"]:
             snpc_str = f'{snpc} [ {sheet.cell(row=1, column=snpc).column_letter} ]'
 
-        return f'<ul><li>' + _("Fullname") + f' - {column}: {fc_str if fc_str else bad_result}</li>' \
-               f'<li>' + _("Date birth") + f' - {column}: {dbc_str if dbc_str else bad_result}</li>' \
-               f'<li>' + _("Date issue pas1sport") + f' - {column}: {dipc_str if dipc_str else bad_result}</li>' \
-               f'<li>' + _("Serial and passport number") + f' - {column}: {snpc_str if snpc_str else bad_result}</li></ul>'
+        return f'<ul><li>{self.trans_fields["fullname"]} - {column}: {fc_str if fc_str else bad_result}</li>' \
+               f'<li>{self.trans_fields["date_birth"]} - {column}: {dbc_str if dbc_str else bad_result}</li>' \
+               f'<li>{self.trans_fields["date_issue_pass"]} - {column}: {dipc_str if dipc_str else bad_result}</li>' \
+               f'<li>{self.trans_fields["ser_num_pass"]} - {column}: {snpc_str if snpc_str else bad_result}</li></ul>'
 
 
 @shared_task(bind=True)
-def check_fields(self, path):
+def check_fields(self, path, language=None):
+    prev_language = translation.get_language()
+    language and translation.activate(language)
+
     checker = Checker()
     progress_recorder = ProgressRecorder(self)
-    # from django.core.serializers import serialize, deserialize
-
-    # request = deserialize('json', request)
-    # print('REQUEST:', type(list(request)[0].object))
-    # request = user.get_request()
-    # print(type(request))
-    # print(request)
 
     sheet: Worksheet = openpyxl.load_workbook(path).active
     for num, (field, data) in enumerate(checker.fields_table.items(), 1):
@@ -217,28 +214,26 @@ def check_fields(self, path):
                 if column not in checker.detected_columns:
                     if checker.check_field(field=field, title_row=title_row, column=column, sheet=sheet):
                         break
-    # print(dir(progress_recorder.task.__dict__.__trace__))
-    # for data in checker.fields_table.values():
-    #     if not data.get('column'):
-    #         data.pop('class_field')
-    # Как передать request
-    # from django.contrib import messages
-    # messages.add_message(self.request, messages.INFO, msg)
-    return checker.check_fields_result(sheet)
+
+    result = checker.check_fields_result(sheet)
+    translation.activate(prev_language)
+    return result
 
 
 def load_data_file(request: HttpRequest) -> tuple[str, AsyncResult]:
-
     date = datetime.strftime(datetime.now(), '%d.%m.%Y-%H:%M:%S')
+    redis_key = f'{request.path}_last_task_user-{request.user.pk}'
     task = None
+
     if request.FILES:
         file: TemporaryUploadedFile | InMemoryUploadedFile = request.FILES['datafile']
 
         if file.name.endswith(('.xls', '.xlsx')):
             file_system = FileSystemStorage()
-            filename = file_system.save(f'services/FNS/date-{date}_user-pk-{request.user.pk}_filename-{file.name}', file)
-            task: AsyncResult = check_fields.delay(path=f'media/{filename}') #, request=serialize('json', [request]))
-            redis_cache.set(f'last_task_user-{request.user.pk}', task.task_id)
+            filename = file_system.save(
+                f'{request.path.lstrip("/")}date-{date}_user-pk-{request.user.pk}_filename-{file.name}', file)
+            task: AsyncResult = check_fields.delay(path=f'media/{filename}', language=translation.get_language())
+            redis_cache.set(redis_key, task.task_id)
             msg = _(f"File verification") + f": {file.name}"
         else:
             msg = _('Unsupported file, .xls .xlsx only')

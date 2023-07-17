@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-16 23:38+0000\n"
+"POT-Creation-Date: 2023-07-17 13:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,45 +72,45 @@ msgstr "должник"
 msgid "debtors"
 msgstr "должники"
 
-#: services/busness_logic.py:155 services/busness_logic.py:198
+#: services/busness_logic.py:138
 msgid "Fullname"
 msgstr "Ф И О"
 
-#: services/busness_logic.py:156 services/busness_logic.py:199
+#: services/busness_logic.py:139
 msgid "Date birth"
 msgstr "Дата рождения"
 
-#: services/busness_logic.py:157 services/busness_logic.py:200
+#: services/busness_logic.py:140
 msgid "Date issue passport"
 msgstr "Дата выдачи паспорта"
 
-#: services/busness_logic.py:158 services/busness_logic.py:201
+#: services/busness_logic.py:141
 msgid "Serial and passport number"
 msgstr "Серия номер паспорта"
 
-#: services/busness_logic.py:182
+#: services/busness_logic.py:175
 msgid "not found"
 msgstr "не найдена"
 
-#: services/busness_logic.py:183
+#: services/busness_logic.py:176
 msgid "column"
 msgstr "колонка"
 
-#: services/busness_logic.py:221
+#: services/busness_logic.py:210
 msgid "Searching"
 msgstr "Поиск"
 
-#: services/busness_logic.py:251
+#: services/busness_logic.py:237
 msgid "File verification"
 msgstr "Проверка файла"
 
-#: services/busness_logic.py:253
+#: services/busness_logic.py:239
 msgid "Unsupported file, .xls .xlsx only"
 msgstr "Неподдерживаемый тип файла, только .xls .xlsx"
 
-#: services/busness_logic.py:255
+#: services/busness_logic.py:241
 msgid "Select File"
-msgstr "Выбрать файл"
+msgstr "Выберите файл"
 
 #: templates/account/account.j2:11 templates/account/account.j2:13
 msgid "no avatar"
@@ -240,31 +240,27 @@ msgstr "ФНС"
 msgid "FSSP"
 msgstr "ФССП"
 
-#: templates/services/FNS/fns_service.j2:21
+#: templates/includes/services/file_verification.j2:5
 msgid "Start progress"
 msgstr "Запуск прогресса"
 
-#: templates/services/FNS/fns_service.j2:35
+#: templates/includes/services/file_verification.j2:19
 msgid "Loading data"
 msgstr "Загрузка данных"
 
-#: templates/services/FNS/fns_service.j2:56
+#: templates/includes/services/file_verification.j2:40
 msgid "Success"
 msgstr "Успешно"
 
-#: templates/services/FNS/fns_service.j2:61
+#: templates/includes/services/file_verification.j2:45
 msgid "Failure"
 msgstr "Неудача"
 
-#: templates/services/FNS/fns_service.j2:64
-msgid "Result"
-msgstr "Результат"
-
-#: templates/services/FNS/fns_service.j2:78
+#: templates/includes/services/file_verification.j2:63
 msgid "Select a file with initial data"
 msgstr "Выберите файл с начальными данными"
 
-#: templates/services/FNS/fns_service.j2:79
+#: templates/includes/services/file_verification.j2:64
 msgid "Download"
 msgstr "Загрузить"
 

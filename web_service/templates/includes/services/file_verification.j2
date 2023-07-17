@@ -1,0 +1,66 @@
+{% if task and not task.status in ['SUCCESS', 'FAILURE', 'ERROR'] %}
+  <div class='progress-wrapper'>
+  <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+  </div>
+  <div id="progress-bar-message">{{ _('Start progress') }}</div>
+  <script src="{{ static("celery_progress/celery_progress.js") }}"></script>
+
+  <div id="celery-result"></div>
+  <script>
+  // vanilla JS version
+  function customPogress(progressBarElement, progressBarMessageElement, progress) {
+    progressBarElement.innerHTML = '&nbsp;';
+    progressBarElement.style.maxWidth = '500px';
+    progressBarElement.style.width = progress.percent + '%';
+    progressBarElement.style.backgroundColor = '#003dff';
+    if (progress.description) {
+        progressBarMessageElement.innerHTML = progress.description;
+      } else {
+        progressBarMessageElement.innerHTML = '{{ _('Loading data') }}    ' +
+                                              '<div class="loader" >' +
+                                              '<div class="bar1"></div>' +
+                                              '<div class="bar2"></div>' +
+                                              '<div class="bar3"></div>' +
+                                              '<div class="bar4"></div>' +
+                                              '<div class="bar5"></div>' +
+                                              '<div class="bar6"></div>' +
+                                              '<div class="bar7"></div>' +
+                                              '<div class="bar8"></div>' +
+                                              '<div class="bar9"></div>' +
+                                              '<div class="bar10"></div>' +
+                                              '<div class="bar11"></div>' +
+                                              '<div class="bar12"></div>' +
+                                              '</div>';
+      }
+  }
+
+  function customSuccess(progressBarElement, progressBarMessageElement) {
+      {#progressBarElement.innerHTML = ( "{{ _('Success') }}" )#}
+      progressBarElement.style.backgroundColor = '#22e806';
+      progressBarMessageElement.innerHTML = ( "{{ _('Success') }}" )
+  }
+  function customError(progressBarElement, progressBarMessageElement) {
+      {#progressBarElement.innerHTML = ( "{{ _('Failure') }}" )#}
+      progressBarElement.style.backgroundColor = '#ff0000';
+      progressBarMessageElement.innerHTML = ( "{{ _('Failure') }}" )
+  }
+  function customResult(resultElement, result) {
+    {#resultElement.innerHTML += "<p>{{ _('Result') }}:" + result + "</p>";#}
+    resultElement.innerHTML += result
+  }
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var progressUrl = "{{ url('celery_progress:task_status', task.task_id) }}";
+    CeleryProgressBar.initProgressBar(progressUrl, {
+      onProgress: customPogress, onResult: customResult, onSuccess: customSuccess, onError: customError});
+  });
+  </script>
+
+{% else %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input id="datafile" name="datafile" type="file" title="{{ _('Select a file with initial data') }}" accept=".xls, .xlsx"/>
+    <button type="submit">{{ _('Download') }}</button>
+  </form>
+{% endif %}
