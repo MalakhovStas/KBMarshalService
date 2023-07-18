@@ -90,7 +90,7 @@
     {% csrf_token %}
     <input class="form-input__file" id="datafile" name="datafile" type="file" title="{{ _('Select a file with initial data') }}" accept=".xls, .xlsx" onchange="displayFileName()"/>
     <label for="datafile" class="form-input form-input__file-button">
-      <p class="form-input__file-button-text" id="fileName">Выберите файл</p>
+      <span class="form-input__file-button-text" id="fileName">Выберите файл</span>
     </label>
     <button class="btn btn_success" type="submit">{{ _('Download') }}</button>
   </form>
