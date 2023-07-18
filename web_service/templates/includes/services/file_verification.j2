@@ -6,6 +6,7 @@
   <script src="{{ static("celery_progress/celery_progress.js") }}"></script>
 
   <div id="celery-result"></div>
+
   <script>
   // vanilla JS version
   function customPogress(progressBarElement, progressBarMessageElement, progress) {
@@ -57,10 +58,48 @@
   });
   </script>
 
+  <script>
+    let fields = document.querySelectorAll('.field__file');
+    Array.prototype.forEach.call(fields, function (input) {
+      let label = input.nextElementSibling,
+        labelVal = label.querySelector('.field__file-fake').innerText;
+
+      input.addEventListener('change', function (e) {
+        let countFiles = '';
+        if (this.files && this.files.length >= 1)
+          countFiles = this.files.length;
+
+        if (countFiles)
+          label.querySelector('.field__file-fake').innerText = 'Выбрано файлов: ' + countFiles;
+        else
+          label.querySelector('.field__file-fake').innerText = labelVal;
+      });
+    });
+</script>
+
 {% else %}
-  <form method="post" enctype="multipart/form-data">
+{#  <div class="field__wrapper">#}
+{#    <input name="datafile" type="file" id="datafile" class="field field__file" onchange="displayFileName()">#}
+{#    <label class="field__file-wrapper" for="datafile">#}
+{#      <div class="field__file-fake" id="fileName">Файл не выбран</div>#}
+{#      <div class="field__file-button">Выбрать</div>#}
+{#    </label>#}
+{#   </div>#}
+
+  <form class="form-input__wrapper" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <input id="datafile" name="datafile" type="file" title="{{ _('Select a file with initial data') }}" accept=".xls, .xlsx"/>
-    <button type="submit">{{ _('Download') }}</button>
+    <input class="form-input__file" id="datafile" name="datafile" type="file" title="{{ _('Select a file with initial data') }}" accept=".xls, .xlsx" onchange="displayFileName()"/>
+    <label for="datafile" class="form-input form-input__file-button">
+      <p class="form-input__file-button-text" id="fileName">Выберите файл</p>
+    </label>
+    <button class="btn btn_success" type="submit">{{ _('Download') }}</button>
   </form>
+
+  <script>
+    function displayFileName() {
+      const input = document.getElementById('datafile');
+      const fileName = input.files[0].name;
+      document.getElementById('fileName').textContent = fileName;
+    }
+  </script>
 {% endif %}
