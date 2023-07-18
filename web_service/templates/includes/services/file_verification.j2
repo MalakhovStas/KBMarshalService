@@ -1,4 +1,5 @@
-{% if task and not task.status in ['SUCCESS', 'FAILURE', 'ERROR'] %}
+{% if task and not task.status in ['SUCCESS', 'FAILURE', 'ERROR', 'REVOKED'] %}
+
   <div class='progress-wrapper'>
   <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
   </div>
@@ -7,90 +8,106 @@
 
   <div id="celery-result"></div>
 
+  <p>
+    <button class="btn btn_success" id="reset_btn">{{ _('Cancel verification') }}</button>
+    <button class="btn btn_success" id="apply_btn" style="display: none">{{ _('Confirm result') }}</button>
+  </p>
+
+
+
+  <form class="form-input__wrapper" method="post" id="command_form">
+    {% csrf_token %}
+    <input type="text" value="STOP_TASK:{{ task.task_id }}" id="command" name="command" hidden="hidden">
+  </form>
+
   <script>
-  // vanilla JS version
-  function customPogress(progressBarElement, progressBarMessageElement, progress) {
-    progressBarElement.innerHTML = '&nbsp;';
-    progressBarElement.style.maxWidth = '500px';
-    progressBarElement.style.width = progress.percent + '%';
-    progressBarElement.style.backgroundColor = '#003dff';
-    if (progress.description) {
-        progressBarMessageElement.innerHTML = progress.description;
+    // vanilla JS version
+    var task_state = "{{ task.state }}"
+    var select_next_file = "{{ _('Select a different file') }}"
+    var resetBtn = document.getElementById("reset_btn");
+    var applyBtn = document.getElementById("apply_btn");
+
+    function customPogress(progressBarElement, progressBarMessageElement, progress) {
+      progressBarElement.innerHTML = '&nbsp;';
+      progressBarElement.style.maxWidth = '500px';
+      progressBarElement.style.width = progress.percent + '%';
+      progressBarElement.style.backgroundColor = '#003dff';
+      if (progress.description) {
+          progressBarMessageElement.innerHTML = progress.description;
+          task_state = "PROGRESS"
       } else {
-        progressBarMessageElement.innerHTML = '{{ _('Loading data') }}    ' +
-                                              '<div class="loader" >' +
-                                              '<div class="bar1"></div>' +
-                                              '<div class="bar2"></div>' +
-                                              '<div class="bar3"></div>' +
-                                              '<div class="bar4"></div>' +
-                                              '<div class="bar5"></div>' +
-                                              '<div class="bar6"></div>' +
-                                              '<div class="bar7"></div>' +
-                                              '<div class="bar8"></div>' +
-                                              '<div class="bar9"></div>' +
-                                              '<div class="bar10"></div>' +
-                                              '<div class="bar11"></div>' +
-                                              '<div class="bar12"></div>' +
-                                              '</div>';
+          progressBarMessageElement.innerHTML = '{{ _('Loading data') }}    ' +
+                                                '<div class="loader" >' +
+                                                '<div class="bar1"></div>' +
+                                                '<div class="bar2"></div>' +
+                                                '<div class="bar3"></div>' +
+                                                '<div class="bar4"></div>' +
+                                                '<div class="bar5"></div>' +
+                                                '<div class="bar6"></div>' +
+                                                '<div class="bar7"></div>' +
+                                                '<div class="bar8"></div>' +
+                                                '<div class="bar9"></div>' +
+                                                '<div class="bar10"></div>' +
+                                                '<div class="bar11"></div>' +
+                                                '<div class="bar12"></div>' +
+                                                '</div>';
+        }
+    }
+
+    function customSuccess(progressBarElement, progressBarMessageElement) {
+        task_state = 'SUCCESS';
+        resetBtn.innerHTML = select_next_file;
+        applyBtn.style.display = "block"
+        progressBarElement.style.backgroundColor = '#22e806';
+        progressBarMessageElement.innerHTML = "{{ _('Success') }}";
+    }
+    function customError(progressBarElement, progressBarMessageElement) {
+        task_state = 'ERROR';
+        resetBtn.innerHTML = select_next_file;
+        progressBarElement.style.backgroundColor = '#ff0000';
+        progressBarMessageElement.innerHTML =  "{{ _('Failure') }}";
+    }
+    function customResult(resultElement, result) {
+      resultElement.innerHTML += result;
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var progressUrl = "{{ url('celery_progress:task_status', task.task_id) }}";
+      CeleryProgressBar.initProgressBar(progressUrl, {
+        onProgress: customPogress, onResult: customResult, onSuccess: customSuccess, onError: customError});
+    });
+
+
+    document.getElementById("reset_btn").onclick = function () {
+      if (task_state === 'SUCCESS' || task_state === 'ERROR')
+        location.href = "{{ request.path }}"
+      else  {
+        var commandForm = document.getElementById("command_form");
+        commandForm.addEventListener("submit", function(event) {
+          event.preventDefault();
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "{{ request.path }}");
+          xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+              // handle response
+            }
+          };
+          xhr.send(new FormData(commandForm));
+        });
+        commandForm.submit();
       }
-  }
-
-  function customSuccess(progressBarElement, progressBarMessageElement) {
-      {#progressBarElement.innerHTML = ( "{{ _('Success') }}" )#}
-      progressBarElement.style.backgroundColor = '#22e806';
-      progressBarMessageElement.innerHTML = ( "{{ _('Success') }}" )
-  }
-  function customError(progressBarElement, progressBarMessageElement) {
-      {#progressBarElement.innerHTML = ( "{{ _('Failure') }}" )#}
-      progressBarElement.style.backgroundColor = '#ff0000';
-      progressBarMessageElement.innerHTML = ( "{{ _('Failure') }}" )
-  }
-  function customResult(resultElement, result) {
-    {#resultElement.innerHTML += "<p>{{ _('Result') }}:" + result + "</p>";#}
-    resultElement.innerHTML += result
-  }
-
-
-  document.addEventListener("DOMContentLoaded", function () {
-    var progressUrl = "{{ url('celery_progress:task_status', task.task_id) }}";
-    CeleryProgressBar.initProgressBar(progressUrl, {
-      onProgress: customPogress, onResult: customResult, onSuccess: customSuccess, onError: customError});
-  });
+    };
   </script>
 
-  <script>
-    let fields = document.querySelectorAll('.field__file');
-    Array.prototype.forEach.call(fields, function (input) {
-      let label = input.nextElementSibling,
-        labelVal = label.querySelector('.field__file-fake').innerText;
-
-      input.addEventListener('change', function (e) {
-        let countFiles = '';
-        if (this.files && this.files.length >= 1)
-          countFiles = this.files.length;
-
-        if (countFiles)
-          label.querySelector('.field__file-fake').innerText = 'Выбрано файлов: ' + countFiles;
-        else
-          label.querySelector('.field__file-fake').innerText = labelVal;
-      });
-    });
-</script>
-
 {% else %}
-{#  <div class="field__wrapper">#}
-{#    <input name="datafile" type="file" id="datafile" class="field field__file" onchange="displayFileName()">#}
-{#    <label class="field__file-wrapper" for="datafile">#}
-{#      <div class="field__file-fake" id="fileName">Файл не выбран</div>#}
-{#      <div class="field__file-button">Выбрать</div>#}
-{#    </label>#}
-{#   </div>#}
 
   <form class="form-input__wrapper" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <input class="form-input__file" id="datafile" name="datafile" type="file" title="{{ _('Select a file with initial data') }}" accept=".xls, .xlsx" onchange="displayFileName()"/>
     <label for="datafile" class="form-input form-input__file-button">
-      <span class="form-input__file-button-text" id="fileName">Выберите файл</span>
+      <span class="form-input__file-button-text" id="fileName">{{ _('Select File') }}</span>
     </label>
     <button class="btn btn_success" type="submit">{{ _('Download') }}</button>
   </form>

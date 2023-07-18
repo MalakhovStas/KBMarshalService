@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-17 13:26+0000\n"
+"POT-Creation-Date: 2023-07-18 21:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -109,6 +109,7 @@ msgid "Unsupported file, .xls .xlsx only"
 msgstr "Неподдерживаемый тип файла, только .xls .xlsx"
 
 #: services/busness_logic.py:241
+#: templates/includes/services/file_verification.j2:111
 msgid "Select File"
 msgstr "Выберите файл"
 
@@ -240,27 +241,41 @@ msgstr "ФНС"
 msgid "FSSP"
 msgstr "ФССП"
 
-#: templates/includes/services/file_verification.j2:5
+#: templates/includes/services/file_verification.j2:6
 msgid "Start progress"
 msgstr "Запуск прогресса"
 
-#: templates/includes/services/file_verification.j2:19
+#: templates/includes/services/file_verification.j2:12
+#, fuzzy
+#| msgid "File verification"
+msgid "Cancel verification"
+msgstr "Проверка файла"
+
+#: templates/includes/services/file_verification.j2:13
+msgid "Confirm result"
+msgstr "Подтвердить результат"
+
+#: templates/includes/services/file_verification.j2:26
+msgid "Select a different file"
+msgstr "Выбрать другой файл"
+
+#: templates/includes/services/file_verification.j2:39
 msgid "Loading data"
 msgstr "Загрузка данных"
 
-#: templates/includes/services/file_verification.j2:40
+#: templates/includes/services/file_verification.j2:62
 msgid "Success"
 msgstr "Успешно"
 
-#: templates/includes/services/file_verification.j2:45
+#: templates/includes/services/file_verification.j2:69
 msgid "Failure"
 msgstr "Неудача"
 
-#: templates/includes/services/file_verification.j2:63
+#: templates/includes/services/file_verification.j2:109
 msgid "Select a file with initial data"
 msgstr "Выберите файл с начальными данными"
 
-#: templates/includes/services/file_verification.j2:64
+#: templates/includes/services/file_verification.j2:113
 msgid "Download"
 msgstr "Загрузить"
 
