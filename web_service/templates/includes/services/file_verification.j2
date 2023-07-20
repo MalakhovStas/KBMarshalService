@@ -1,19 +1,25 @@
 {% if task and not task.status in ['SUCCESS', 'FAILURE', 'ERROR', 'REVOKED'] %}
 
-  <div class='progress-wrapper'>
-  <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+  <div class='progress-wrapper' xmlns="http://www.w3.org/1999/html">
+    <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
   </div>
   <div id="progress-bar-message">{{ _('Start progress') }}</div>
   <script src="{{ static("celery_progress/celery_progress.js") }}"></script>
 
   <div id="celery-result"></div>
 
-  <p>
-    <button class="btn btn_success" id="reset_btn">{{ _('Cancel verification') }}</button>
-    <button class="btn btn_success" id="apply_btn" style="display: none">{{ _('Confirm result') }}</button>
-  </p>
-
-
+  <form class="form-check">
+    <div class="form-check-wrap flex">
+      <div class="form-check-wrap-label flex" id="form_check_wrap" style="display: none">
+        <label class="flex" for="confirm">
+          <input type="checkbox" id="confirm" class="form-check-input" value="Подтвердить" onclick="myFunction()">
+          <span id="confirm_span" class="confirm_span">{{ _("Confirm") }}</span>
+          <span id="confirm_span_2" class="confirm_span__2" style="display: none">{{ _("Confirmed") }}</span>
+        </label>
+      </div>
+      <button class="btn btn_success btn_success__form-check" id="reset_btn">{{ _('Cancel verification') }}</button>
+    </div>
+  </form>
 
   <form class="form-input__wrapper" method="post" id="command_form">
     {% csrf_token %}
@@ -22,10 +28,14 @@
 
   <script>
     // vanilla JS version
-    var task_state = "{{ task.state }}"
-    var select_next_file = "{{ _('Select a different file') }}"
-    var resetBtn = document.getElementById("reset_btn");
-    var applyBtn = document.getElementById("apply_btn");
+    let task_state = "{{ task.state }}";
+    const progressUrl = "{{ url('celery_progress:task_status', task.task_id) }}";
+    const select_next_file = "{{ _('Select a different file') }}";
+    const resetBtn = document.getElementById("reset_btn");
+    const formCheckWrap = document.getElementById("form_check_wrap");
+    const checkBoxConfirm = document.getElementById("confirm");
+    const confirmSpan = document.getElementById("confirm_span");
+    const confirmSpan2 = document.getElementById("confirm_span_2");
 
     function customPogress(progressBarElement, progressBarMessageElement, progress) {
       progressBarElement.innerHTML = '&nbsp;';
@@ -57,23 +67,25 @@
     function customSuccess(progressBarElement, progressBarMessageElement) {
         task_state = 'SUCCESS';
         resetBtn.innerHTML = select_next_file;
-        applyBtn.style.display = "block"
+        formCheckWrap.style.display = "block"
+        checkBoxConfirm.style.display = "block"
+
         progressBarElement.style.backgroundColor = '#22e806';
         progressBarMessageElement.innerHTML = "{{ _('Success') }}";
     }
+
     function customError(progressBarElement, progressBarMessageElement) {
         task_state = 'ERROR';
         resetBtn.innerHTML = select_next_file;
         progressBarElement.style.backgroundColor = '#ff0000';
         progressBarMessageElement.innerHTML =  "{{ _('Failure') }}";
     }
+
     function customResult(resultElement, result) {
       resultElement.innerHTML += result;
     }
 
-
     document.addEventListener("DOMContentLoaded", function () {
-      var progressUrl = "{{ url('celery_progress:task_status', task.task_id) }}";
       CeleryProgressBar.initProgressBar(progressUrl, {
         onProgress: customPogress, onResult: customResult, onSuccess: customSuccess, onError: customError});
     });
@@ -99,8 +111,18 @@
         commandForm.submit();
       }
     };
+    function myFunction() {
+        if (checkBoxConfirm.checked === true){
+            confirmSpan.style.display = "none";
+            confirmSpan2.style.display = "block";
+            resetBtn.style.display = "none";
+        } else {
+           confirmSpan.style.display = "block";
+           confirmSpan2.style.display = "none";
+           resetBtn.style.display = "block";
+        }
+    }
   </script>
-
 {% else %}
 
   <form class="form-input__wrapper" method="post" enctype="multipart/form-data">
@@ -115,8 +137,7 @@
   <script>
     function displayFileName() {
       const input = document.getElementById('datafile');
-      const fileName = input.files[0].name;
-      document.getElementById('fileName').textContent = fileName;
+      document.getElementById('fileName').textContent = input.files[0].name;
     }
   </script>
 {% endif %}

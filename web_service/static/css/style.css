@@ -1329,3 +1329,35 @@ body {
 .field__file-button:active {
   color: var(--grey);
 }/*
+
+
+ */
+
+.form-check-input {
+  margin-right: 10px;
+}
+
+.form-check-wrap {
+  max-width: 500px;
+}
+
+.form-check-wrap-label {
+  margin-right: auto;
+}
+
+.confirm_span {
+  display: inline-block;
+  padding-top: 5px;
+  font-size: 1.25em;
+  font-weight: 700;
+}
+
+.confirm_span__2 {
+  display: inline-block;
+  font-size: 1.25em;
+  font-weight: 700;
+}
+
+.btn_success__form-check {
+  margin: 0;
+}
