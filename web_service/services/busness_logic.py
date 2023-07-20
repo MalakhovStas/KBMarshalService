@@ -20,6 +20,12 @@ from django.utils import translation
 BAD_result_FNS_file = 'media/services/FNS/fns_BAD_result.xlsx'
 
 
+class FileVerificationException(ValueError):
+    def __init__(self, message: str = 'File verification - FAILED'):
+        self.message = message
+        super().__init__(self.message)
+
+
 class SessionPerson:
     """ Класс для валидации данных должника до его записи в БД,
     обязательные поля: name, surname, date_birth, ser_num_pass, date_issue_pass"""
@@ -174,24 +180,28 @@ class Checker:
     def check_fields_result(self, sheet):
         bad_result = _('not found')
         column = _('column')
-        fc_str, dbc_str, dipc_str, snpc_str = None, None, None, None
 
-        if fc := self.fields_table.get("fullname")["column"]:
-            fc_str = f'{fc} [ {sheet.cell(row=1, column=fc).column_letter} ]'
+        fc = self.fields_table["fullname"]["column"]
+        fc_str = f'{fc if fc else ""} [ {sheet.cell(row=1, column=fc).column_letter if fc else bad_result} ]'
 
-        if dbc := self.fields_table.get("date_birth")["column"]:
-            dbc_str = f'{dbc} [ {sheet.cell(row=1, column=dbc).column_letter} ]'
+        dbc = self.fields_table["date_birth"]["column"]
+        dbc_str = f'{dbc if dbc else ""} [ {sheet.cell(row=1, column=dbc).column_letter if dbc else bad_result} ]'
 
-        if dipc := self.fields_table.get("date_issue_pass")["column"]:
-            dipc_str = f'{dipc} [ {sheet.cell(row=1, column=dipc).column_letter} ]'
+        dipc = self.fields_table["date_issue_pass"]["column"]
+        dipc_str = f'{dipc if dipc else ""} [ {sheet.cell(row=1, column=dipc).column_letter if dipc else bad_result} ]'
 
-        if snpc := self.fields_table.get("ser_num_pass")["column"]:
-            snpc_str = f'{snpc} [ {sheet.cell(row=1, column=snpc).column_letter} ]'
+        snpc = self.fields_table.get("ser_num_pass")["column"]
+        snpc_str = f'{snpc if snpc else ""} [ {sheet.cell(row=1, column=snpc).column_letter if snpc else bad_result} ]'
 
-        return f'<ul><li>{self.trans_fields["fullname"]} - {column}: {fc_str if fc_str else bad_result}</li>' \
-               f'<li>{self.trans_fields["date_birth"]} - {column}: {dbc_str if dbc_str else bad_result}</li>' \
-               f'<li>{self.trans_fields["date_issue_pass"]} - {column}: {dipc_str if dipc_str else bad_result}</li>' \
-               f'<li>{self.trans_fields["ser_num_pass"]} - {column}: {snpc_str if snpc_str else bad_result}</li></ul>'
+        result = f'<ul><li>{self.trans_fields["fullname"]} - {column}: {fc_str}</li>' \
+                 f'<li>{self.trans_fields["date_birth"]} - {column}: {dbc_str}</li>' \
+                 f'<li>{self.trans_fields["date_issue_pass"]} - {column}: {dipc_str}</li>' \
+                 f'<li>{self.trans_fields["ser_num_pass"]} - {column}: {snpc_str}</li></ul>'
+
+        if all((fc, dbc, dipc, dipc_str)):
+            return result
+        else:
+            raise FileVerificationException(message=result)
 
 
 @shared_task(bind=True)
