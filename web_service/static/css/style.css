@@ -107,7 +107,7 @@ body {
 
 .container {
   max-width: 1920px;
-  padding: 0 75px;
+  padding: 50px 75px;
   margin: 0 auto;
   width: 100%;
 }
@@ -736,7 +736,7 @@ body {
 }
 
 .home-content {
-  padding: 50px 100px;
+  padding: 0 100px;
   max-width: 1020px;
   margin: 0 auto;
 }
@@ -823,7 +823,7 @@ body {
 
 @media screen and (max-width: 1200px) {
   .container {
-    padding: 0 50px;
+    padding: 50px;
   }
 
   .footer__column {
@@ -844,7 +844,7 @@ body {
 
 @media screen and (max-width: 1023px) {
   .container {
-    padding: 0 50px;
+    padding: 50px;
     margin: 0 auto;
     width: 100%;
   }
@@ -966,7 +966,7 @@ body {
 @media screen and (max-width: 576px) {
   .container {
     width: 100%;
-    padding: 0 15px;
+    padding: 15px;
   }
 
   .header__container {
@@ -1092,7 +1092,6 @@ body {
 
 }
 
-
 .loader {
   position: relative;
   width: 32px;
@@ -1121,6 +1120,10 @@ body {
   to {
     opacity: 0.25;
   }
+}
+
+.loader__wrap {
+  margin-bottom: 15px;
 }
 
 .loader {
@@ -1330,34 +1333,69 @@ body {
   color: var(--grey);
 }/*
 
-
- */
-
-.form-check-input {
-  margin-right: 10px;
-}
+*/
 
 .form-check-wrap {
   max-width: 500px;
+  height: 100%;
 }
 
 .form-check-wrap-label {
   margin-right: auto;
+  max-width: 13rem;
+  padding: 1rem;
+  /*background: #FFFFFF;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgb(0 0 10 / 0.2);*/
 }
 
-.confirm_span {
-  display: inline-block;
-  padding-top: 5px;
-  font-size: 1.25em;
+.checkbox {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.checkbox__input {
+  position: absolute;
+  margin-right: 10px;
+  width: 1.375em;
+  height: 1.375em;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkbox__input:checked + .checkbox__icon .tick {
+  stroke-dashoffset: 0;
+}
+
+.checkbox__icon {
+  width: 1.375em;
+  height: 1.375em;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.checkbox__icon .tick {
+  stroke-dasharray: 20px;
+  stroke-dashoffset: 20px;
+  transition: stroke-dashoffset 0.2s ease-out;
+}
+
+.checkbox__label {
+  margin-left: 0.5em;
+  font-size: 1.2em;
   font-weight: 700;
 }
 
-.confirm_span__2 {
+.checkbox__label-end {
   display: inline-block;
-  font-size: 1.25em;
+  padding-left: 10px;
+  font-size: 1.2em;
   font-weight: 700;
 }
 
 .btn_success__form-check {
-  margin: 0;
+  height: 100%;
+  margin: 10px 0 0 0;
+  align-items: center;
 }

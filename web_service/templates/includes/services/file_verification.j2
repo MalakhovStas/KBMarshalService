@@ -11,10 +11,15 @@
   <form class="form-check">
     <div class="form-check-wrap flex">
       <div class="form-check-wrap-label flex" id="form_check_wrap" style="display: none">
-        <label class="flex" for="confirm">
-          <input type="checkbox" id="confirm" class="form-check-input" value="Подтвердить" onclick="myFunction()">
-          <span id="confirm_span" class="confirm_span">{{ _("Confirm") }}</span>
-          <span id="confirm_span_2" class="confirm_span__2" style="display: none">{{ _("Confirmed") }}</span>
+        <label class="checkbox flex" for="confirm">
+          <input type="checkbox" id="confirm" class="checkbox__input" value="Подтвердить" onclick="myFunction()">
+          <svg class="checkbox__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
+            <rect width="21" height="21" x=".5" y=".5" fill="#FFF" stroke="#006F94" rx="3" />
+            <path class="tick" stroke="#22e806" fill="none" stroke-linecap="round" stroke-width="4" d="M4 10l5 5 9-9" />
+          </svg>
+
+          <span id="confirm_span" class="checkbox__label">{{ _("Confirm") }}</span>
+          <span id="confirm_span_2" class="checkbox__label-end" style="display: none">{{ _("Confirmed") }}</span>
         </label>
       </div>
       <button class="btn btn_success btn_success__form-check" id="reset_btn">{{ _('Cancel verification') }}</button>
@@ -46,21 +51,21 @@
           progressBarMessageElement.innerHTML = progress.description;
           task_state = "PROGRESS"
       } else {
-          progressBarMessageElement.innerHTML = '{{ _('Loading data') }}    ' +
-                                                '<div class="loader" >' +
-                                                '<div class="bar1"></div>' +
-                                                '<div class="bar2"></div>' +
-                                                '<div class="bar3"></div>' +
-                                                '<div class="bar4"></div>' +
-                                                '<div class="bar5"></div>' +
-                                                '<div class="bar6"></div>' +
-                                                '<div class="bar7"></div>' +
-                                                '<div class="bar8"></div>' +
-                                                '<div class="bar9"></div>' +
-                                                '<div class="bar10"></div>' +
-                                                '<div class="bar11"></div>' +
-                                                '<div class="bar12"></div>' +
-                                                '</div>';
+          progressBarMessageElement.innerHTML =   '<div class="loader__wrap">{{ _('Loading data') }}    ' +
+                                                  '<div class="loader" >' +
+                                                  '<div class="bar1"></div>' +
+                                                  '<div class="bar2"></div>' +
+                                                  '<div class="bar3"></div>' +
+                                                  '<div class="bar4"></div>' +
+                                                  '<div class="bar5"></div>' +
+                                                  '<div class="bar6"></div>' +
+                                                  '<div class="bar7"></div>' +
+                                                  '<div class="bar8"></div>' +
+                                                  '<div class="bar9"></div>' +
+                                                  '<div class="bar10"></div>' +
+                                                  '<div class="bar11"></div>' +
+                                                  '<div class="bar12"></div>' +
+                                                  '</div></div>';
         }
     }
 
