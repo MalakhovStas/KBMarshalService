@@ -232,7 +232,7 @@ def check_fields(self, path, language=None):
     return result
 
 
-def load_data_file(request: HttpRequest) -> tuple[str, AsyncResult]:
+def load_data_file(request):  # -> tuple[str, AsyncResult]:
     date = datetime.strftime(datetime.now(), '%d.%m.%Y-%H:%M:%S')
     task = None
 
