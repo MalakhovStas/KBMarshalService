@@ -28,35 +28,35 @@ class FileVerificationException(ValueError):
         super().__init__(self.message)
 
 
-class SessionPerson:
-    """ Класс для валидации данных должника до его записи в БД,
-    обязательные поля: name, surname, date_birth, ser_num_pass, date_issue_pass"""
-
-    def __init__(self, **kwargs):
-        self.name: str | None = kwargs.get('name')
-        self.surname: str | None = kwargs.get('surname')
-        self.patronymic: str | None = kwargs.get('patronymic')
-        self.date_birth: str | None = kwargs.get('date_birth')
-        self.ser_num_pass: str | None = kwargs.get('ser_num_pass')
-        self.date_issue_pass: str | None = kwargs.get('date_issue_pass')
-        self.name_org_pass: str | None = kwargs.get('name_org_pass')
-        self.INN: str | None = None
-        self.fns_key: str | None = kwargs.get('fns_key')
-        self.ready_for_req: bool = True if (
-                self.surname and self.name and self.date_birth and self.ser_num_pass and self.date_issue_pass) else False
-        self.fns_url: str = f'https://api-fns.ru/api/innfl?fam={self.surname}&nam={self.name}&otch=' \
-                            f'{self.patronymic if self.patronymic else None}&bdate={self.date_birth}&' \
-                            f'doctype=21&docno={self.ser_num_pass}&key={self.fns_key}'
+# class SessionPerson:
+#     """ Класс для валидации данных должника до его записи в БД,
+#     обязательные поля: name, surname, date_birth, ser_num_pass, date_issue_pass"""
+#
+#     def __init__(self, **kwargs):
+#         self.name: str | None = kwargs.get('name')
+#         self.surname: str | None = kwargs.get('surname')
+#         self.patronymic: str | None = kwargs.get('patronymic')
+#         self.date_birth: str | None = kwargs.get('date_birth')
+#         self.ser_num_pass: str | None = kwargs.get('ser_num_pass')
+#         self.date_issue_pass: str | None = kwargs.get('date_issue_pass')
+#         self.name_org_pass: str | None = kwargs.get('name_org_pass')
+#         self.INN: str | None = None
+#         self.fns_key: str | None = kwargs.get('fns_key')
+#         self.ready_for_req: bool = True if (
+#                 self.surname and self.name and self.date_birth and self.ser_num_pass and self.date_issue_pass) else False
+#         self.fns_url: str = f'https://api-fns.ru/api/innfl?fam={self.surname}&nam={self.name}&otch=' \
+#                             f'{self.patronymic if self.patronymic else None}&bdate={self.date_birth}&' \
+#                             f'doctype=21&docno={self.ser_num_pass}&key={self.fns_key}'
 
 
 class BaseField:
     words_to_search_in_title = []
     or_words_to_search_in_title = []
 
-    def get_data(self, cell_value: str) -> tuple[bool | str | None]:
+    def get_data(self, cell_value: str):  # -> tuple[bool | str | None]:
         pass
 
-    def check_title(self, cell_value: str, column) -> bool | dict:
+    def check_title(self, cell_value: str, column):  # -> bool | dict:
         result = False
         cell_value = cell_value.lower()
         if all([word in cell_value for word in self.words_to_search_in_title]) or \
@@ -64,7 +64,7 @@ class BaseField:
             result = {'column': column}
         return result
 
-    def check_data(self, cell_value: str, row) -> bool | dict:
+    def check_data(self, cell_value: str, row):  # -> bool | dict:
         result = False
         if any(self.get_data(cell_value=cell_value)):
             result = {'row': row}
@@ -75,7 +75,7 @@ class FullNamePerson(BaseField):
     words_to_search_in_title = ['фамилия', 'имя', 'отчество']
     or_words_to_search_in_title = ['фио']
 
-    def get_data(self, cell_value: str) -> tuple[str | None, str | None, str | None]:
+    def get_data(self, cell_value: str) -> tuple:
         surname, name, patronymic = None, None, None
         if cell_value:
             cell_value = cell_value.split(' ', maxsplit=2)
@@ -91,7 +91,7 @@ class DateBirthPerson(BaseField):
     words_to_search_in_title = ['дата', 'рождения']
     min_age_person = 18
 
-    def get_data(self, cell_value: str) -> tuple[bool | str]:
+    def get_data(self, cell_value: str) -> tuple:
         result = False,
         if cell_value:
             try:
@@ -112,7 +112,7 @@ class SerNumPassport(BaseField):
     or_words_to_search_in_title = ['серия', 'номер', 'паспорта']
     max_years_after_date_issue = 30
 
-    def get_data(self, cell_value: str) -> tuple[bool | str]:
+    def get_data(self, cell_value: str) -> tuple:
         result = False,
         cell_value = cell_value.replace(' ', '')
         if cell_value.isdigit() and len(cell_value) == 10:
@@ -125,7 +125,7 @@ class DateIssuePassport(BaseField):
     or_words_to_search_in_title = ['дата', 'выдачи', 'паспорт']
     max_years_after_date_issue = 30
 
-    def get_data(self, cell_value: str) -> tuple[bool | str]:
+    def get_data(self, cell_value: str) -> tuple:
         result = False,
         if cell_value:
             try:
