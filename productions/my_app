@@ -1,0 +1,17 @@
+# Выполнить команду  -  cp my_app /etc/nginx/sites-enabled/
+server {
+    listen 81;
+    server_tokens off;
+    server_name 0.0.0.0;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:///run/uwsgi/app/myapp/socket;
+    }
+
+
+    location /static/ {
+        alias /var/work/static/;
+    }
+
+}

@@ -1,5 +1,5 @@
-{% if task and not task.status in ['SUCCESS', 'FAILURE', 'ERROR', 'REVOKED'] %}
-
+{#{% if task and not task.status in ['SUCCESS', 'FAILURE', 'ERROR', 'REVOKED'] %}#}
+{% if task %}
   <div class='progress-wrapper' xmlns="http://www.w3.org/1999/html">
     <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
   </div>
@@ -14,21 +14,21 @@
         <label class="checkbox flex" for="confirm">
           <input type="checkbox" id="confirm" class="checkbox__input" value="Подтвердить" onclick="myFunction()">
           <svg class="checkbox__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
-            <rect width="21" height="21" x=".5" y=".5" fill="#FFF" stroke="#006F94" rx="3" />
-            <path class="tick" stroke="#22e806" fill="none" stroke-linecap="round" stroke-width="4" d="M4 10l5 5 9-9" />
+            <rect width="21" height="21" x=".5" y=".5" fill="#FFF" stroke="#006F94" rx="3"></rect>
+            <path class="tick" stroke="#22e806" fill="none" stroke-linecap="round" stroke-width="4" d="M4 10l5 5 9-9"></path>
           </svg>
 
           <span id="confirm_span" class="checkbox__label">{{ _("Confirm") }}</span>
           <span id="confirm_span_2" class="checkbox__label-end" style="display: none">{{ _("Confirmed") }}</span>
         </label>
       </div>
-      <button class="btn btn_success btn_success__form-check" id="reset_btn">{{ _('Cancel verification') }}</button>
     </div>
   </form>
 
   <form class="form-input__wrapper" method="post" id="command_form">
     {% csrf_token %}
-    <input type="text" value="STOP_TASK:{{ task.task_id }}" id="command" name="command" hidden="hidden">
+    <label for="command"></label><input type="text" value="STOP_TASK:{{ task.task_id }}" id="command" name="command" hidden="hidden">
+    <button class="btn btn_success btn_success__form-check" id="reset_btn" onclick="clickResetBtn()">{{ _('Cancel verification') }}</button>
   </form>
 
   <script>
@@ -95,13 +95,13 @@
         onProgress: customPogress, onResult: customResult, onSuccess: customSuccess, onError: customError});
     });
 
-
-    document.getElementById("reset_btn").onclick = function () {
-      if (task_state === 'SUCCESS' || task_state === 'ERROR')
-        location.href = "{{ request.path }}"
-      else  {
-        var commandForm = document.getElementById("command_form");
-        commandForm.addEventListener("submit", function(event) {
+    {#document.getElementById("reset_btn").onclick = function () {#}
+      {#if (task_state === 'SUCCESS' || task_state === 'ERROR')#}
+      {#  location.href = "{{ request.path }}"#}
+      {#else  {#}
+    function clickResetBtn() {
+      const commandForm = document.getElementById("command_form");
+      commandForm.addEventListener("submit", function(event) {
           event.preventDefault();
           var xhr = new XMLHttpRequest();
           xhr.open("POST", "{{ request.path }}");
@@ -114,8 +114,9 @@
           xhr.send(new FormData(commandForm));
         });
         commandForm.submit();
-      }
-    };
+    }
+
+
     function myFunction() {
         if (checkBoxConfirm.checked === true){
             confirmSpan.style.display = "none";

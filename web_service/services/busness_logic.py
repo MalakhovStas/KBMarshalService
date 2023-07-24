@@ -16,6 +16,8 @@ from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUpload
 import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
 from django.utils import translation
+from services.utils import get_redis_key
+
 
 BAD_result_FNS_file = 'media/services/FNS/fns_BAD_result.xlsx'
 
@@ -232,7 +234,6 @@ def check_fields(self, path, language=None):
 
 def load_data_file(request: HttpRequest) -> tuple[str, AsyncResult]:
     date = datetime.strftime(datetime.now(), '%d.%m.%Y-%H:%M:%S')
-    redis_key = f'{request.path}_last_task_user-{request.user.pk}'
     task = None
 
     if request.FILES:
@@ -243,7 +244,7 @@ def load_data_file(request: HttpRequest) -> tuple[str, AsyncResult]:
             filename = file_system.save(
                 f'{request.path.lstrip("/")}date-{date}_user-pk-{request.user.pk}_filename-{file.name}', file)
             task: AsyncResult = check_fields.delay(path=f'media/{filename}', language=translation.get_language())
-            redis_cache.set(redis_key, task.task_id)
+            redis_cache.set(get_redis_key(request=request, key_type='file_verification'), task.task_id)
             msg = _(f"File verification") + f": {file.name}"
         else:
             msg = _('Unsupported file, .xls .xlsx only')

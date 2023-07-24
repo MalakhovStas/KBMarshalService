@@ -285,7 +285,7 @@ EMAIL_USE_SSL = False
 #             'level': 'DEBUG',
 #             'class': 'logging.FileHandler',
 #             'formatter': 'file',
-#             'filename': 'debug.log'
+#             'filename': 'logs/django_debug.log'
 #         }
 #     },
 #     'root': {
