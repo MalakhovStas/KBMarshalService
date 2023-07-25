@@ -168,7 +168,7 @@ class Checker:
                     self.rows_for_check if sheet.max_row >= self.rows_for_check else sheet.max_row, 1, -1):
                 cell_value = str(sheet.cell(row=data_row, column=column).value).strip()
                 if result_row := class_field.check_data(cell_value=cell_value, row=data_row):
-                    self.fields_table[field].update(result_column | result_row)
+                    self.fields_table[field].update({**result_column, **result_row})
         if result := all((self.fields_table[field]['column'], self.fields_table[field]['row'])):
             self.detected_columns.add(result_column['column'])
         return result
