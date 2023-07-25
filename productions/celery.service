@@ -1,35 +1,21 @@
-# Файл сервиса celeryd (выполнить команду - cp celery.service /etc/systemd/system/)
+# Для автоматического запуска бота при перезагрузке сервера копия этого файла
+# должна лежать в папке /etc/systemd/system/
+# команда для копирования файла в нужную категорию cp celery.service /etc/systemd/system/
+# systemctl enable celery - это команда в регистрации автозапуска при рестарте
+# service celery start - запуск / stop
 
-Unit]
+[Unit]
 Description=Celery Service
 After=network.target redis.target
 
 [Service]
-Type=forking
 User=www-data
 Group=www-data
-EnvironmentFile=-/etc/systemd/celery.conf
 WorkingDirectory=/var/KBMarshalService/web_service
-PermissionsStartOnly=true
-ExecStartPre=-/bin/mkdir -p ${CELERYD_STATE_DIR}
-ExecStartPre=/bin/chown -R ${CELERYD_USER}:${CELERYD_GROUP} ${CELERYD_STATE_DIR}
-ExecStart=/bin/sh -c '${CELERY_BIN} multi start \
-    ${CELERYD_NODES} \
-    -A ${CELERY_APP} \
-    --pidfile=${CELERYD_PID_FILE} \
-    --logfile=${CELERYD_LOG_FILE} \
-    --loglevel=${CELERYD_LOG_LEVEL} \
-    ${CELERYD_OPTS}'
-ExecStop=/bin/sh -c '${CELERY_BIN} multi stopwait \
-    ${CELERYD_NODES} \
-    --pidfile=${CELERYD_PID_FILE}'
-ExecReload=/bin/sh -c '${CELERY_BIN} multi restart \
-    ${CELERYD_NODES} \
-    -A ${CELERY_APP} \
-    --pidfile=${CELERYD_PID_FILE} \
-    --logfile=${CELERYD_LOG_FILE} \
-    --loglevel=${CELERYD_LOG_LEVEL} \
-    ${CELERYD_OPTS}'
+ExecStart=/var/KBMarshalService/venv/bin/python celery -A web_service worker -l info
+Restart=on-failure
+RestartSec=10s
 
 [Install]
 WantedBy=multi-user.target
+EOF
