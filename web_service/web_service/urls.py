@@ -20,6 +20,8 @@ from django.urls import path, include
 from django.conf.urls.static import static
 import debug_toolbar
 from .views import HomePageView, PrivacyPolicyPageView
+
+
 urlpatterns = [
     path('i18n', include('django.conf.urls.i18n')),
     path('celery-progress/', include('celery_progress.urls')),
@@ -31,9 +33,9 @@ urlpatterns = [
     path("debtors/", include("debtors.urls", namespace="debtors")),
     path("services/", include("services.urls", namespace="services")),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 if settings.DEBUG:
-    urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
     urlpatterns.extend(static(settings.STATIC_URL, document_root=settings.STATIC_ROOT))
     urlpatterns.append(path("__debug__/", include(debug_toolbar.urls)))

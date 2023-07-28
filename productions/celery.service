@@ -12,7 +12,7 @@ After=network.target redis.target
 User=www-data
 Group=www-data
 WorkingDirectory=/var/KBMarshalService/web_service
-ExecStart=/var/KBMarshalService/venv/bin/python celery -A web_service worker -l info
+ExecStart=/var/KBMarshalService/venv/bin/celery -A web_service worker -l info
 Restart=on-failure
 RestartSec=10s
 
