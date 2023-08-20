@@ -1,0 +1,83 @@
+<div style="margin-top: 100px">
+  {% if task_start_service %}
+
+    <div class='progress-wrapper' xmlns="http://www.w3.org/1999/html">
+      <div id='progress-bar-start-service' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+    </div>
+
+    <div id="progress-bar-start-service-message" style="margin-top: 15px">{{ _('Start progress') }}</div>
+    <script src="{{ static("celery_progress/celery_progress.js") }}"></script>
+
+    <div id="start-service-result" style="margin-top: 15px"></div>
+
+    <form class="form-input__wrapper" method="post" id="start_service_download_result_file">
+      {% csrf_token %}
+      <label for="command"></label><input type="text" value="DOWNLOAD_RESULT_FILE:DOWNLOAD_RESULT_FILE:{{ filename }}" id="command" name="command" hidden="hidden">
+      <button style="display: none" class="btn btn_success btn_success__form-check" id="start_service_download_result_file_button" onclick="clickDownloadResultBtn()">{{ _('Download resul file') }}</button>
+    </form>
+
+    <script>
+      // vanilla JS version
+        let task_start_service_state = "{{ task_start_service.state }}";
+        const start_service_result_elem = document.getElementById("start-service-result");
+        const download_resultBtn = document.getElementById("start_service_download_result_file_button");
+
+
+        function StartServiceProgress(progressBarElement, progressBarMessageElement, progress) {
+          progressBarElement.innerHTML = '&nbsp;';
+          progressBarElement.style.maxWidth = '100%';
+          progressBarElement.style.width = progress.percent + '%';
+          progressBarElement.style.backgroundColor = '#003dff';
+          if (progress.description) {
+              progressBarMessageElement.innerHTML = progress.description;
+              task_start_service_state = "PROGRESS"
+          } else {
+              progressBarMessageElement.innerHTML = loader_circle
+            }
+          }
+
+        function StartServiceSuccess(progressBarElement, progressBarMessageElement) {
+            task_start_service_state = 'SUCCESS';
+            download_resultBtn.style.display = "block"
+            progressBarElement.style.backgroundColor = '#22e806';
+            progressBarMessageElement.innerHTML = "{{ _('Success') }}";
+        }
+
+        function StartServiceError(progressBarElement, progressBarMessageElement) {
+            task_start_service_state = 'ERROR';
+            progressBarElement.style.backgroundColor = '#ff0000';
+            progressBarMessageElement.innerHTML =  "{{ _('Failed') }}";
+        }
+
+        function StartServiceResult(resultElement, result) {
+          if (result) {
+            start_service_result_elem.innerHTML += result;
+          }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          CeleryProgressBar.initProgressBar("{{ url('celery_progress:task_status', task_start_service.task_id) }}", {
+            progressBarId: 'progress-bar-start-service',  progressBarMessageId: 'progress-bar-start-service-message',
+            onProgress: StartServiceProgress, onResult: StartServiceResult, onSuccess: StartServiceSuccess, onError: StartServiceError});
+        });
+
+        function clickDownloadResultBtn() {
+        const start_service_download_result_fileForm = document.getElementById("start_service_download_result_file");
+        start_service_download_result_fileForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ request.path }}");
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                // handle response
+              }
+            };
+            xhr.send(new FormData(start_service_download_result_fileForm));
+          });
+        start_service_download_result_fileForm.submit()
+      }
+
+    </script>
+  {% endif %}
+</div>

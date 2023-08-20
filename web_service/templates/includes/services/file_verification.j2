@@ -1,149 +1,194 @@
-{#{% if task and not task.status in ['SUCCESS', 'FAILURE', 'ERROR', 'REVOKED'] %}#}
-{% if task %}
-  <div class='progress-wrapper' xmlns="http://www.w3.org/1999/html">
-    <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
-  </div>
-  <div id="progress-bar-message">{{ _('Start progress') }}</div>
-  <script src="{{ static("celery_progress/celery_progress.js") }}"></script>
+{#{% if task_file_verification and not task_file_verification.status in ['SUCCESS', 'FAILURE', 'ERROR', 'REVOKED'] %}#}
 
-  <div id="celery-result"></div>
 
-  <form class="form-check">
-    <div class="form-check-wrap flex">
-      <div class="form-check-wrap-label flex" id="form_check_wrap" style="display: none">
-        <label class="checkbox flex" for="confirm">
-          <input type="checkbox" id="confirm" class="checkbox__input" value="Подтвердить" onclick="myFunction()">
-          <svg class="checkbox__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
-            <rect width="21" height="21" x=".5" y=".5" fill="#FFF" stroke="#006F94" rx="3"></rect>
-            <path class="tick" stroke="#22e806" fill="none" stroke-linecap="round" stroke-width="4" d="M4 10l5 5 9-9"></path>
-          </svg>
+{#filename: {{ filename }} | task_file_verification: {{ task_file_verification }} | task_start_service: {{ task_start_service }}#}
 
-          <span id="confirm_span" class="checkbox__label">{{ _("Confirm") }}</span>
-          <span id="confirm_span_2" class="checkbox__label-end" style="display: none">{{ _("Confirmed") }}</span>
-        </label>
-      </div>
+<script>
+  let loader_circle = '<div class="loader__wrap">{{ _('Loading data') }}    ' +
+                      '<div class="loader" >' +
+                      '<div class="bar1"></div>' +
+                      '<div class="bar2"></div>' +
+                      '<div class="bar3"></div>' +
+                      '<div class="bar4"></div>' +
+                      '<div class="bar5"></div>' +
+                      '<div class="bar6"></div>' +
+                      '<div class="bar7"></div>' +
+                      '<div class="bar8"></div>' +
+                      '<div class="bar9"></div>' +
+                      '<div class="bar10"></div>' +
+                      '<div class="bar11"></div>' +
+                      '<div class="bar12"></div>' +
+                      '</div></div>';
+</script>
+
+<div style="margin-top: 50px">
+  {% if task_file_verification %}
+
+    <div class='progress-wrapper' xmlns="http://www.w3.org/1999/html">
+      <div id='progress-bar-file-verification' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
     </div>
-  </form>
 
-  <form class="form-input__wrapper" method="post" id="command_form">
-    {% csrf_token %}
-    <label for="command"></label><input type="text" value="STOP_TASK:{{ task.task_id }}" id="command" name="command" hidden="hidden">
-    <button class="btn btn_success btn_success__form-check" id="reset_btn" onclick="clickResetBtn()">{{ _('Cancel verification') }}</button>
-  </form>
+    <div id="progress-bar-file-verification-message" style="margin-top: 15px">{{ _('Start progress') }}</div>
+    <script src="{{ static("celery_progress/celery_progress.js") }}"></script>
 
-  <script>
-    // vanilla JS version
-    let task_state = "{{ task.state }}";
-    const progressUrl = "{{ url('celery_progress:task_status', task.task_id) }}";
-    const select_next_file = "{{ _('Select a different file') }}";
-    const resetBtn = document.getElementById("reset_btn");
-    const formCheckWrap = document.getElementById("form_check_wrap");
-    const checkBoxConfirm = document.getElementById("confirm");
-    const confirmSpan = document.getElementById("confirm_span");
-    const confirmSpan2 = document.getElementById("confirm_span_2");
-
-    function customPogress(progressBarElement, progressBarMessageElement, progress) {
-      progressBarElement.innerHTML = '&nbsp;';
-      progressBarElement.style.maxWidth = '500px';
-      progressBarElement.style.width = progress.percent + '%';
-      progressBarElement.style.backgroundColor = '#003dff';
-      if (progress.description) {
-          progressBarMessageElement.innerHTML = progress.description;
-          task_state = "PROGRESS"
-      } else {
-          progressBarMessageElement.innerHTML =   '<div class="loader__wrap">{{ _('Loading data') }}    ' +
-                                                  '<div class="loader" >' +
-                                                  '<div class="bar1"></div>' +
-                                                  '<div class="bar2"></div>' +
-                                                  '<div class="bar3"></div>' +
-                                                  '<div class="bar4"></div>' +
-                                                  '<div class="bar5"></div>' +
-                                                  '<div class="bar6"></div>' +
-                                                  '<div class="bar7"></div>' +
-                                                  '<div class="bar8"></div>' +
-                                                  '<div class="bar9"></div>' +
-                                                  '<div class="bar10"></div>' +
-                                                  '<div class="bar11"></div>' +
-                                                  '<div class="bar12"></div>' +
-                                                  '</div></div>';
-        }
-    }
-
-    function customSuccess(progressBarElement, progressBarMessageElement) {
-        task_state = 'SUCCESS';
-        resetBtn.innerHTML = select_next_file;
-        formCheckWrap.style.display = "block"
-        checkBoxConfirm.style.display = "block"
-
-        progressBarElement.style.backgroundColor = '#22e806';
-        progressBarMessageElement.innerHTML = "{{ _('Success') }}";
-    }
-
-    function customError(progressBarElement, progressBarMessageElement) {
-        task_state = 'ERROR';
-        resetBtn.innerHTML = select_next_file;
-        progressBarElement.style.backgroundColor = '#ff0000';
-        progressBarMessageElement.innerHTML =  "{{ _('Failed') }}";
-    }
-
-    function customResult(resultElement, result) {
-      resultElement.innerHTML += result;
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-      CeleryProgressBar.initProgressBar(progressUrl, {
-        onProgress: customPogress, onResult: customResult, onSuccess: customSuccess, onError: customError});
-    });
-
-    {#document.getElementById("reset_btn").onclick = function () {#}
-      {#if (task_state === 'SUCCESS' || task_state === 'ERROR')#}
-      {#  location.href = "{{ request.path }}"#}
-      {#else  {#}
-    function clickResetBtn() {
-      const commandForm = document.getElementById("command_form");
-      commandForm.addEventListener("submit", function(event) {
-          event.preventDefault();
-          var xhr = new XMLHttpRequest();
-          xhr.open("POST", "{{ request.path }}");
-          xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-          xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-              // handle response
-            }
-          };
-          xhr.send(new FormData(commandForm));
-        });
-        commandForm.submit();
-    }
+    <div id="celery-result" style="margin-top: 15px"></div>
+{#    <div id="file-verification-result" style="margin-top: 15px"></div>#}
 
 
-    function myFunction() {
-        if (checkBoxConfirm.checked === true){
-            confirmSpan.style.display = "none";
-            confirmSpan2.style.display = "block";
-            resetBtn.style.display = "none";
+
+    <form class="form-check">
+      <div class="form-check-wrap flex">
+        <div class="form-check-wrap-label flex" id="form_check_wrap" style="display: none">
+          <label class="checkbox flex" for="confirm">
+            <input type="checkbox" id="confirm" class="checkbox__input" value="Подтвердить" onclick="myFunction()">
+            <svg class="checkbox__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
+              <rect width="21" height="21" x=".5" y=".5" fill="#FFF" stroke="#006F94" rx="3"></rect>
+              <path class="tick" stroke="#22e806" fill="none" stroke-linecap="round" stroke-width="4" d="M4 10l5 5 9-9"></path>
+            </svg>
+
+            <span id="confirm_span" class="checkbox__label">{{ _("Confirm") }}</span>
+            <span id="confirm_span_2" class="checkbox__label-end" style="display: none">{{ _("Confirmed") }}</span>
+          </label>
+        </div>
+      </div>
+    </form>
+
+    <form class="form-input__wrapper" method="post" id="command_form">
+      {% csrf_token %}
+      <label for="command"></label><input type="text" value="STOP_TASK:FILE_VERIFICATION:{{ task_file_verification.task_id }}" id="command" name="command" hidden="hidden">
+      <button class="btn btn_success btn_success__form-check" id="reset_btn" onclick="clickResetBtn()">{{ _('Cancel verification') }}</button>
+    </form>
+
+    <form class="form-input__wrapper" method="post" id="start_service_form">
+      {% csrf_token %}
+      <label for="command"></label><input type="text" value="START_SERVICE:START_SERVICE:{{ filename }}" id="command" name="command" hidden="hidden">
+      <button style="display: none" class="btn btn_success btn_success__form-check" id="start_service_button" onclick="clickStartServiceBtn()">{{ _('Start service') }}</button>
+    </form>
+
+    <script>
+      // vanilla JS version
+      let task_file_verification_state = "{{ task_file_verification.state }}";
+      {#const progressUrl = "{{ url('celery_progress:task_status', task_file_verification.task_id) }}";#}
+      const file_verification_result_elem = document.getElementById("file-verification-result");
+      const select_next_file = "{{ _('Select a different file') }}";
+      const resetBtn = document.getElementById("reset_btn");
+      const start_serviceBtn = document.getElementById("start_service_button");
+      const formCheckWrap = document.getElementById("form_check_wrap");
+      const checkBoxConfirm = document.getElementById("confirm");
+      const confirmSpan = document.getElementById("confirm_span");
+      const confirmSpan2 = document.getElementById("confirm_span_2");
+
+      function FileVerificationProgress(progressBarElement, progressBarMessageElement, progress) {
+        progressBarElement.innerHTML = '&nbsp;';
+        progressBarElement.style.maxWidth = '100%';
+        progressBarElement.style.width = progress.percent + '%';
+        progressBarElement.style.backgroundColor = '#003dff';
+        if (progress.description) {
+            progressBarMessageElement.innerHTML = progress.description;
+            task_file_verification_state = "PROGRESS"
         } else {
-           confirmSpan.style.display = "block";
-           confirmSpan2.style.display = "none";
-           resetBtn.style.display = "block";
-        }
-    }
-  </script>
-{% else %}
+            progressBarMessageElement.innerHTML =  loader_circle
+          }
+      }
 
-  <form class="form-input__wrapper" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input class="form-input__file" id="datafile" name="datafile" type="file" title="{{ _('Select a file with initial data') }}" accept=".xls, .xlsx" onchange="displayFileName()"/>
-    <label for="datafile" class="form-input form-input__file-button">
-      <span class="form-input__file-button-text" id="fileName">{{ _('Select File') }}</span>
-    </label>
-    <button class="btn btn_success" type="submit">{{ _('Download') }}</button>
-  </form>
+      function FileVerificationSuccess(progressBarElement, progressBarMessageElement) {
+          task_file_verification_state = 'SUCCESS';
+          resetBtn.innerHTML = select_next_file;
+          formCheckWrap.style.display = "block"
+          checkBoxConfirm.style.display = "block"
 
-  <script>
-    function displayFileName() {
-      const input = document.getElementById('datafile');
-      document.getElementById('fileName').textContent = input.files[0].name;
-    }
-  </script>
-{% endif %}
+          progressBarElement.style.backgroundColor = '#22e806';
+          progressBarMessageElement.innerHTML = "{{ _('Success') }}";
+      }
+
+      function FileVerificationError(progressBarElement, progressBarMessageElement) {
+          task_file_verification_state = 'ERROR';
+          resetBtn.innerHTML = select_next_file;
+          progressBarElement.style.backgroundColor = '#ff0000';
+          progressBarMessageElement.innerHTML =  "{{ _('Failed') }}";
+      }
+
+      function FileVerificationResult(resultElement, result) {
+          if (result) {
+            resultElement.innerHTML += result;
+            {#file_verification_result_elem.innerHTML += result;#}
+          }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        CeleryProgressBar.initProgressBar("{{ url('celery_progress:task_status', task_file_verification.task_id) }}", {
+          progressBarId: 'progress-bar-file-verification', progressBarMessageId: 'progress-bar-file-verification-message',
+          onProgress: FileVerificationProgress, onResult: FileVerificationResult, onSuccess: FileVerificationSuccess, onError: FileVerificationError});
+      });
+
+      {#document.getElementById("reset_btn").onclick = function () {#}
+        {#if (task_state === 'SUCCESS' || task_state === 'ERROR')#}
+        {#  location.href = "{{ request.path }}"#}
+        {#else  {#}
+      function clickResetBtn() {
+        const commandForm = document.getElementById("command_form");
+        commandForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ request.path }}");
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                // handle response
+              }
+            };
+            xhr.send(new FormData(commandForm));
+          });
+          commandForm.submit();
+      }
+
+      function clickStartServiceBtn() {
+        const start_serviceForm = document.getElementById("start_service_form");
+        start_serviceForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ request.path }}");
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                // handle response
+              }
+            };
+            xhr.send(new FormData(start_serviceForm));
+          });
+        start_serviceForm.submit()
+      }
+
+      function myFunction() {
+          if (checkBoxConfirm.checked === true){
+              confirmSpan.style.display = "none";
+              confirmSpan2.style.display = "block";
+              resetBtn.style.display = "none";
+              start_serviceBtn.style.display = "block";
+
+          } else {
+             confirmSpan.style.display = "block";
+             confirmSpan2.style.display = "none";
+             resetBtn.style.display = "block";
+             start_serviceBtn.style.display = "none";
+          }
+      }
+    </script>
+  {% else %}
+    <form class="form-input__wrapper" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input class="form-input__file" id="datafile" name="datafile" type="file" title="{{ _('Select a file with initial data') }}" accept=".xls, .xlsx" onchange="displayFileName()"/>
+      <label for="datafile" class="form-input form-input__file-button">
+        <span class="form-input__file-button-text" id="fileName">{{ _('Select File') }}</span>
+      </label>
+      <button class="btn btn_success" type="submit">{{ _('Download') }}</button>
+    </form>
+
+    <script>
+      function displayFileName() {
+        const input = document.getElementById('datafile');
+        document.getElementById('fileName').textContent = input.files[0].name;
+      }
+    </script>
+  {% endif %}
+</div>

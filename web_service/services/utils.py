@@ -1,7 +1,14 @@
+import os
+
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import HttpRequest
+from web_service.settings import redis_cache
 
 
-def get_redis_key(request, key_type):
-    if key_type == 'file_verification':
-        return f'{request.path}_last_file_verification_task_user-{request.user.pk}'
+def get_redis_key(request: WSGIRequest, task_name: str) -> str:
+    """Формирует имя ключа в Redis"""
+    return f'{request.path.replace(os.sep, "_")}_last_task_{task_name}_user-{request.user.pk}'
+
+
+def get_service_name(request: WSGIRequest) -> str:
+    """Выделяет название сервиса из url endpoint"""
+    return request.path.replace(os.sep, '').replace('services', '').upper()

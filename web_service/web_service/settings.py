@@ -47,6 +47,7 @@ LOGIC_IN_DEV = _('Functionality of this block is under development')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = []
 
 # Application definition
 INSTALLED_APPS = [
@@ -327,9 +328,18 @@ redis_cache = StrictRedis(
     charset="utf-8",
 )
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://{config['REDIS_HOST']}:{config['REDIS_PORT']}/{config['REDIS_DJANGO_CACHE_DATABASE']}",
+    }
+}
+
+
 # CELERY
-CELERY_BROKER_URL = REDIS_URL  # для rabbitmq, поменяйте адрес брокера на amqp://guest:guest@127.0.0.1:5672
-CELERY_TASK_TRACK_STARTED = True  # запускает трекинг задач Celery
+# CELERY_RESULT_BACKEND = 'django-db'  # указание для django_celery_results куда записывать результат выполнения задач
+# CELERY_BROKER_URL = REDIS_URL  # для rabbitmq, поменяйте адрес брокера на amqp://guest:guest@127.0.0.1:5672
+
 
 # # Планировщик задач
 #
@@ -337,13 +347,23 @@ CELERY_TASK_TRACK_STARTED = True  # запускает трекинг задач
 # CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 #
 # CELERY_BROKER_TRANSPORT_OPTION = {'visibility_timeout': 3600}  # время ожидания видимости 1 час
-CELERY_ACCEPT_CONTENT = ['application/json']  # это тип содержимого, разрешенный к получению
-CELERY_TASK_SERIALIZER = 'json'  # это строка, используемая для определения метода сериализации по умолчанию
-CELERY_RESULT_BACKEND = 'django-db'  # указание для django_celery_results куда записывать результат выполнения задач
+# CELERY_ACCEPT_CONTENT = ['application/json']  # это тип содержимого, разрешенный к получению
+# CELERY_TASK_TRACK_STARTED = True  # запускает трекинг задач Celery
+# CELERY_TASK_SERIALIZER = 'json'  # это строка, используемая для определения метода сериализации по умолчанию
+# CELERY_TASK_TIME_LIMIT = 30 * 60 эту не использовал
+
 
 # это не из видео а интуитивно
-CELERY_RESULT_SERIALIZER = 'json'  # является типом формата сериализации результатов
-CELERY_TASK_DEFAULT_QUEUE = 'default-queue'  # celery будет использовать это имя очереди
+# CELERY_RESULT_SERIALIZER = 'json'  # является типом формата сериализации результатов
+# CELERY_TASK_DEFAULT_QUEUE = 'default-queue'  # celery будет использовать это имя очереди
+
+
+
+# Настройки RequestsManager
+REQUESTS_TIMEOUT = 30
+DEFAULT_CONTENT_TYPE = 'application/json'
+MAX_REQUEST_RETRIES = 3
+
 
 # с тем что ниже пока не разобрался
 #
