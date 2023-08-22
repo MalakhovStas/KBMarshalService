@@ -216,7 +216,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.ndjagoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = 'en'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True

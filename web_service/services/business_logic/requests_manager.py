@@ -89,14 +89,18 @@ class RequestsManager:
                     break
         return result
 
-    @staticmethod
-    async def __get_result(response: aiohttp.ClientResponse) -> dict[str, Any] | list:
+    async def __get_result(self, response: aiohttp.ClientResponse) -> dict[str, Any] | list:
         """Возвращает данные ответа"""
-        if response.content_type in ["text/html", "text/plain"]:
-            result = {"response": await response.text()}
-        else:
-            result = await response.json()
-        return result
+        result = None
+        content = {"response": (await response.content.read()).decode("utf-8")}
+        try:
+            if response.content_type in ["text/html", "text/plain"]:
+                result = {"response": await response.text()}
+            else:
+                result = await response.json()
+        except Exception as exc:
+            self.logger.error(self.sign + f'response.content_type: {response.content_type} | {exc=}')
+        return result if result else content
 
     async def aio_request_gather(self, list_requests: list,
                                  headers: dict, method: str = "get", data: dict | None = None) -> Iterable:

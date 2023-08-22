@@ -7,6 +7,9 @@ from celery.result import AsyncResult
 from services.tasks import start_service_fns
 from django.utils.translation import gettext_lazy as _
 
+from services.business_logic.service_key_verification import key_verification
+import asyncio
+
 
 def start_parsing(request: WSGIRequest, filename):
     service = get_service_name(request)
@@ -24,4 +27,7 @@ def start_parsing(request: WSGIRequest, filename):
     # `else:
     #     msg = _("Select File")
     msg = f'{_("Start service")}: {service}'
+
+    asyncio.run(key_verification(service=service, key=''))
+
     return msg, task, filename
