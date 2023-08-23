@@ -1,9 +1,13 @@
+import json
+
 import openpyxl
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 from django.utils import translation
 from openpyxl.worksheet.worksheet import Worksheet
 from django.utils.translation import gettext_lazy as _
+
+from services.business_logic.exceptions import FileVerificationException
 
 peoples = [
         'Мельникова Ксения Витальевна',
@@ -30,7 +34,7 @@ peoples = [
 
 
 @shared_task(bind=True, name='check_file_fields')
-def check_file_fields(self, service, user, path_file, language=None) -> str:
+def check_file_fields(self, path_file, language=None) -> str:
     # FIXME
     from .business_logic.file_verification import Checker
 
@@ -52,8 +56,9 @@ def check_file_fields(self, service, user, path_file, language=None) -> str:
                 if column not in checker.detected_columns:
                     if checker.check_field(field=field, title_row=title_row, column=column, sheet=sheet):
                         break
+
     # Должна быть такая последовательность для правильного перевода
-    result = checker.check_fields_result(sheet, service, user)
+    result = checker.check_fields_result(sheet)
     translation.activate(prev_language)
     return result
 

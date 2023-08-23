@@ -11,7 +11,7 @@ from services.business_logic.service_key_verification import key_verification
 import asyncio
 
 
-def start_parsing(request: WSGIRequest, filename):
+def start_service(request: WSGIRequest, filename, task_file_verification):
     service = get_service_name(request)
     task: AsyncResult = start_service_fns.delay(language=translation.get_language())
 

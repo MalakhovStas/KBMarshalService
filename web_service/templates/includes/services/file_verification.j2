@@ -134,16 +134,50 @@
           progressBarMessageElement.innerHTML = "{{ _('Success') }}";
       }
 
-      function FileVerificationError(progressBarElement, progressBarMessageElement) {
+      function FileVerificationError(progressBarElement, progressBarMessageElement, excMessage) {
+          excMessage = excMessage || '';
           task_file_verification_state = 'ERROR';
           resetBtn.innerHTML = select_next_file;
           progressBarElement.style.backgroundColor = '#ff0000';
-          progressBarMessageElement.innerHTML =  "{{ _('Failed') }}";
+          progressBarMessageElement.innerHTML =  "{{ _('Failed') }} - " + excMessage;
       }
 
       function FileVerificationResult(resultElement, result) {
-          if (result) {
-            file_verification_result_elem.innerHTML += result;
+        const word_column = "{{ _('column') }}: ";
+        const word_not_found = "<b style='color:#ff0000'>{{ _('not found') }}</b>";
+
+        let fullname_col = "";
+        let fullname_col_name = word_not_found;
+
+        let date_birth_col = "";
+        let date_birth_col_name = word_not_found;
+
+        let date_issue_pass_col = "";
+        let date_issue_pass_col_name = word_not_found;
+
+        let ser_num_pass_col = "";
+        let ser_num_pass_col_name = word_not_found;
+
+
+        if (result.fullname.col != null) {fullname_col = result.fullname.col}
+        if (result.fullname.col_name != null) {fullname_col_name = " [ " + result.fullname.col_name +" ]"}
+
+        if (result.date_birth.col != null) {date_birth_col = result.date_birth.col}
+        if (result.date_birth.col_name != null) {date_birth_col_name = " [ " + result.date_birth.col_name +" ]"}
+
+        if (result.date_issue_pass.col != null) {date_issue_pass_col = result.date_issue_pass.col}
+        if (result.date_issue_pass.col_name != null) {date_issue_pass_col_name = " [ " + result.date_issue_pass.col_name +" ]"}
+
+        if (result.ser_num_pass.col != null) {ser_num_pass_col = result.ser_num_pass.col}
+        if (result.date_issue_pass.col_name != null) {ser_num_pass_col_name = " [ " + result.ser_num_pass.col_name +" ]"}
+
+
+        if (result) {
+            file_verification_result_elem.innerHTML +=
+              "<ul><li>{{ _('Fullname') }} - " + word_column + fullname_col +  fullname_col_name +
+              "</li><li>{{ _('Date birth') }} - " + word_column + date_birth_col + date_birth_col_name +
+              "</li><li>{{ _('Date issue passport') }} - " + word_column + date_issue_pass_col + date_issue_pass_col_name +
+              "</li><li>{{ _('Serial and passport number') }} - " + word_column + ser_num_pass_col + ser_num_pass_col_name + "</li></ul>"
           }
       }
 

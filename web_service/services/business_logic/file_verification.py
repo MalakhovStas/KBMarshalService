@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import Generator
-import json
 
 from celery.result import AsyncResult
 from django.core.files.storage import FileSystemStorage
@@ -8,17 +7,12 @@ from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUpload
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
+from services.business_logic.exceptions import FileVerificationException
+from services.tasks import check_file_fields
 from services.utils import get_redis_key, get_service_name
 from web_service.settings import redis_cache
-from services.tasks import check_file_fields
 
 BAD_result_FNS_file = 'media/services/FNS/fns_BAD_result.xlsx'
-
-
-class FileVerificationException(ValueError):
-    def __init__(self, message: str = 'File verification - FAILED'):
-        self.message = message
-        super().__init__(self.message)
 
 
 class BaseField:
@@ -151,35 +145,36 @@ class Checker:
             for column in range(1, max_column):
                 yield title_row, column
 
-    def check_fields_result(self, sheet, service: str, user: int) -> str:
-        bad_result = _('not found')
-        column = _('column')
+    def check_fields_result(self, sheet) -> str | dict:
 
         fc = self.fields_table["fullname"]["column"]
-        fc_str = f'{fc if fc else ""} [ {sheet.cell(row=1, column=fc).column_letter if fc else bad_result} ]'
+        fc_name = sheet.cell(row=1, column=fc).column_letter if fc else None
 
         dbc = self.fields_table["date_birth"]["column"]
-        dbc_str = f'{dbc if dbc else ""} [ {sheet.cell(row=1, column=dbc).column_letter if dbc else bad_result} ]'
+        dbc_name = sheet.cell(row=1, column=dbc).column_letter if dbc else None
 
         dipc = self.fields_table["date_issue_pass"]["column"]
-        dipc_str = f'{dipc if dipc else ""} [ {sheet.cell(row=1, column=dipc).column_letter if dipc else bad_result} ]'
+        dipc_name = sheet.cell(row=1, column=dipc).column_letter if dipc else None
 
         snpc = self.fields_table.get("ser_num_pass")["column"]
-        snpc_str = f'{snpc if snpc else ""} [ {sheet.cell(row=1, column=snpc).column_letter if snpc else bad_result} ]'
+        snpc_name = sheet.cell(row=1, column=snpc).column_letter if snpc else None
 
-        result = f'<ul><li>{self.trans_fields["fullname"]} - {column}: {fc_str}</li>' \
-                 f'<li>{self.trans_fields["date_birth"]} - {column}: {dbc_str}</li>' \
-                 f'<li>{self.trans_fields["date_issue_pass"]} - {column}: {dipc_str}</li>' \
-                 f'<li>{self.trans_fields["ser_num_pass"]} - {column}: {snpc_str}</li></ul>'
+        result_data = {
+            'fullname': {'col': fc, 'col_name': fc_name},
+            'date_birth': {'col': dbc, 'col_name': dbc_name},
+            'date_issue_pass': {'col': dipc, 'col_name': dipc_name},
+            'ser_num_pass': {'col': snpc, 'col_name': snpc_name}
+        }
 
-        result_columns_data = json.dumps({'fullname': fc, 'date_birth': dbc, 'date_issue_pass': dipc, 'ser_num_pass': snpc})
-        key = get_redis_key(task_name='FILE_VERIFICATION', service=service, user=user)
-        redis_cache.set(key, f'{redis_cache.get(key)}:data:>{result_columns_data}')
-
-        if all((fc, dbc, dipc, dipc_str)):
-            return result
+        if all((fc, dbc, dipc, snpc)):
+            return result_data
         else:
-            raise FileVerificationException(message=result)
+            not_found_columns = [self.trans_fields[key] for key, value in result_data.items() if not value["col"]]
+            if len(not_found_columns) > 1:
+                msg = _("not found columns")
+            else:
+                msg = _("not found column")
+            raise FileVerificationException(message=f"{msg}: <b style='color:#ff0000'>{not_found_columns}</b>")
 
 
 def load_data_file(request) -> tuple[str, AsyncResult, str]:
@@ -196,8 +191,6 @@ def load_data_file(request) -> tuple[str, AsyncResult, str]:
             filename = file_system.save(f'{service}/{service}_{date}_user-{request.user.pk}_filename-{file.name}', file)
 
             task: AsyncResult = check_file_fields.delay(
-                service=service,
-                user=f'{request.user.pk}',
                 path_file=f'media/{filename}',
                 language=translation.get_language()
             )

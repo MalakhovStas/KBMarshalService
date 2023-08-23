@@ -25,8 +25,7 @@ class BaseServicesPageView(TemplateView):
             filename, task_file_verification, task_start_service = None, None, None
 
             if file_verification_data := redis_cache.get(get_redis_key(request=request, task_name='FILE_VERIFICATION')):
-                task_file_verification_id, data = file_verification_data.split(sep=':', maxsplit=1)
-                filename, task_result = data.split(':data:>', maxsplit=1)
+                task_file_verification_id, filename = file_verification_data.split(sep=':', maxsplit=1)
                 task_file_verification = AsyncResult(id=task_file_verification_id)
 
             if start_service_data := redis_cache.get(get_redis_key(request=request, task_name=f'START_SERVICE')):
@@ -67,18 +66,13 @@ class BaseServicesPageView(TemplateView):
                     task_name = 'FILE_VERIFICATION'
 
                     if file_verification_data := redis_cache.get(name=get_redis_key(request=request, task_name=task_name)):
-                        task_file_verification_id, data = file_verification_data.split(sep=':', maxsplit=1)
-                        filename, task_result = data.split(':data:>', maxsplit=1)
-                        logger.warning(f'task_result FROM REDIS: {task_result}')
+                        task_file_verification_id, filename = file_verification_data.split(sep=':', maxsplit=1)
                         task_file_verification = AsyncResult(id=task_file_verification_id)
-                        logger.warning(f'task_result FROM CELERY: {task_file_verification.result}')
 
-                    from services.business_logic.fns_service import start_parsing
 
-                    msg, task_start_service, filename = start_parsing(request, filename)
-
+                    from services.business_logic.fns_service import start_service
+                    msg, task_start_service, filename = start_service(request, filename, task_file_verification)
                     messages.add_message(request, messages.INFO, msg)
-
                     # redis_cache.delete(get_redis_key(request=request, task_name=task_name))
                 else:
                     return redirect(self.get_success_url())
