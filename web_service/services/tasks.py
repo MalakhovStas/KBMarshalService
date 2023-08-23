@@ -30,7 +30,7 @@ peoples = [
 
 
 @shared_task(bind=True, name='check_file_fields')
-def check_file_fields(self, path, language=None) -> str:
+def check_file_fields(self, service, user, path_file, language=None) -> str:
     # FIXME
     from .business_logic.file_verification import Checker
 
@@ -40,7 +40,7 @@ def check_file_fields(self, path, language=None) -> str:
     checker = Checker()
     progress_recorder = ProgressRecorder(self)
 
-    sheet: Worksheet = openpyxl.load_workbook(path).active
+    sheet: Worksheet = openpyxl.load_workbook(path_file).active
     for num, (field, data) in enumerate(checker.fields_table.items(), 1):
         progress_recorder.set_progress(
             current=num,
@@ -53,7 +53,7 @@ def check_file_fields(self, path, language=None) -> str:
                     if checker.check_field(field=field, title_row=title_row, column=column, sheet=sheet):
                         break
     # Должна быть такая последовательность для правильного перевода
-    result = checker.check_fields_result(sheet)
+    result = checker.check_fields_result(sheet, service, user)
     translation.activate(prev_language)
     return result
 

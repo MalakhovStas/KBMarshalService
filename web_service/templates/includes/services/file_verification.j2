@@ -24,51 +24,79 @@
 <div style="margin-top: 50px">
   {% if task_file_verification %}
 
-    <div class='progress-wrapper' xmlns="http://www.w3.org/1999/html">
-      <div id='progress-bar-file-verification' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
-    </div>
-
-    <div id="progress-bar-file-verification-message" style="margin-top: 15px">{{ _('Start progress') }}</div>
-    <script src="{{ static("celery_progress/celery_progress.js") }}"></script>
-
-    <div id="celery-result" style="margin-top: 15px"></div>
-{#    <div id="file-verification-result" style="margin-top: 15px"></div>#}
-
-
-
-    <form class="form-check">
-      <div class="form-check-wrap flex">
-        <div class="form-check-wrap-label flex" id="form_check_wrap" style="display: none">
-          <label class="checkbox flex" for="confirm">
-            <input type="checkbox" id="confirm" class="checkbox__input" value="Подтвердить" onclick="myFunction()">
-            <svg class="checkbox__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
-              <rect width="21" height="21" x=".5" y=".5" fill="#FFF" stroke="#006F94" rx="3"></rect>
-              <path class="tick" stroke="#22e806" fill="none" stroke-linecap="round" stroke-width="4" d="M4 10l5 5 9-9"></path>
-            </svg>
-
-            <span id="confirm_span" class="checkbox__label">{{ _("Confirm") }}</span>
-            <span id="confirm_span_2" class="checkbox__label-end" style="display: none">{{ _("Confirmed") }}</span>
-          </label>
-        </div>
+    <div class="disabled" id="block_disabled">
+      <div class='progress-wrapper' xmlns="http://www.w3.org/1999/html">
+        <div id='progress-bar-file-verification' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
       </div>
-    </form>
 
-    <form class="form-input__wrapper" method="post" id="command_form">
-      {% csrf_token %}
-      <label for="command"></label><input type="text" value="STOP_TASK:FILE_VERIFICATION:{{ task_file_verification.task_id }}" id="command" name="command" hidden="hidden">
-      <button class="btn btn_success btn_success__form-check" id="reset_btn" onclick="clickResetBtn()">{{ _('Cancel verification') }}</button>
-    </form>
+      <div id="progress-bar-file-verification-message" style="margin-top: 15px">{{ _('Start progress') }}</div>
+      <script src="{{ static("celery_progress/celery_progress.js") }}"></script>
 
-    <form class="form-input__wrapper" method="post" id="start_service_form">
+      <div id="file-verification-result" style="margin-top: 15px"></div>
+
+
+      <form class="form-check">
+        <div class="form-check-wrap flex">
+          <div class="form-check-wrap-label flex" id="form_check_wrap" style="display: none">
+            <label class="checkbox flex" for="confirm">
+              <input type="checkbox" id="confirm" class="checkbox__input" value="Подтвердить" onclick="CheckboxConfirmOnClickFunction()">
+              <svg class="checkbox__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
+                <rect width="21" height="21" x=".5" y=".5" fill="#FFF" stroke="#006F94" rx="3"></rect>
+                <path class="tick" stroke="#22e806" fill="none" stroke-linecap="round" stroke-width="4" d="M4 10l5 5 9-9"></path>
+              </svg>
+
+              <span id="confirm_span" class="checkbox__label">{{ _("Confirm") }}</span>
+              <span id="confirm_span_2" class="checkbox__label-end" style="display: none">{{ _("Confirmed") }}</span>
+            </label>
+          </div>
+        </div>
+      </form>
+
+      <form class="form-input__wrapper" method="post" id="command_form">
+        {% csrf_token %}
+        <label for="command"></label><input type="text" value="STOP_TASK:FILE_VERIFICATION:{{ task_file_verification.task_id }}" id="command" name="command" hidden="hidden">
+        <button class="btn btn_success btn_success__form-check" id="reset_btn" onclick="clickResetBtn()">{{ _('Cancel verification') }}</button>
+      </form>
+
+      <form class="form-check form-check__send_results">
+        <p class="span_send_results" id="span_send_results" style="display: none">{{ 'Send result file' }}</p>
+        <ul class="form-check-wrap form-check-wrap__list list-reset flex">
+          <li class="form-check-wrap-label form-check-wrap-label__list flex" id="send_to_email" style="display:none">
+            <label class="checkbox flex" for="checkbox_send_mail">
+              <input type="checkbox" id="checkbox_send_mail" class="checkbox__input" value="Email" onclick="CheckBoxSendMail()">
+              <svg class="checkbox__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
+                <rect width="21" height="21" x=".5" y=".5" fill="#FFF" stroke="#006F94" rx="3"></rect>
+                <path class="tick" stroke="#22e806" fill="none" stroke-linecap="round" stroke-width="4" d="M4 10l5 5 9-9"></path>
+              </svg>
+
+              <span id="send_to_email" class="checkbox__label checkbox__label__list">Email</span>
+            </label>
+          </li>
+          <li class="form-check-wrap-label form-check-wrap-label__list flex" id="send_to_telegram" style="display:none">
+            <label class="checkbox flex" for="checkbox_send_telegram">
+              <input type="checkbox" id="checkbox_send_telegram" class="checkbox__input" value="Telegram" onclick="CheckBoxSendTelegram()">
+              <svg class="checkbox__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
+                <rect width="21" height="21" x=".5" y=".5" fill="#FFF" stroke="#006F94" rx="3"></rect>
+                <path class="tick" stroke="#22e806" fill="none" stroke-linecap="round" stroke-width="4" d="M4 10l5 5 9-9"></path>
+              </svg>
+
+              <span id="send_to_telegram" class="checkbox__label checkbox__label__list">Telegram</span>
+            </label>
+          </li>
+        </ul>
+      </form>
+    </div>
+    <form class="form-input__wrapper" method="post" id="start_service_command_form">
       {% csrf_token %}
-      <label for="command"></label><input type="text" value="START_SERVICE:START_SERVICE:{{ filename }}" id="command" name="command" hidden="hidden">
+      <label for="start_service_command"></label>
+      <input type="text" value="START_SERVICE:START_SERVICE:{{ filename }}" id="start_service_command" name="command" hidden="hidden">
       <button style="display: none" class="btn btn_success btn_success__form-check" id="start_service_button" onclick="clickStartServiceBtn()">{{ _('Start service') }}</button>
     </form>
 
     <script>
       // vanilla JS version
+      window.onload = FileVerifyDisabledCheck
       let task_file_verification_state = "{{ task_file_verification.state }}";
-      {#const progressUrl = "{{ url('celery_progress:task_status', task_file_verification.task_id) }}";#}
       const file_verification_result_elem = document.getElementById("file-verification-result");
       const select_next_file = "{{ _('Select a different file') }}";
       const resetBtn = document.getElementById("reset_btn");
@@ -77,6 +105,11 @@
       const checkBoxConfirm = document.getElementById("confirm");
       const confirmSpan = document.getElementById("confirm_span");
       const confirmSpan2 = document.getElementById("confirm_span_2");
+      const sendto_Email = document.getElementById("send_to_email");
+      const sendto_Telegram = document.getElementById("send_to_telegram");
+      const span_sendto_results = document.getElementById("span_send_results");
+      const start_serviceForm = document.getElementById("start_service_command_form");
+      const blockDisabled = document.getElementById("block_disabled");
 
       function FileVerificationProgress(progressBarElement, progressBarMessageElement, progress) {
         progressBarElement.innerHTML = '&nbsp;';
@@ -110,21 +143,16 @@
 
       function FileVerificationResult(resultElement, result) {
           if (result) {
-            resultElement.innerHTML += result;
-            {#file_verification_result_elem.innerHTML += result;#}
+            file_verification_result_elem.innerHTML += result;
           }
       }
 
       document.addEventListener("DOMContentLoaded", function () {
-        CeleryProgressBar.initProgressBar("{{ url('celery_progress:task_status', task_file_verification.task_id) }}", {
+          CeleryProgressBar.initProgressBar("{{ url('celery_progress:task_status', task_file_verification.task_id) }}", {
           progressBarId: 'progress-bar-file-verification', progressBarMessageId: 'progress-bar-file-verification-message',
           onProgress: FileVerificationProgress, onResult: FileVerificationResult, onSuccess: FileVerificationSuccess, onError: FileVerificationError});
       });
 
-      {#document.getElementById("reset_btn").onclick = function () {#}
-        {#if (task_state === 'SUCCESS' || task_state === 'ERROR')#}
-        {#  location.href = "{{ request.path }}"#}
-        {#else  {#}
       function clickResetBtn() {
         const commandForm = document.getElementById("command_form");
         commandForm.addEventListener("submit", function(event) {
@@ -143,7 +171,15 @@
       }
 
       function clickStartServiceBtn() {
-        const start_serviceForm = document.getElementById("start_service_form");
+        localStorage.setItem('StartServiceForm', 'true')
+        start_serviceForm.style.display = "none";
+
+        blockDisabled.style.pointerEvents = 'none';
+        blockDisabled.style.filter = 'grayscale(100%)';
+        checkBoxConfirm.checked = true;
+
+        localStorage.setItem('FileVerifyDisabled', 'true')
+
         start_serviceForm.addEventListener("submit", function(event) {
             event.preventDefault();
             var xhr = new XMLHttpRequest();
@@ -159,20 +195,74 @@
         start_serviceForm.submit()
       }
 
-      function myFunction() {
+
+      function FileVerifyDisabledCheck() {
+
+        if (localStorage.getItem('CheckBoxSendMail') === 'true') {
+          document.getElementById("checkbox_send_mail").checked = true;
+          }
+        else {document.getElementById("checkbox_send_mail").checked = false;}
+
+
+        if (localStorage.getItem('CheckBoxSendTelegram') === 'true') {
+          document.getElementById("checkbox_send_telegram").checked = true;
+          }
+        else {document.getElementById("checkbox_send_telegram").checked = false;}
+
+
+        if (localStorage.getItem('StartServiceForm') === 'true') {
+          start_serviceForm.display = 'none';
+          }
+        else {start_serviceForm.display = 'block';}
+
+
+        if (localStorage.getItem('FileVerifyDisabled') === 'true') {
+          blockDisabled.style.pointerEvents = 'none';
+          blockDisabled.style.filter = 'grayscale(100%)';
+          checkBoxConfirm.checked = true;
+
+          confirmSpan.style.display = "none";
+          confirmSpan2.style.display = "block";
+
+          resetBtn.style.display = "none";
+          start_serviceBtn.style.display = "none";
+          sendto_Email.style.display = "block";
+          sendto_Telegram.style.display = "block";
+          span_sendto_results.style.display  = "block";
+          }
+        else  {checkBoxConfirm.checked = false;}
+
+      }
+
+      function CheckboxConfirmOnClickFunction() {
           if (checkBoxConfirm.checked === true){
               confirmSpan.style.display = "none";
               confirmSpan2.style.display = "block";
               resetBtn.style.display = "none";
               start_serviceBtn.style.display = "block";
+              sendto_Email.style.display = "block";
+              sendto_Telegram.style.display = "block";
+              span_sendto_results.style.display  = "block";
 
           } else {
              confirmSpan.style.display = "block";
              confirmSpan2.style.display = "none";
              resetBtn.style.display = "block";
              start_serviceBtn.style.display = "none";
+             sendto_Email.style.display = "none";
+             sendto_Telegram.style.display = "none";
+             span_sendto_results.style.display  = "none";
           }
       }
+
+      function CheckBoxSendMail() {
+        localStorage.setItem('CheckBoxSendMail', document.getElementById("checkbox_send_mail").checked)
+      }
+
+      function CheckBoxSendTelegram() {
+        localStorage.setItem('CheckBoxSendTelegram', document.getElementById("checkbox_send_telegram").checked)
+      }
+
     </script>
   {% else %}
     <form class="form-input__wrapper" method="post" enctype="multipart/form-data">

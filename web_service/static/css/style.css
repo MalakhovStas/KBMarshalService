@@ -21,7 +21,7 @@ img {
 :root {
   --white-color: #FFF;
   --light-light-grey: #CACACA;
-  --light-grey: #666;
+  --light-grey: #d5d5d5;
   --grey: #414141;
   --black: #000;
   --orange: #FF9900;
@@ -602,7 +602,7 @@ footer {
   outline: none;
   border-radius: 8px;
   margin-bottom: 10px;
-  color: var(--light-grey);
+  color: var(--grey);
   background-color: var(--light-light-grey);
   transition: background-color 0.3s ease-in-out;
 }
@@ -983,7 +983,7 @@ footer {
   outline: 2px solid var(--grey);
   border-radius: 8px;
   margin-bottom: 10px;
-  color: var(--light-grey);
+  color: var(--grey);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1096,7 +1096,7 @@ footer {
 
 .form-check-wrap-label {
   margin-right: auto;
-  max-width: 13rem;
+  max-width: 15rem;
   padding: 1rem;
   /*background: #FFFFFF;
   border-radius: 0.5rem;
@@ -1144,7 +1144,7 @@ footer {
 .checkbox__label-end {
   display: inline-block;
   padding-left: 10px;
-  font-size: 1.2em;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 
@@ -1152,6 +1152,26 @@ footer {
   height: 100%;
   margin: 10px 0 0 0;
   align-items: center;
+}
+
+.form-check-wrap__list {
+  margin: 0;
+  padding: 0;
+}
+
+.checkbox__label__list {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.span_send_results {
+  margin-bottom: 0;
+  padding-left: 2.5rem;
+  font-size: 1.1rem;
+}
+
+.form-check__send_results {
+  margin-bottom: 30px;
 }
 
 @media screen and (max-width: 1200px) {

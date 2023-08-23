@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Generator
+import json
 
 from celery.result import AsyncResult
 from django.core.files.storage import FileSystemStorage
@@ -150,7 +151,7 @@ class Checker:
             for column in range(1, max_column):
                 yield title_row, column
 
-    def check_fields_result(self, sheet) -> str:
+    def check_fields_result(self, sheet, service: str, user: int) -> str:
         bad_result = _('not found')
         column = _('column')
 
@@ -171,6 +172,10 @@ class Checker:
                  f'<li>{self.trans_fields["date_issue_pass"]} - {column}: {dipc_str}</li>' \
                  f'<li>{self.trans_fields["ser_num_pass"]} - {column}: {snpc_str}</li></ul>'
 
+        result_columns_data = json.dumps({'fullname': fc, 'date_birth': dbc, 'date_issue_pass': dipc, 'ser_num_pass': snpc})
+        key = get_redis_key(task_name='FILE_VERIFICATION', service=service, user=user)
+        redis_cache.set(key, f'{redis_cache.get(key)}:data:>{result_columns_data}')
+
         if all((fc, dbc, dipc, dipc_str)):
             return result
         else:
@@ -188,11 +193,12 @@ def load_data_file(request) -> tuple[str, AsyncResult, str]:
 
         if file.name.endswith(('.xls', '.xlsx')):
             file_system = FileSystemStorage()
-            filename = file_system.save(
-                f'{service}/{service}_{date}_user-{request.user.pk}_filename-{file.name}', file)
+            filename = file_system.save(f'{service}/{service}_{date}_user-{request.user.pk}_filename-{file.name}', file)
 
             task: AsyncResult = check_file_fields.delay(
-                path=f'media/{filename}',
+                service=service,
+                user=f'{request.user.pk}',
+                path_file=f'media/{filename}',
                 language=translation.get_language()
             )
             redis_cache.set(

@@ -10,10 +10,18 @@
 
     <div id="start-service-result" style="margin-top: 15px"></div>
 
-    <form class="form-input__wrapper" method="post" id="start_service_download_result_file">
+    <form class="form-input__wrapper" method="post" id="start_service_download_result_file_form">
       {% csrf_token %}
-      <label for="command"></label><input type="text" value="DOWNLOAD_RESULT_FILE:DOWNLOAD_RESULT_FILE:{{ filename }}" id="command" name="command" hidden="hidden">
+      <label for="start_service_download_result_file"></label>
+      <input type="text" value="DOWNLOAD_RESULT_FILE:DOWNLOAD_RESULT_FILE:{{ filename }}" id="start_service_download_result_file" name="command" hidden="hidden">
       <button style="display: none" class="btn btn_success btn_success__form-check" id="start_service_download_result_file_button" onclick="clickDownloadResultBtn()">{{ _('Download resul file') }}</button>
+    </form>
+
+    <form class="form-input__wrapper" method="post" id="command_stop_all_form">
+      {% csrf_token %}
+      <label for="command_stop_all"></label>
+      <input type="text" value="STOP_TASK:ALL:{{ filename }}" id="command_stop_all" name="command" hidden="hidden">
+      <button class="btn btn_success btn_success__form-check" id="stop_all" onclick="clickStopBtn()">{{ _('Stop all') }}</button>
     </form>
 
     <script>
@@ -62,7 +70,7 @@
         });
 
         function clickDownloadResultBtn() {
-        const start_service_download_result_fileForm = document.getElementById("start_service_download_result_file");
+        const start_service_download_result_fileForm = document.getElementById("start_service_download_result_file_form");
         start_service_download_result_fileForm.addEventListener("submit", function(event) {
             event.preventDefault();
             var xhr = new XMLHttpRequest();
@@ -78,6 +86,23 @@
         start_service_download_result_fileForm.submit()
       }
 
+      function clickStopBtn(){
+        {#localStorage.setItem('FileVerifyDisabled', 'false');#}
+        {#localStorage.setItem('CheckBoxSendMail', 'false');#}
+        {#localStorage.setItem('CheckBoxSendTelegram', 'false');#}
+        {#localStorage.setItem('StartServiceForm', 'false')#}
+        localStorage.clear()
+        location.reload()
+      }
+
     </script>
+{#  {% else %}#}
+{#    <form class="form-input__wrapper" method="post" id="command_stop_all_form">#}
+{#      {% csrf_token %}#}
+{#      <label for="command_stop_all"></label>#}
+{#      <input type="text" value="STOP_TASK:ALL:{{ filename }}" id="command_stop_all" name="command" hidden="hidden">#}
+{#      <button class="btn btn_success btn_success__form-check" id="stop_all" onclick="clickStopBtn()">{{ _('Stop all') }}</button>#}
+{#    </form>#}
+{##}
   {% endif %}
 </div>

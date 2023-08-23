@@ -11,6 +11,7 @@ from web_service.celery import app
 from web_service.settings import redis_cache
 from services.utils import get_redis_key, get_service_name
 from django.http import FileResponse
+from services.loader import logger
 
 
 class BaseServicesPageView(TemplateView):
@@ -24,7 +25,8 @@ class BaseServicesPageView(TemplateView):
             filename, task_file_verification, task_start_service = None, None, None
 
             if file_verification_data := redis_cache.get(get_redis_key(request=request, task_name='FILE_VERIFICATION')):
-                task_file_verification_id, filename = file_verification_data.split(sep=':', maxsplit=1)
+                task_file_verification_id, data = file_verification_data.split(sep=':', maxsplit=1)
+                filename, task_result = data.split(':data:>', maxsplit=1)
                 task_file_verification = AsyncResult(id=task_file_verification_id)
 
             if start_service_data := redis_cache.get(get_redis_key(request=request, task_name=f'START_SERVICE')):
@@ -36,6 +38,7 @@ class BaseServicesPageView(TemplateView):
                 'task_file_verification': task_file_verification,
                 'task_start_service': task_start_service
             }
+            logger.warning(f'CONTEXT: {context}')
             return render(request, self.template_name, context=context)
         else:
             return HttpResponseForbidden()
@@ -47,14 +50,15 @@ class BaseServicesPageView(TemplateView):
         filename, task_file_verification, task_start_service = None, None, None
 
         if command := request.POST.get('command'):
-            print(command)
             command, task_name, data = command.split(sep=':', maxsplit=2)
 
             if command == 'STOP_TASK':
-                app.control.revoke(task_id=data, terminate=True)
-
-                redis_cache.delete(get_redis_key(request=request, task_name=task_name))
-
+                if task_name == 'ALL':
+                    redis_cache.delete(get_redis_key(request=request, task_name='FILE_VERIFICATION'))
+                    redis_cache.delete(get_redis_key(request=request, task_name='START_SERVICE'))
+                else:
+                    app.control.revoke(task_id=data, terminate=True)
+                    redis_cache.delete(get_redis_key(request=request, task_name=task_name))
                 return redirect(self.get_success_url())
 
             elif command == 'START_SERVICE':
@@ -63,8 +67,11 @@ class BaseServicesPageView(TemplateView):
                     task_name = 'FILE_VERIFICATION'
 
                     if file_verification_data := redis_cache.get(name=get_redis_key(request=request, task_name=task_name)):
-                        task_file_verification_id, filename = file_verification_data.split(sep=':', maxsplit=1)
+                        task_file_verification_id, data = file_verification_data.split(sep=':', maxsplit=1)
+                        filename, task_result = data.split(':data:>', maxsplit=1)
+                        logger.warning(f'task_result FROM REDIS: {task_result}')
                         task_file_verification = AsyncResult(id=task_file_verification_id)
+                        logger.warning(f'task_result FROM CELERY: {task_file_verification.result}')
 
                     from services.business_logic.fns_service import start_parsing
 
@@ -80,7 +87,6 @@ class BaseServicesPageView(TemplateView):
                 return FileResponse(open(f'media/{data}', "rb"))
 
         else:
-            print(request.POST)
             msg, task_file_verification, filename = load_data_file(request)
             messages.add_message(request, messages.INFO, msg)
 
@@ -89,7 +95,6 @@ class BaseServicesPageView(TemplateView):
             'task_file_verification': task_file_verification,
             'task_start_service': task_start_service
         }
-        print(context)
         return render(request, self.template_name, context=context)
 
 
