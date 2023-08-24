@@ -1,9 +1,63 @@
 {% extends "base.j2" %}
 
 {% block content %}
-  <br>
-  <br>
-  <br>
-  <br>
-  <h2 style="color: red; text-align: center">{{ logic_in_dev }}</h2>
+
+  <div>
+    <div class="input__wrapper">
+      <form class="form-wrapper">
+        <div class="form-wrappers">
+          <input class="form-input form-input__debtor" type="search" name="name" placeholder="Поиск">
+          <svg class="form__search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="7.56126" height="1.89031" transform="matrix(0.713342 0.700816 -0.713342 0.700816 18.6064 17.3762)" fill="gray"/>
+            <path d="M20.9303 10.7726C20.9303 16.1533 16.4855 20.5452 10.9652 20.5452C5.44478 20.5452 1 16.1533 1 10.7726C1 5.39198 5.44478 1 10.9652 1C16.4855 1 20.9303 5.39198 20.9303 10.7726Z" stroke="gray" stroke-width="2"/>
+          </svg>
+        </div>
+      </form>
+    </div>
+
+    <table border="1" cellspacing="0" cellpadding="10" class="table-debtor">
+      <caption class=""></caption>
+      <tr class="table-debtor__row">
+        <td class="table-debtor__column">Фамилия</td>
+        <td class="table-debtor__column">hgjhkjkljlkl</td>
+      </tr>
+      <tr class="table-debtor__row">
+        <td class="table-debtor__column">Имя</td>
+        <td class="table-debtor__column"></td>
+      </tr>
+      <tr class="table-debtor__row">
+        <td class="table-debtor__column">Отчество</td>
+        <td class="table-debtor__column"></td>
+      </tr>
+      <tr class="table-debtor__row">
+        <td class="table-debtor__column">Дата рождения</td>
+        <td class="table-debtor__column"></td>
+      </tr>
+      <tr class="table-debtor__row">
+        <td class="table-debtor__column">ИНН</td>
+        <td class="table-debtor__column"></td>
+      </tr>
+      <tr class="table-debtor__row">
+        <td class="table-debtor__column">Серия и номер паспорта</td>
+        <td class="table-debtor__column"></td>
+      </tr>
+      <tr class="table-debtor__row">
+        <td class="table-debtor__column">Дата выдачи паспорта</td>
+        <td class="table-debtor__column"></td>
+      </tr>
+      <tr class="table-debtor__row">
+        <td class="table-debtor__column">Наименование организации, выдавшей паспорт</td>
+        <td class="table-debtor__column"></td>
+      </tr>
+    </table>
+
+    <table border="1" cellspacing="0" cellpadding="10" class="table-debtor">
+      <caption class="">Исполнительные производства</caption>
+      <tr class="table-debtor__row">
+        <td class="table-debtor__column">№</td>
+        <td class="table-debtor__column">hgjhkjkljlkl</td>
+      </tr>
+    </table>
+  </div>
 {% endblock %}
+
