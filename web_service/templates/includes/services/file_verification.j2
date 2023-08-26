@@ -1,7 +1,6 @@
 {#{% if task_file_verification and not task_file_verification.status in ['SUCCESS', 'FAILURE', 'ERROR', 'REVOKED'] %}#}
-
-
 {#filename: {{ filename }} | task_file_verification: {{ task_file_verification }} | task_start_service: {{ task_start_service }}#}
+<div id="disabled_control" style="text-align: right"></div>
 
 <script>
   let loader_circle = '<div class="loader__wrap">{{ _('Loading data') }}    ' +
@@ -95,7 +94,9 @@
 
     <script>
       // vanilla JS version
-      window.onload = FileVerifyDisabledCheck
+      window.onload = FileVerifyDisabledCheck;
+      document.getElementById("disabled_control").innerHTML = "FileVerifyDisabled{{ service }}: " + localStorage.getItem('FileVerifyDisabled{{ service }}');
+
       let task_file_verification_state = "{{ task_file_verification.state }}";
       const file_verification_result_elem = document.getElementById("file-verification-result");
       const select_next_file = "{{ _('Select a different file') }}";
@@ -158,6 +159,8 @@
         let ser_num_pass_col = "";
         let ser_num_pass_col_name = word_not_found;
 
+        let inn_col = "";
+        let inn_col_name = word_not_found;
 
         if (result.fullname.col != null) {fullname_col = result.fullname.col}
         if (result.fullname.col_name != null) {fullname_col_name = " [ " + result.fullname.col_name +" ]"}
@@ -169,8 +172,7 @@
         if (result.date_issue_pass.col_name != null) {date_issue_pass_col_name = " [ " + result.date_issue_pass.col_name +" ]"}
 
         if (result.ser_num_pass.col != null) {ser_num_pass_col = result.ser_num_pass.col}
-        if (result.date_issue_pass.col_name != null) {ser_num_pass_col_name = " [ " + result.ser_num_pass.col_name +" ]"}
-
+        if (result.ser_num_pass.col_name != null) {ser_num_pass_col_name = " [ " + result.ser_num_pass.col_name +" ]"}
 
         if (result) {
             file_verification_result_elem.innerHTML +=
@@ -179,7 +181,14 @@
               "</li><li>{{ _('Date issue passport') }} - " + word_column + date_issue_pass_col + date_issue_pass_col_name +
               "</li><li>{{ _('Serial and passport number') }} - " + word_column + ser_num_pass_col + ser_num_pass_col_name + "</li></ul>"
           }
+
+        if ("{{ request.path }}" === '/services/fssp/' ){
+            if (result.inn.col != null) {inn_col = result.inn.col}
+            if (result.inn.col_name != null) {inn_col_name = " [ " + result.inn.col_name +" ]"}
+            file_verification_result_elem.innerHTML +=  "<ul><li>{{ _('INN') }} - " + word_column + inn_col + inn_col_name + "</li></ul>"
+        }
       }
+
 
       document.addEventListener("DOMContentLoaded", function () {
           CeleryProgressBar.initProgressBar("{{ url('celery_progress:task_status', task_file_verification.task_id) }}", {
@@ -205,14 +214,14 @@
       }
 
       function clickStartServiceBtn() {
-        localStorage.setItem('StartServiceForm', 'true')
+        localStorage.setItem('StartServiceForm{{ service }}', 'true')
         start_serviceForm.style.display = "none";
 
         blockDisabled.style.pointerEvents = 'none';
         blockDisabled.style.filter = 'grayscale(100%)';
         checkBoxConfirm.checked = true;
 
-        localStorage.setItem('FileVerifyDisabled', 'true')
+        localStorage.setItem('FileVerifyDisabled{{ service }}', 'true')
 
         start_serviceForm.addEventListener("submit", function(event) {
             event.preventDefault();
@@ -232,25 +241,25 @@
 
       function FileVerifyDisabledCheck() {
 
-        if (localStorage.getItem('CheckBoxSendMail') === 'true') {
+        if (localStorage.getItem('CheckBoxSendMail{{ service }}') === 'true') {
           document.getElementById("checkbox_send_mail").checked = true;
           }
         else {document.getElementById("checkbox_send_mail").checked = false;}
 
 
-        if (localStorage.getItem('CheckBoxSendTelegram') === 'true') {
+        if (localStorage.getItem('CheckBoxSendTelegram{{ service }}') === 'true') {
           document.getElementById("checkbox_send_telegram").checked = true;
           }
         else {document.getElementById("checkbox_send_telegram").checked = false;}
 
 
-        if (localStorage.getItem('StartServiceForm') === 'true') {
+        if (localStorage.getItem('StartServiceForm{{ service }}') === 'true') {
           start_serviceForm.display = 'none';
           }
         else {start_serviceForm.display = 'block';}
 
 
-        if (localStorage.getItem('FileVerifyDisabled') === 'true') {
+        if (localStorage.getItem('FileVerifyDisabled{{ service }}') === 'true') {
           blockDisabled.style.pointerEvents = 'none';
           blockDisabled.style.filter = 'grayscale(100%)';
           checkBoxConfirm.checked = true;
@@ -290,11 +299,11 @@
       }
 
       function CheckBoxSendMail() {
-        localStorage.setItem('CheckBoxSendMail', document.getElementById("checkbox_send_mail").checked)
+        localStorage.setItem('CheckBoxSendMail{{ service }}', document.getElementById("checkbox_send_mail").checked)
       }
 
       function CheckBoxSendTelegram() {
-        localStorage.setItem('CheckBoxSendTelegram', document.getElementById("checkbox_send_telegram").checked)
+        localStorage.setItem('CheckBoxSendTelegram{{ service }}', document.getElementById("checkbox_send_telegram").checked)
       }
 
     </script>
@@ -309,6 +318,8 @@
     </form>
 
     <script>
+      document.getElementById("disabled_control").innerHTML += "FileVerifyDisabled{{ service }}: " + localStorage.getItem('FileVerifyDisabled{{ service }}');
+
       function displayFileName() {
         const input = document.getElementById('datafile');
         document.getElementById('fileName').textContent = input.files[0].name;

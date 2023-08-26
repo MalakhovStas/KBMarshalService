@@ -1,13 +1,9 @@
-import json
-
 import openpyxl
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 from django.utils import translation
-from openpyxl.worksheet.worksheet import Worksheet
 from django.utils.translation import gettext_lazy as _
-
-from services.business_logic.exceptions import FileVerificationException
+from openpyxl.worksheet.worksheet import Worksheet
 
 peoples = [
         'Мельникова Ксения Витальевна',
@@ -34,14 +30,14 @@ peoples = [
 
 
 @shared_task(bind=True, name='check_file_fields')
-def check_file_fields(self, path_file, language=None) -> str:
+def check_file_fields(self, service, path_file, language=None) -> str:
     # FIXME
     from .business_logic.file_verification import Checker
 
     prev_language = translation.get_language()
     language and translation.activate(language)
 
-    checker = Checker()
+    checker = Checker(service)
     progress_recorder = ProgressRecorder(self)
 
     sheet: Worksheet = openpyxl.load_workbook(path_file).active
@@ -64,7 +60,21 @@ def check_file_fields(self, path_file, language=None) -> str:
 
 
 @shared_task(bind=True, name='start_service_fns')
-def start_service_fns(self, language=None) -> str:
+def start_service_fns(self, filename: str, task_file_verification_id: str, language=None) -> str:
+    # FIXME
+    from services.business_logic.fns_service import FNSservice
+    prev_language = translation.get_language()
+    language and translation.activate(language)
+
+    fns_service = FNSservice(task_file_verification_id, filename)
+    result = fns_service(progress=ProgressRecorder(self))
+
+    translation.activate(prev_language)
+    return result
+
+
+@shared_task(bind=True, name='start_service_fssp')
+def start_service_fssp(self, filename: str, task_file_verification_id: str, language=None) -> str:
     prev_language = translation.get_language()
     language and translation.activate(language)
 
@@ -74,7 +84,7 @@ def start_service_fns(self, language=None) -> str:
         progress_recorder.set_progress(
             current=num,
             total=len(peoples),
-            description='Поиск данных: ' + f'{people}'
+            description='ФССП поиск данных: ' + f'{people}'
         )
         import time
         time.sleep(1)

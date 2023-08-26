@@ -1,3 +1,5 @@
+import asyncio
+
 from celery.result import AsyncResult
 from django.contrib import messages
 from django.core.handlers.wsgi import WSGIRequest
@@ -12,6 +14,8 @@ from web_service.settings import redis_cache
 from services.utils import get_redis_key, get_service_name
 from django.http import FileResponse
 from services.loader import logger
+from services.business_logic.service_key_verification import key_verification
+from services.business_logic.start_services import start_services
 
 
 class BaseServicesPageView(TemplateView):
@@ -33,6 +37,7 @@ class BaseServicesPageView(TemplateView):
                 task_start_service = AsyncResult(id=task_start_service_id)
 
             context = {
+                'service': get_service_name(request),
                 'filename': filename,
                 'task_file_verification': task_file_verification,
                 'task_start_service': task_start_service
@@ -45,7 +50,6 @@ class BaseServicesPageView(TemplateView):
     def post(self, request: WSGIRequest, *args, **kwargs):
 
         """Метод изменения данных пользователя."""
-        service = get_service_name(request)
         filename, task_file_verification, task_start_service = None, None, None
 
         if command := request.POST.get('command'):
@@ -61,30 +65,27 @@ class BaseServicesPageView(TemplateView):
                 return redirect(self.get_success_url())
 
             elif command == 'START_SERVICE':
-                # get_redis_key(request=request, task_name=task_name)
-                if service == 'FNS':
-                    task_name = 'FILE_VERIFICATION'
-
-                    if file_verification_data := redis_cache.get(name=get_redis_key(request=request, task_name=task_name)):
+                verify = key_verification(request=request)  # {"service": service, "key_valid": False, "valid_until": False, "available_req": 0, "error": True}
+                if verify["key_valid"]:
+                    if file_verification_data := redis_cache.get(name=get_redis_key(request=request, task_name='FILE_VERIFICATION')):
                         task_file_verification_id, filename = file_verification_data.split(sep=':', maxsplit=1)
                         task_file_verification = AsyncResult(id=task_file_verification_id)
 
+                        msg, task_start_service, filename = start_services(request, filename, task_file_verification)
+                        messages.add_message(request=request, level=messages.INFO, message=msg)
 
-                    from services.business_logic.fns_service import start_service
-                    msg, task_start_service, filename = start_service(request, filename, task_file_verification)
-                    messages.add_message(request, messages.INFO, msg)
                     # redis_cache.delete(get_redis_key(request=request, task_name=task_name))
-                else:
-                    return redirect(self.get_success_url())
+                return redirect(self.get_success_url())
 
             elif command == 'DOWNLOAD_RESULT_FILE':
                 return FileResponse(open(f'media/{data}', "rb"))
 
         else:
             msg, task_file_verification, filename = load_data_file(request)
-            messages.add_message(request, messages.INFO, msg)
+            messages.add_message(request=request, level=messages.INFO, message=msg)
 
         context = {
+            'service': get_service_name(request),
             'filename': filename,
             'task_file_verification': task_file_verification,
             'task_start_service': task_start_service

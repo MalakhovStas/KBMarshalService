@@ -8,122 +8,37 @@ from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
 from services.business_logic.exceptions import FileVerificationException
+from services.business_logic.file_verification_fields_models import FullNamePerson, DateBirthPerson, \
+    DateIssuePassport, SerNumPassport, INN
 from services.tasks import check_file_fields
 from services.utils import get_redis_key, get_service_name
 from web_service.settings import redis_cache
 
-BAD_result_FNS_file = 'media/services/FNS/fns_BAD_result.xlsx'
-
-
-class BaseField:
-    words_to_search_in_title = []
-    or_words_to_search_in_title = []
-
-    def get_data(self, cell_value: str):  # -> tuple[bool | str | None]:
-        pass
-
-    def check_title(self, cell_value: str, column):  # -> bool | dict:
-        result = False
-        cell_value = cell_value.lower()
-        if all([word in cell_value for word in self.words_to_search_in_title]) or \
-                all([word in cell_value for word in self.or_words_to_search_in_title]):
-            result = {'column': column}
-        return result
-
-    def check_data(self, cell_value: str, row):  # -> bool | dict:
-        result = False
-        if any(self.get_data(cell_value=cell_value)):
-            result = {'row': row}
-        return result
-
-
-class FullNamePerson(BaseField):
-    words_to_search_in_title = ['фамилия', 'имя', 'отчество']
-    or_words_to_search_in_title = ['фио']
-
-    def get_data(self, cell_value: str) -> tuple:
-        surname, name, patronymic = None, None, None
-        if cell_value:
-            cell_value = cell_value.split(' ', maxsplit=2)
-            if 1 < len(cell_value) <= 3 and all([word.isalpha() for word in cell_value]):
-                if len(cell_value) == 3:
-                    surname, name, patronymic = cell_value
-                elif len(cell_value) == 2:
-                    surname, name, patronymic = cell_value[0], cell_value[1], ''
-        return surname, name, patronymic
-
-
-class DateBirthPerson(BaseField):
-    words_to_search_in_title = ['дата', 'рождения']
-    min_age_person = 18
-
-    def get_data(self, cell_value: str) -> tuple:
-        result = False,
-        if cell_value:
-            try:
-                date_birth = datetime.strptime(cell_value, '%Y-%m-%d %H:%M:%S')
-            except ValueError:
-                try:
-                    date_birth = datetime.strptime(cell_value, '%d.%m.%Y')
-                except ValueError:
-                    date_birth = None
-            if isinstance(date_birth, datetime) and (
-                    (datetime.now() - date_birth).days + 5) / 365 >= self.min_age_person:
-                result = date_birth.strftime('%d.%m.%Y'),
-        return result
-
-
-class SerNumPassport(BaseField):
-    words_to_search_in_title = ['паспортные', 'данные']
-    or_words_to_search_in_title = ['серия', 'номер', 'паспорта']
-    max_years_after_date_issue = 30
-
-    def get_data(self, cell_value: str) -> tuple:
-        result = False,
-        cell_value = cell_value.replace(' ', '')
-        if cell_value.isdigit() and len(cell_value) == 10:
-            result = cell_value,
-        return result
-
-
-class DateIssuePassport(BaseField):
-    words_to_search_in_title = ['дата', 'выдачи', 'паспорта']
-    or_words_to_search_in_title = ['дата', 'выдачи', 'паспорт']
-    max_years_after_date_issue = 30
-
-    def get_data(self, cell_value: str) -> tuple:
-        result = False,
-        if cell_value:
-            try:
-                date_issue = datetime.strptime(cell_value, '%Y-%m-%d %H:%M:%S')
-            except ValueError:
-                try:
-                    date_issue = datetime.strptime(cell_value, '%d.%m.%Y')
-                except ValueError:
-                    date_issue = None
-            if isinstance(date_issue, datetime) and (
-                    datetime.now() - date_issue).days / 365 <= self.max_years_after_date_issue:
-                result = date_issue.strftime('%d.%m.%Y'),
-        return result
-
 
 class Checker:
+    """ Проверяет файл на наличие столбцов """
+    rows_for_check = 30
+    max_title_row = 10
+
     trans_fields = {
         'fullname': _('Fullname'),
         'date_birth': _('Date birth'),
         'date_issue_pass': _('Date issue passport'),
         'ser_num_pass': _('Serial and passport number'),
+        'inn': _('INN'),
     }
-    rows_for_check = 30
-    max_title_row = 10
 
-    def __init__(self):
+    def __init__(self, service: str):
         self.fields_table = {
             'fullname': {'column': None, 'row': None, 'class_field': FullNamePerson()},
             'date_birth': {'column': None, 'row': None, 'class_field': DateBirthPerson()},
             'date_issue_pass': {'column': None, 'row': None, 'class_field': DateIssuePassport()},
             'ser_num_pass': {'column': None, 'row': None, 'class_field': SerNumPassport()},
         }
+
+        self.service = service
+        if self.service == "FSSP":
+            self.fields_table.update({'inn': {'column': None, 'row': None, 'class_field': INN()}})
         self.detected_columns = set()
 
     def check_field(self, field, title_row, column, sheet) -> bool:
@@ -147,26 +62,38 @@ class Checker:
 
     def check_fields_result(self, sheet) -> str | dict:
 
-        fc = self.fields_table["fullname"]["column"]
-        fc_name = sheet.cell(row=1, column=fc).column_letter if fc else None
+        f_col = self.fields_table["fullname"]["column"]
+        f_row = self.fields_table["fullname"]["row"]
+        fc_name = sheet.cell(row=1, column=f_col).column_letter if f_col else None
 
-        dbc = self.fields_table["date_birth"]["column"]
-        dbc_name = sheet.cell(row=1, column=dbc).column_letter if dbc else None
+        db_col = self.fields_table["date_birth"]["column"]
+        db_row = self.fields_table["date_birth"]["row"]
+        dbc_name = sheet.cell(row=1, column=db_col).column_letter if db_col else None
 
-        dipc = self.fields_table["date_issue_pass"]["column"]
-        dipc_name = sheet.cell(row=1, column=dipc).column_letter if dipc else None
+        dip_col = self.fields_table["date_issue_pass"]["column"]
+        dip_row = self.fields_table["date_issue_pass"]["row"]
+        dipc_name = sheet.cell(row=1, column=dip_col).column_letter if dip_col else None
 
-        snpc = self.fields_table.get("ser_num_pass")["column"]
-        snpc_name = sheet.cell(row=1, column=snpc).column_letter if snpc else None
+        snp_col = self.fields_table.get("ser_num_pass")["column"]
+        snp_row = self.fields_table.get("ser_num_pass")["row"]
+        snpc_name = sheet.cell(row=1, column=snp_col).column_letter if snp_col else None
 
         result_data = {
-            'fullname': {'col': fc, 'col_name': fc_name},
-            'date_birth': {'col': dbc, 'col_name': dbc_name},
-            'date_issue_pass': {'col': dipc, 'col_name': dipc_name},
-            'ser_num_pass': {'col': snpc, 'col_name': snpc_name}
+            'fullname': {'col': f_col, 'col_name': fc_name, 'start_row': f_row},
+            'date_birth': {'col': db_col, 'col_name': dbc_name, 'start_row': db_row},
+            'date_issue_pass': {'col': dip_col, 'col_name': dipc_name, 'start_row': dip_row},
+            'ser_num_pass': {'col': snp_col, 'col_name': snpc_name, 'start_row': snp_row}
         }
+        columns = (f_col, db_col, dip_col, snp_col)
 
-        if all((fc, dbc, dipc, snpc)):
+        if self.service == "FSSP":
+            inn_col = self.fields_table.get("inn")["column"]
+            inn_row = self.fields_table.get("inn")["row"]
+            innc_name = sheet.cell(row=1, column=inn_col).column_letter if inn_col else None
+            result_data.update({'inn': {'col': inn_col, 'col_name': innc_name, 'start_row': inn_row}})
+            columns += (inn_col,)
+
+        if all(columns):
             return result_data
         else:
             not_found_columns = [self.trans_fields[key] for key, value in result_data.items() if not value["col"]]
@@ -191,6 +118,7 @@ def load_data_file(request) -> tuple[str, AsyncResult, str]:
             filename = file_system.save(f'{service}/{service}_{date}_user-{request.user.pk}_filename-{file.name}', file)
 
             task: AsyncResult = check_file_fields.delay(
+                service=service,
                 path_file=f'media/{filename}',
                 language=translation.get_language()
             )

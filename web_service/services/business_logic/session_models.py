@@ -1,4 +1,4 @@
-class SessionDebtor:
+class SessionDebtorModel:
     """Класс для хранения данных должника в сессии"""
     def __init__(self, name: str, surname: str, patronymic: str, date_birth: str, ser_num_pass: str,
                  date_issue_pass: str, name_org_pass: str, fns_key: str | None = None, fssp_key: str | None = None):
@@ -21,3 +21,5 @@ class SessionDebtor:
                        f'{self.patronymic if self.patronymic else None}&bdate={self.date_birth}&' \
                        f'doctype=21&docno={self.ser_num_pass}&key={fns_key}'
 
+    def __str__(self):
+        return f'{self.surname} {self.name} {self.patronymic}'

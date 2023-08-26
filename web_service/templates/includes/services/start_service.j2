@@ -87,22 +87,22 @@
       }
 
       function clickStopBtn(){
-        {#localStorage.setItem('FileVerifyDisabled', 'false');#}
-        {#localStorage.setItem('CheckBoxSendMail', 'false');#}
-        {#localStorage.setItem('CheckBoxSendTelegram', 'false');#}
-        {#localStorage.setItem('StartServiceForm', 'false')#}
-        localStorage.clear()
+        localStorage.setItem('FileVerifyDisabled{{ service }}', 'false');
+        localStorage.setItem('CheckBoxSendMail{{ service }}', 'false');
+        localStorage.setItem('CheckBoxSendTelegram{{ service }}', 'false');
+        localStorage.setItem('StartServiceForm{{ service }}', 'false')
+        {#localStorage.clear()#это использовать нельзя очищает все данные#}
         location.reload()
       }
 
     </script>
-{#  {% else %}#}
+  {% else %}
 {#    <form class="form-input__wrapper" method="post" id="command_stop_all_form">#}
 {#      {% csrf_token %}#}
 {#      <label for="command_stop_all"></label>#}
 {#      <input type="text" value="STOP_TASK:ALL:{{ filename }}" id="command_stop_all" name="command" hidden="hidden">#}
 {#      <button class="btn btn_success btn_success__form-check" id="stop_all" onclick="clickStopBtn()">{{ _('Stop all') }}</button>#}
 {#    </form>#}
-{##}
+
   {% endif %}
 </div>
