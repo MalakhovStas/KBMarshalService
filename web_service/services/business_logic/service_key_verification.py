@@ -1,9 +1,8 @@
 import asyncio
 import json
 from datetime import datetime
-from services.loader import requests_manager, logger
+from .loader import requests_manager, logger
 from services.models import Service
-from services.loader import logger
 from asgiref.sync import sync_to_async
 from django.contrib import messages
 from django.core.handlers.wsgi import WSGIRequest

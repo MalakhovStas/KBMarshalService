@@ -1,5 +1,14 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
+
+
+def validate_num_person_in_group_request(value):
+    if value < 1:
+        raise ValidationError(
+            _("Value must be more than 0"),
+            params={"value": value},
+        )
 
 
 class Service(models.Model):
@@ -8,6 +17,8 @@ class Service(models.Model):
     description = models.TextField(max_length=2056, null=True, blank=True, verbose_name=_('description'))
     host = models.CharField(max_length=2056, null=True, blank=True, verbose_name=_('host'))
     key = models.CharField(max_length=2056, null=True, blank=True, verbose_name=_('key'))
+    num_person_in_group_request = models.SmallIntegerField(
+        verbose_name=_('max persons for group request'), default=1, validators=[validate_num_person_in_group_request])
     date_added = models.DateTimeField(auto_now_add=True, verbose_name=_('date added'))
     modification_date = models.DateTimeField(auto_now=True, verbose_name=_('modification date'))
 

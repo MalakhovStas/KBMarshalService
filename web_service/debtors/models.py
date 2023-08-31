@@ -8,9 +8,9 @@ class Debtor(models.Model):
     surname = models.CharField(max_length=256, null=False, verbose_name=_('surname'))
     name = models.CharField(max_length=256, null=False, verbose_name=_('name'))
     patronymic = models.CharField(max_length=256, null=True, blank=True, verbose_name=_('patronymic'))
-    date_birth = models.DateTimeField(null=False, verbose_name=_('date birth'))
+    date_birth = models.DateField(null=False, verbose_name=_('date birth'))
     ser_num_pass = models.CharField(max_length=10, unique=True, null=False, verbose_name=_('series passport number'))
-    date_issue_pass = models.DateTimeField(null=True, blank=True, verbose_name=_('passport issue date'))
+    date_issue_pass = models.DateField(null=True, blank=True, verbose_name=_('passport issue date'))
     name_org_pass = models.CharField(max_length=512, null=True, blank=True,
                                      verbose_name=_('name of the organization issuing the passport'))
     inn = models.CharField(null=True, blank=True, max_length=10, verbose_name='INN')

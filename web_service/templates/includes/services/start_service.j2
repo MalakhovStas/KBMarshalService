@@ -1,7 +1,7 @@
 <div style="margin-top: 100px">
   {% if task_start_service %}
-
     <div class='progress-wrapper' xmlns="http://www.w3.org/1999/html">
+      <div id="progress-bar-start-service_title" style="margin-bottom: 15px; font-weight: bold"></div>
       <div id='progress-bar-start-service' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
     </div>
 
@@ -32,17 +32,19 @@
 
 
         function StartServiceProgress(progressBarElement, progressBarMessageElement, progress) {
-          progressBarElement.innerHTML = '&nbsp;';
-          progressBarElement.style.maxWidth = '100%';
-          progressBarElement.style.width = progress.percent + '%';
-          progressBarElement.style.backgroundColor = '#003dff';
-          if (progress.description) {
-              progressBarMessageElement.innerHTML = progress.description;
-              task_start_service_state = "PROGRESS"
-          } else {
-              progressBarMessageElement.innerHTML = loader_circle
+            if (progress.title){document.getElementById("progress-bar-start-service_title").innerHTML = progress.title}
+            progressBarElement.innerHTML = '&nbsp;';
+            progressBarElement.style.maxWidth = '100%';
+            progressBarElement.style.width = progress.percent + '%';
+            progressBarElement.style.backgroundColor = '#003dff';
+            if (progress.description) {
+                progressBarMessageElement.innerHTML = progress.description;
+                task_start_service_state = "PROGRESS"
+            } else {
+                progressBarMessageElement.innerHTML = loader_circle
             }
-          }
+
+        }
 
         function StartServiceSuccess(progressBarElement, progressBarMessageElement) {
             task_start_service_state = 'SUCCESS';
@@ -55,6 +57,7 @@
             task_start_service_state = 'ERROR';
             progressBarElement.style.backgroundColor = '#ff0000';
             progressBarMessageElement.innerHTML =  "{{ _('Failed') }}";
+            {#clickStopBtn();#}
         }
 
         function StartServiceResult(resultElement, result) {
@@ -92,17 +95,17 @@
         localStorage.setItem('CheckBoxSendTelegram{{ service }}', 'false');
         localStorage.setItem('StartServiceForm{{ service }}', 'false')
         {#localStorage.clear()#это использовать нельзя очищает все данные#}
-        location.reload()
+        {#location.reload()#}
       }
 
     </script>
   {% else %}
-{#    <form class="form-input__wrapper" method="post" id="command_stop_all_form">#}
-{#      {% csrf_token %}#}
-{#      <label for="command_stop_all"></label>#}
-{#      <input type="text" value="STOP_TASK:ALL:{{ filename }}" id="command_stop_all" name="command" hidden="hidden">#}
-{#      <button class="btn btn_success btn_success__form-check" id="stop_all" onclick="clickStopBtn()">{{ _('Stop all') }}</button>#}
-{#    </form>#}
+    <form class="form-input__wrapper" method="post" id="command_stop_all_form">
+      {% csrf_token %}
+      <label for="command_stop_all"></label>
+      <input type="text" value="STOP_TASK:ALL:{{ filename }}" id="command_stop_all" name="command" hidden="hidden">
+      <button class="btn btn_success btn_success__form-check" id="stop_all" onclick="clickStopBtn()">{{ _('Stop all') }}</button>
+    </form>
 
   {% endif %}
 </div>

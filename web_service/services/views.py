@@ -13,7 +13,7 @@ from web_service.celery import app
 from web_service.settings import redis_cache
 from services.utils import get_redis_key, get_service_name
 from django.http import FileResponse
-from services.loader import logger
+from services.business_logic.loader import logger
 from services.business_logic.service_key_verification import key_verification
 from services.business_logic.start_services import start_services
 
@@ -70,8 +70,8 @@ class BaseServicesPageView(TemplateView):
                     if file_verification_data := redis_cache.get(name=get_redis_key(request=request, task_name='FILE_VERIFICATION')):
                         task_file_verification_id, filename = file_verification_data.split(sep=':', maxsplit=1)
                         task_file_verification = AsyncResult(id=task_file_verification_id)
-
-                        msg, task_start_service, filename = start_services(request, filename, task_file_verification)
+                        print(filename)
+                        msg, task_start_service, filename = start_services(request, filename, task_file_verification, verify['available_req'])
                         messages.add_message(request=request, level=messages.INFO, message=msg)
 
                     # redis_cache.delete(get_redis_key(request=request, task_name=task_name))

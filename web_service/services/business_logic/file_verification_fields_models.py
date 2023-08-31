@@ -16,7 +16,8 @@ class BaseField:
         result = False
         cell_value = cell_value.lower()
         if all([word in cell_value for word in self.words_to_search_in_title]) or \
-                all([word in cell_value for word in self.or_words_to_search_in_title]):
+                (self.or_words_to_search_in_title and
+                 all([word in cell_value for word in self.or_words_to_search_in_title])):
             result = {'column': column}
         return result
 
@@ -64,7 +65,7 @@ class DateBirthPerson(BaseField):
                     date_birth = None
             if isinstance(date_birth, datetime) and (
                     (datetime.now() - date_birth).days + 5) / 365 >= self.min_age_person:
-                result = date_birth.strftime('%d.%m.%Y'),
+                result = (date_birth.strftime('%d.%m.%Y'),)
         return result
 
 
@@ -78,7 +79,7 @@ class SerNumPassport(BaseField):
         result = False,
         cell_value = cell_value.replace(' ', '')
         if cell_value.isdigit() and len(cell_value) == 10:
-            result = cell_value,
+            result = (cell_value,)
         return result
 
 
@@ -100,7 +101,18 @@ class DateIssuePassport(BaseField):
                     date_issue = None
             if isinstance(date_issue, datetime) and (
                     datetime.now() - date_issue).days / 365 <= self.max_years_after_date_issue:
-                result = date_issue.strftime('%d.%m.%Y'),
+                result = (date_issue.strftime('%d.%m.%Y'),)
+        return result
+
+
+class NameOrgIssuePassport(BaseField):
+    """Подкласс поиска колонки - кем выдан паспорт"""
+    words_to_search_in_title = ['кем', 'выдан', 'паспорт']
+
+    def get_data(self, cell_value: str) -> tuple:
+        result = False
+        if cell_value:
+            result = (cell_value,)
         return result
 
 
@@ -115,5 +127,5 @@ class INN(BaseField):
         result = False,
         cell_value = cell_value.replace(' ', '')
         if cell_value.isdigit() and len(cell_value) == self.num_digits_inn_people:
-            result = cell_value,
+            result = (cell_value,)
         return result

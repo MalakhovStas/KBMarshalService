@@ -94,7 +94,8 @@
 
     <script>
       // vanilla JS version
-      window.onload = FileVerifyDisabledCheck;
+      {#window.onload = FileVerifyDisabledCheck;#}
+      // верхнюю строку можно закомментировать, чтобы убрать блокировку
       document.getElementById("disabled_control").innerHTML = "FileVerifyDisabled{{ service }}: " + localStorage.getItem('FileVerifyDisabled{{ service }}');
 
       let task_file_verification_state = "{{ task_file_verification.state }}";
@@ -153,11 +154,14 @@
         let date_birth_col = "";
         let date_birth_col_name = word_not_found;
 
+        let ser_num_pass_col = "";
+        let ser_num_pass_col_name = word_not_found;
+
         let date_issue_pass_col = "";
         let date_issue_pass_col_name = word_not_found;
 
-        let ser_num_pass_col = "";
-        let ser_num_pass_col_name = word_not_found;
+        let name_org_pass_col = "";
+        let name_org_pass_col_name = word_not_found;
 
         let inn_col = "";
         let inn_col_name = word_not_found;
@@ -168,25 +172,31 @@
         if (result.date_birth.col != null) {date_birth_col = result.date_birth.col}
         if (result.date_birth.col_name != null) {date_birth_col_name = " [ " + result.date_birth.col_name +" ]"}
 
-        if (result.date_issue_pass.col != null) {date_issue_pass_col = result.date_issue_pass.col}
-        if (result.date_issue_pass.col_name != null) {date_issue_pass_col_name = " [ " + result.date_issue_pass.col_name +" ]"}
-
         if (result.ser_num_pass.col != null) {ser_num_pass_col = result.ser_num_pass.col}
         if (result.ser_num_pass.col_name != null) {ser_num_pass_col_name = " [ " + result.ser_num_pass.col_name +" ]"}
 
+        if (result.date_issue_pass.col != null) {date_issue_pass_col = result.date_issue_pass.col}
+        if (result.date_issue_pass.col_name != null) {date_issue_pass_col_name = " [ " + result.date_issue_pass.col_name +" ]"}
+
+        if (result.name_org_pass.col != null) {name_org_pass_col = result.name_org_pass.col}
+        if (result.name_org_pass.col_name != null) {name_org_pass_col_name = " [ " + result.name_org_pass.col_name +" ]"}
+
         if (result) {
             file_verification_result_elem.innerHTML +=
-              "<ul><li>{{ _('Fullname') }} - " + word_column + fullname_col +  fullname_col_name +
+              "<ul><b>{{ _('Required columns') }}</b>:<li>{{ _('Fullname') }} - " + word_column + fullname_col +  fullname_col_name +
               "</li><li>{{ _('Date birth') }} - " + word_column + date_birth_col + date_birth_col_name +
-              "</li><li>{{ _('Date issue passport') }} - " + word_column + date_issue_pass_col + date_issue_pass_col_name +
               "</li><li>{{ _('Serial and passport number') }} - " + word_column + ser_num_pass_col + ser_num_pass_col_name + "</li></ul>"
-          }
 
-        if ("{{ request.path }}" === '/services/fssp/' ){
-            if (result.inn.col != null) {inn_col = result.inn.col}
-            if (result.inn.col_name != null) {inn_col_name = " [ " + result.inn.col_name +" ]"}
-            file_verification_result_elem.innerHTML +=  "<ul><li>{{ _('INN') }} - " + word_column + inn_col + inn_col_name + "</li></ul>"
-        }
+            if ("{{ request.path }}" === '/services/fssp/' ){
+              if (result.inn.col != null) {inn_col = result.inn.col}
+              if (result.inn.col_name != null) {inn_col_name = " [ " + result.inn.col_name +" ]"}
+              file_verification_result_elem.innerHTML +=  "<ul style='margin-top: -17px'><li>{{ _('INN') }} - " + word_column + inn_col + inn_col_name + "</li></ul>"
+            }
+
+            file_verification_result_elem.innerHTML +=
+              "<ul><b>{{ _('Optional columns') }}</b>:<li>{{ _('Date issue passport') }} - " + word_column + date_issue_pass_col + date_issue_pass_col_name +
+              "</li><li>{{ _('Passport issued by') }} - " + word_column + name_org_pass_col + name_org_pass_col_name + "</li></ul>"
+          }
       }
 
 

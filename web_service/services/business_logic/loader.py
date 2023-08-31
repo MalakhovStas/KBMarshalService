@@ -1,7 +1,11 @@
-from loguru import logger
-# from redis import StrictRedis
-from services.business_logic.requests_manager import RequestsManager
+import asyncio
 
+from loguru import logger
+
+from .global_storage_logic import ServicesGlobalStorage
+# from redis import StrictRedis
+from .requests_manager import RequestsManager
+from django.conf import settings
 
 debug_format = (
     "{time:DD-MM-YYYY at HH:mm:ss} | {level} | file: {file} | "
@@ -22,9 +26,10 @@ logger_common_args = {
 
 print_exchange_response = True
 
-PATH_FILE_DEBUG_LOGS = "./logs/debug.log"
-PATH_FILE_ERRORS_LOGS = "./logs/errors.log"
-PATH_FILE_RequestsManager = "./logs/RequestsManager.log"
+PATH_FILE_DEBUG_LOGS = f"{settings.BASE_DIR}/logs/debug.log"
+PATH_FILE_ERRORS_LOGS = f"{settings.BASE_DIR}/logs/errors.log"
+PATH_FILE_RequestsManager = f"{settings.BASE_DIR}/logs/RequestsManager.log"
+PATH_FILE_ServicesGlobalStorage = f"{settings.BASE_DIR}/logs/ServicesGlobalStorage.log"
 
 LOGGER_DEBUG = {
     "sink": PATH_FILE_DEBUG_LOGS,
@@ -45,10 +50,18 @@ LOGGER_RequestsManager = {
     "filter": lambda msg: msg.get("message").startswith('RequestsManager')
 } | logger_common_args
 
+LOGGER_ServicesGlobalStorage = {
+    "sink": PATH_FILE_ServicesGlobalStorage,
+    "level": "DEBUG",
+    "format": debug_format,
+    "filter": lambda msg: msg.get("message").startswith('ServicesGlobalStorage')
+} | logger_common_args
+
 
 logger.add(**LOGGER_DEBUG)
 logger.add(**LOGGER_ERRORS)
 logger.add(**LOGGER_RequestsManager)
+logger.add(**LOGGER_ServicesGlobalStorage)
 
 # redis_cache = StrictRedis(
 #     host=settings.REDIS_DATA.get("host"),
@@ -70,4 +83,5 @@ logger.add(**LOGGER_RequestsManager)
 # task = loop.create_task(create_instances_async_classes())
 # auth = loop.run_until_complete(task)
 
+services_storage = ServicesGlobalStorage(logger=logger)
 requests_manager = RequestsManager(logger=logger)
