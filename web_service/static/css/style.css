@@ -1177,7 +1177,7 @@ footer {
 .form-wrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
+  margin-bottom: 50px;
 }
 
 .form-wrappers {
@@ -1191,7 +1191,7 @@ footer {
   height: 3rem;
   border-radius: 22px;
   margin-bottom: 0;
-  padding-left: 50px;
+  padding: 0 15px 0 50px;
   font-size: 1.1rem;
 }
 
@@ -1208,43 +1208,17 @@ footer {
   position: absolute;
   top: 15px;
 }
-/*
-.form__search__icon path {
-  transition: stroke 0.3s ease-in-out;
-}
 
-.form__search__icon:focus {
-  stroke: var(--orange);
-}
-
-.form__search__icon:hover {
-  stroke: var(--orange);
-}
-
-.form__search__icon:hover path {
-  stroke: var(--orange);
-}
-
-.form__search__icon:active {
-  stroke: var(--orange);
-}
-*/
 .table-debtor {
   width: 100%;
   border-spacing: 5px;
   border: 3px solid var(--grey);
-
   margin-bottom: 25px;
 }
 
 .table-debtor__title {
-  background: #e08156;
-  color: #333;
-  border: 1px solid var(--grey);
-  border-radius: 8px;
   margin-bottom: 10px;
   font-size: 1.3rem;
-  font-weight: 700;
   text-align: center;
 }
 
@@ -1253,7 +1227,15 @@ footer {
 }
 
 .table-debtor__column {
-  width: calc(100% / 2);
+  width: calc(100% / 6);
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: var(--light-light-grey);
+  color: #000;
+}
+
+.table-debtor__column-2 {
+  width: calc((100% / 3) * 2);
   font-size: 1.1rem;
   font-weight: 700;
   background: var(--light-light-grey);
@@ -1345,6 +1327,7 @@ footer {
    .navigation {
      margin-bottom: 25px;
    }
+
    .section-account {
      flex-direction: column;
    }
@@ -1389,6 +1372,10 @@ footer {
 
   .row {
     flex-direction: column;
+  }
+
+  .form-input__debtor {
+    width: 30rem;
   }
 
   .footer__link, .footer__text, .footer__privacy-policy, .footer__privacy-policy-text, .footer__privacy-policy-link {
@@ -1476,7 +1463,7 @@ footer {
    }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 481px) {
   .header__container-bottom {
     height: auto;
   }
@@ -1497,6 +1484,10 @@ footer {
   .account-avatar {
     width: 150px;
     height: 150px;
+  }
+
+  .form-input__debtor {
+    width: 20rem;
   }
 /*
   .form-input, .form-group {
