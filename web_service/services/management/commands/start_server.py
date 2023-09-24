@@ -31,5 +31,5 @@ from django.core.management.commands.runserver import Command as RunserverComman
 class Command(RunserverCommand):
     def get_handler(self, *args, **options):
         from services.business_logic import loader
-        loader.logger.debug("START services loader")
+        # loader.logger.debug("START services loader")
         return super().get_handler(*args, **options)

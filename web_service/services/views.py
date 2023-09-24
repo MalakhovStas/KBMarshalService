@@ -42,7 +42,7 @@ class BaseServicesPageView(TemplateView):
                 'task_file_verification': task_file_verification,
                 'task_start_service': task_start_service
             }
-            logger.warning(f'CONTEXT: {context}')
+            # logger.warning(f'CONTEXT: {context}')
             return render(request, self.template_name, context=context)
         else:
             return HttpResponseForbidden()

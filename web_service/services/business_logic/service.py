@@ -28,11 +28,11 @@ class ServiceClass:
         # FIXME утверждение не верно, разобраться
         # await asyncio.sleep(1)  # обязательно перед запросом чтобы можно было запускать из синхронного кода
         # ожидание чтобы при обработке в цикле пачка запросов отправлялась не чаще 1раза в 1сек
-        logger.warning(self.sign + 'start group request')
+        # logger.warning(self.sign + 'start group request')
         start = time.time()
         result = await asyncio.gather(*group_request)
         time_spent = time.time() - start
-        logger.warning(self.sign + f'group request completed {time_spent=}')
+        # logger.warning(self.sign + f'group request completed {time_spent=}')
         if time_spent < 1:
             await asyncio.sleep(1-time_spent)
         return result
@@ -87,9 +87,9 @@ class ServiceClass:
 
                 if self.__DEBUG:
                     msg = f'{inn=}' if self.service_dm_model.title == "FNS" else f'quantity isp_prs: {count} | {next_page=}'
-                    self.logger.debug(
-                        self.sign + f'response from service {self.service_dm_model.title}: {error=} | {passport=} | {msg}'
-                    )
+                    # self.logger.debug(
+                    #     self.sign + f'response from service {self.service_dm_model.title}: {error=} | {passport=} | {msg}'
+                    # )
 
                 if not error:
                     if self.service_dm_model.title == "FNS" and inn is not None:

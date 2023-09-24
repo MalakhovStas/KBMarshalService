@@ -44,7 +44,7 @@ def key_verification(request: WSGIRequest) -> Dict:
         else:
             msg = _("Key") + f' {service} ' + _("not valid")
 
-        logger.debug(msg)
+        # logger.debug(msg)
 
         result = {
             "service": service,
@@ -55,7 +55,7 @@ def key_verification(request: WSGIRequest) -> Dict:
         }
     except Exception as exc:
         msg = _('Key verification error, service: ') + service
-        logger.error(f'{msg} | {exc=}')
+        # logger.error(f'{msg} | {exc=}')
 
         result = {"service": service, "key_valid": False, "valid_until": False, "available_req": 0, "error": True}
     messages.add_message(request=request, level=messages.INFO, message=msg)

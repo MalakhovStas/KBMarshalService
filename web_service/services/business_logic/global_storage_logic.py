@@ -253,10 +253,11 @@ class ServicesGlobalStorage:
             result = None
             try:
                 result = method(self, *args, **kwargs)
-                if self.__DEBUG:
-                    self.logger.debug(self.sign + f'method: {method.__name__.upper()} > {args=} | {kwargs=} | {result=}')
+                # if self.__DEBUG:
+                #     self.logger.debug(self.sign + f'method: {method.__name__.upper()} > {args=} | {kwargs=} | {result=}')
             except Exception as exc:
-                self.logger.error(self.sign + f'method: {method.__name__.upper()} > {args=} | {kwargs=} | {exc.__class__.__name__} - {exc}')
+                pass
+                # self.logger.error(self.sign + f'method: {method.__name__.upper()} > {args=} | {kwargs=} | {exc.__class__.__name__} - {exc}')
             return result
         return wrapper
 

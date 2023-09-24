@@ -62,7 +62,7 @@ class RequestsManager:
         result = {}
         if not headers:
             headers = self.content_type
-        self.logger.debug(self.sign + f"{step=} -> request to: {url=} | {method=} | {data} | {headers}")
+        # self.logger.debug(self.sign + f"{step=} -> request to: {url=} | {method=} | {data} | {headers}")
 
         connector = aiohttp.TCPConnector()
         async with aiohttp.ClientSession(connector=connector, headers=headers) as session:
@@ -77,10 +77,10 @@ class RequestsManager:
                 except Exception as exc:
                     text = (f"TRY AGAIN" if step < 3 else "BRAKE requests return ERROR")
                     result = {'response': {'error': f'{exc.__class__.__name__} {exc}'}, 'url': url,  **data}
-                    self.logger.warning(self.sign + f"ERROR -> {step=} -> {text} | {result=}")
+                    # self.logger.warning(self.sign + f"ERROR -> {step=} -> {text} | {result=}")
                     step += 1
                 else:
-                    self.logger.debug(self.sign + f"SUCCEED -> {step=} | return={result}")
+                    # self.logger.debug(self.sign + f"SUCCEED -> {step=} | return={result}")
                     break
         return result
 
@@ -98,6 +98,6 @@ class RequestsManager:
             if result and data:
                 result.update(data)
         except Exception as exc:
-            self.logger.error(self.sign + f'response.content_type: {response.content_type} | {exc=}')
-
+            # self.logger.error(self.sign + f'response.content_type: {response.content_type} | {exc=}')
+            pass
         return result if result else content
