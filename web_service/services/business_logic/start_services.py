@@ -8,9 +8,11 @@ from services.utils import get_service_name, get_redis_key
 from web_service.settings import redis_cache
 
 
-def start_services(request: WSGIRequest, filename, task_file_verification, available_requests):
+def start_services(request: WSGIRequest, filename: str, task_file_verification: AsyncResult,
+                   available_requests: int) -> tuple[str, AsyncResult | None]:
+    """Запускает celery.task - старт сервисов"""
     service = get_service_name(request)
-    task = False
+    task = None
 
     if service in ['FNS', 'FSSP']:
         task: AsyncResult = start_fns_fssp_service.delay(
@@ -28,4 +30,4 @@ def start_services(request: WSGIRequest, filename, task_file_verification, avail
         )
 
     msg = f'{_("Start service")}: {service}'
-    return msg, task, filename
+    return msg, task

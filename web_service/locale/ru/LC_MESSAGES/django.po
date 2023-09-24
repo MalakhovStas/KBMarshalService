@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-21 06:53+0000\n"
+"POT-Creation-Date: 2023-09-24 16:03+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,76 +42,266 @@ msgstr "имя"
 
 #: debtors/models.py:10 users/models.py:13
 msgid "patronymic"
-msgstr "фамилия"
+msgstr "отчество"
 
 #: debtors/models.py:11
-msgid "birthdate"
-msgstr "дата рождения"
+msgid "date birth"
+msgstr "Дата рождения"
 
-#: debtors/models.py:13
+#: debtors/models.py:12
 msgid "series passport number"
 msgstr "серия номер паспорта"
 
-#: debtors/models.py:14
+#: debtors/models.py:13
 msgid "passport issue date"
 msgstr "дата выдачи паспорта"
 
-#: debtors/models.py:16
+#: debtors/models.py:15
 msgid "name of the organization issuing the passport"
 msgstr "наименование организации, выдавшей паспорт"
 
-#: debtors/models.py:18
+#: debtors/models.py:16 debtors/models.py:28 debtors/models.py:32
+#: services/business_logic/file_verification.py:30
+#: templates/debtors/debtor_detail.j2:8 templates/debtors/debtor_detail.j2:38
+#: templates/includes/services/file_verification.j2:197
+msgid "INN"
+msgstr "ИНН"
+
+#: debtors/models.py:17
 msgid "enforcement proceedings"
 msgstr "исполнительное производство"
 
-#: debtors/models.py:21
+#: debtors/models.py:18 services/models.py:33
+msgid "date added"
+msgstr "дата добавления"
+
+#: debtors/models.py:19 services/models.py:34
+msgid "modification date"
+msgstr "дата последнего изменения"
+
+#: debtors/models.py:22
 msgid "debtor"
 msgstr "должник"
 
-#: debtors/models.py:22
+#: debtors/models.py:23 services/tasks.py:124
 msgid "debtors"
 msgstr "должники"
 
-#: services/busness_logic.py:144
+#: debtors/models.py:28 debtors/models.py:32
+msgid "Debtor"
+msgstr "Должник"
+
+#: debtors/views.py:70
+msgid "No enforcement proceedings found"
+msgstr "Исполнительных производств не обнаружено"
+
+#: services/business_logic/file_reader.py:45
+msgid "Reading row"
+msgstr "Чтение строки"
+
+#: services/business_logic/file_verification.py:25
+#: templates/includes/services/file_verification.j2:185
 msgid "Fullname"
 msgstr "Ф И О"
 
-#: services/busness_logic.py:145
+#: services/business_logic/file_verification.py:26
+#: templates/debtors/debtor_detail.j2:34
+#: templates/includes/services/file_verification.j2:186
 msgid "Date birth"
 msgstr "Дата рождения"
 
-#: services/busness_logic.py:146
-msgid "Date issue passport"
-msgstr "Дата выдачи паспорта"
-
-#: services/busness_logic.py:147
+#: services/business_logic/file_verification.py:27
+#: templates/includes/services/file_verification.j2:187
 msgid "Serial and passport number"
 msgstr "Серия номер паспорта"
 
-#: services/busness_logic.py:181
-msgid "not found"
-msgstr "не найдена"
+#: services/business_logic/file_verification.py:28
+#: templates/includes/services/file_verification.j2:190
+msgid "Date issue passport"
+msgstr "Дата выдачи паспорта"
 
-#: services/busness_logic.py:182
-msgid "column"
-msgstr "колонка"
+#: services/business_logic/file_verification.py:29
+#: templates/debtors/debtor_detail.j2:50
+#: templates/includes/services/file_verification.j2:191
+msgid "Passport issued by"
+msgstr "Кем выдан паспорт"
 
-#: services/busness_logic.py:220
-msgid "Searching"
-msgstr "Поиск"
+#: services/business_logic/file_verification.py:107
+msgid "not found columns"
+msgstr "не найдены колонки"
 
-#: services/busness_logic.py:247
+#: services/business_logic/file_verification.py:109
+msgid "not found column"
+msgstr "не найдена колонка"
+
+#: services/business_logic/file_verification.py:143
 msgid "File verification"
 msgstr "Проверка файла"
 
-#: services/busness_logic.py:249
+#: services/business_logic/file_verification.py:145
 msgid "Unsupported file, .xls .xlsx only"
 msgstr "Неподдерживаемый тип файла, только .xls .xlsx"
 
-#: services/busness_logic.py:251
-#: templates/includes/services/file_verification.j2:132
+#: services/business_logic/file_verification.py:147
+#: templates/includes/services/file_verification.j2:326
 msgid "Select File"
 msgstr "Выберите файл"
+
+#: services/business_logic/service.py:55
+msgid "Request"
+msgstr "Запрос"
+
+#: services/business_logic/service.py:55
+msgid "total"
+msgstr "всего"
+
+#: services/business_logic/service_key_verification.py:41
+#: services/business_logic/service_key_verification.py:44
+msgid "Key"
+msgstr "Ключ"
+
+#: services/business_logic/service_key_verification.py:41
+msgid "valid until"
+msgstr "действителен до"
+
+#: services/business_logic/service_key_verification.py:42
+msgid "Available requests"
+msgstr "Доступно запросов"
+
+#: services/business_logic/service_key_verification.py:44
+msgid "not valid"
+msgstr "не действителен"
+
+#: services/business_logic/service_key_verification.py:56
+msgid "Key verification error, service: "
+msgstr "Ошибка проверки ключа, сервис: "
+
+#: services/models.py:9
+msgid "Value must be more than zero"
+msgstr "Значение должно быть больше нуля"
+
+#: services/models.py:16 services/models.py:53 services/models.py:65
+#: services/models.py:69
+msgid "title"
+msgstr "название"
+
+#: services/models.py:17 services/models.py:57
+msgid "description"
+msgstr "описание"
+
+#: services/models.py:18 services/models.py:42 services/models.py:46
+msgid "host"
+msgstr "хост"
+
+#: services/models.py:19
+msgid "key"
+msgstr "ключ"
+
+#: services/models.py:22
+msgid "timeout for requests"
+msgstr "таймаут для запросов"
+
+#: services/models.py:25
+msgid "max persons for group request"
+msgstr "максимальное количество человек для группового запроса"
+
+#: services/models.py:29
+msgid "days of data lifetime from the service"
+msgstr "количество дней актуальности данных от сервиса"
+
+#: services/models.py:37 services/models.py:52
+msgid "service"
+msgstr "сервис"
+
+#: services/models.py:38
+msgid "services"
+msgstr "cервисы"
+
+#: services/models.py:42 services/models.py:46
+#: templates/includes/header/header.j2:56
+#: templates/includes/header/header.j2:59
+msgid "Service"
+msgstr "Сервис"
+
+#: services/models.py:54
+msgid "type"
+msgstr "тип"
+
+#: services/models.py:55
+msgid "url"
+msgstr "url"
+
+#: services/models.py:56
+msgid "parameters"
+msgstr "параметры"
+
+#: services/models.py:60
+msgid "method"
+msgstr "метод"
+
+#: services/models.py:61
+msgid "methods"
+msgstr "методы"
+
+#: services/models.py:73
+msgid "url generation error"
+msgstr "ошибка генерации url"
+
+#: services/tasks.py:36
+msgid "Checking if there is data in a file"
+msgstr "Проверка наличия данных в файле"
+
+#: services/tasks.py:39
+msgid "Searching"
+msgstr "Поиск"
+
+#: services/tasks.py:61
+msgid "File data loading"
+msgstr "Загрузка данных файла"
+
+#: services/tasks.py:108
+msgid "Not enough available requests to start service"
+msgstr "Недостаточно запросов для запуска сервиса"
+
+#: services/tasks.py:109
+msgid "needed"
+msgstr "необходимо"
+
+#: services/tasks.py:110
+msgid "available"
+msgstr "доступно"
+
+#: services/tasks.py:113
+msgid "Data request debtors in service"
+msgstr "Запрос данных о должниках на сервис"
+
+#: services/tasks.py:113
+msgid "total debtors"
+msgstr "всего должников"
+
+#: services/tasks.py:114
+msgid "of them in database"
+msgstr "из них в базе данных"
+
+#: services/tasks.py:115
+msgid "selected for request"
+msgstr "выбрано для запроса"
+
+#: services/tasks.py:124
+msgid "Recorded in result"
+msgstr "Записано в результат"
+
+#: services/tasks.py:126
+msgid "added to the database"
+msgstr "добавлено в базу данных"
+
+#: services/tasks.py:128
+msgid "data"
+msgstr "данные"
+
+#: services/tasks.py:128
+msgid "debtors not received"
+msgstr "должников не получены"
 
 #: templates/account/account.j2:11 templates/account/account.j2:13
 msgid "no avatar"
@@ -201,6 +391,50 @@ msgstr "КБ"
 msgid "Marshal"
 msgstr "Маршал"
 
+#: templates/debtors/debtor_detail.j2:8
+msgid "Debtor search"
+msgstr "Поиск должника"
+
+#: templates/debtors/debtor_detail.j2:8
+msgid "Enter full name"
+msgstr "Введите ФИО"
+
+#: templates/debtors/debtor_detail.j2:8
+msgid "Passport"
+msgstr "Паспорт"
+
+#: templates/debtors/debtor_detail.j2:20
+msgid "Debtor information"
+msgstr "Информация о должнике"
+
+#: templates/debtors/debtor_detail.j2:22
+msgid "Surname"
+msgstr "Фамилия"
+
+#: templates/debtors/debtor_detail.j2:26
+msgid "Name"
+msgstr "Имя"
+
+#: templates/debtors/debtor_detail.j2:30
+msgid "Patronymic"
+msgstr "Отчество"
+
+#: templates/debtors/debtor_detail.j2:42
+msgid "Series passport number"
+msgstr "Серия номер паспорта"
+
+#: templates/debtors/debtor_detail.j2:46
+msgid "Passport issue date"
+msgstr "Дата выдачи паспорта"
+
+#: templates/debtors/debtor_detail.j2:56
+msgid "Enforcement proceedings"
+msgstr "Исполнительное производство"
+
+#: templates/debtors/debtor_detail.j2:58
+msgid "no data"
+msgstr "нет данных"
+
 #: templates/includes/footer/footer.j2:6
 msgid "LLC \"Collection Bureau \"Marshal\" - all rights reserved © 2023"
 msgstr "ООО \"Коллекторское Бюро \"Маршал\" - все права защищены © 2023"
@@ -229,11 +463,6 @@ msgid "Debtors"
 msgstr "Должники"
 
 #: templates/includes/header/header.j2:56
-#: templates/includes/header/header.j2:59
-msgid "Service"
-msgstr "Сервис"
-
-#: templates/includes/header/header.j2:56
 msgid "FNS"
 msgstr "ФНС"
 
@@ -241,45 +470,89 @@ msgstr "ФНС"
 msgid "FSSP"
 msgstr "ФССП"
 
-#: templates/includes/services/file_verification.j2:6
-msgid "Start progress"
-msgstr "Запуск прогресса"
-
-#: templates/includes/services/file_verification.j2:16
-msgid "Confirm"
-msgstr "Подтвердить"
-
-#: templates/includes/services/file_verification.j2:17
-msgid "Confirmed"
-msgstr "Подтверждено"
-
-#: templates/includes/services/file_verification.j2:20
-msgid "Cancel verification"
-msgstr "Отменить проверку"
-
-#: templates/includes/services/file_verification.j2:33
-msgid "Select a different file"
-msgstr "Выбрать другой файл"
-
-#: templates/includes/services/file_verification.j2:49
+#: templates/includes/services/file_verification.j2:5
 msgid "Loading data"
 msgstr "Загрузка данных"
 
-#: templates/includes/services/file_verification.j2:74
+#: templates/includes/services/file_verification.j2:30
+#: templates/includes/services/start_service.j2:19
+msgid "Start progress"
+msgstr "Запуск прогресса"
+
+#: templates/includes/services/file_verification.j2:46
+msgid "Confirm"
+msgstr "Подтвердить"
+
+#: templates/includes/services/file_verification.j2:47
+msgid "Confirmed"
+msgstr "Подтверждено"
+
+#: templates/includes/services/file_verification.j2:56
+msgid "Cancel verification"
+msgstr "Отменить проверку"
+
+#: templates/includes/services/file_verification.j2:91
+msgid "Start service"
+msgstr "Старт сервиса"
+
+#: templates/includes/services/file_verification.j2:102
+msgid "Select a different file"
+msgstr "Выбрать другой файл"
+
+#: templates/includes/services/file_verification.j2:135
+#: templates/includes/services/start_service.j2:83
 msgid "Success"
 msgstr "Успешно"
 
-#: templates/includes/services/file_verification.j2:81
+#: templates/includes/services/file_verification.j2:143
+#: templates/includes/services/start_service.j2:90
 msgid "Failed"
 msgstr "Неудача"
 
-#: templates/includes/services/file_verification.j2:130
+#: templates/includes/services/file_verification.j2:147
+msgid "column"
+msgstr "колонка"
+
+#: templates/includes/services/file_verification.j2:148
+msgid "not found"
+msgstr "не найдена"
+
+#: templates/includes/services/file_verification.j2:185
+msgid "Required columns"
+msgstr "Обязательные столбцы"
+
+#: templates/includes/services/file_verification.j2:190
+msgid "Optional columns"
+msgstr "Дополнительные столбцы"
+
+#: templates/includes/services/file_verification.j2:324
 msgid "Select a file with initial data"
 msgstr "Выберите файл с начальными данными"
 
-#: templates/includes/services/file_verification.j2:134
+#: templates/includes/services/file_verification.j2:328
 msgid "Download"
 msgstr "Загрузить"
+
+#: templates/includes/services/start_service.j2:28
+msgid "Download results file"
+msgstr "Загрузить результат"
+
+#: templates/includes/services/start_service.j2:35
+msgid "Service and request errors"
+msgstr "Ошибки сервиса и запросов"
+
+#: templates/includes/services/start_service.j2:42
+msgid "Incorrect data or duplicates"
+msgstr "Неверные данные или дубликаты"
+
+#: templates/includes/services/start_service.j2:49
+msgid "Stop"
+msgstr "Остановить"
+
+#: templates/includes/services/start_service.j2:81
+#: templates/includes/services/start_service.j2:88
+msgid "Clear data"
+msgstr "Очистить данные"
 
 #: templates/users/e-mail.j2:6
 msgid "Password recovery (1/2)"
@@ -409,42 +682,45 @@ msgstr "На вашу электронную почту отправлено п�
 msgid "Password changed successfully"
 msgstr "Пароль успешно изменен"
 
-#: web_service/settings.py:36
+#: web_service/settings.py:37
 msgid "Collection department"
 msgstr "Отдел взыскания"
 
-#: web_service/settings.py:37
+#: web_service/settings.py:38
 msgid "Contact department"
 msgstr "Отдел обращений"
 
-#: web_service/settings.py:38
+#: web_service/settings.py:39
 msgid "Legal service"
 msgstr "Юридическая служба"
 
-#: web_service/settings.py:41
+#: web_service/settings.py:42
 msgid "Address"
 msgstr "Адрес"
 
-#: web_service/settings.py:41
+#: web_service/settings.py:42
 msgid "Moscow, st.Narodnogo Opolcheniya.34, build.1, room.1/1"
 msgstr "Москва, ул.Народного Ополчения, д.34, стр.1, помещ. 1/1"
 
-#: web_service/settings.py:42
+#: web_service/settings.py:43
 msgid "Working time"
 msgstr "Режим работы"
 
-#: web_service/settings.py:42
+#: web_service/settings.py:43
 msgid "weekdays from 10:00 to 19:00"
 msgstr "по будням с 10:00 до 19:00"
 
-#: web_service/settings.py:45
+#: web_service/settings.py:46
 msgid "Functionality of this block is under development"
 msgstr "Функционал этого блока находится в разработке"
 
-#: web_service/settings.py:228
+#: web_service/settings.py:238
 msgid "English"
 msgstr "Английский"
 
-#: web_service/settings.py:229
+#: web_service/settings.py:239
 msgid "Russian"
 msgstr "Русский"
+
+#~ msgid "Download bad results file"
+#~ msgstr "Скачать файл без результатов"

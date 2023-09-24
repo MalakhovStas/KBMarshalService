@@ -1,7 +1,6 @@
 {#{% if task_file_verification and not task_file_verification.status in ['SUCCESS', 'FAILURE', 'ERROR', 'REVOKED'] %}#}
 {#filename: {{ filename }} | task_file_verification: {{ task_file_verification }} | task_start_service: {{ task_start_service }}#}
-<div id="disabled_control" style="text-align: right"></div>
-
+<div id="disabled_control" style="text-align: right" hidden="hidden"></div>
 <script>
   let loader_circle = '<div class="loader__wrap">{{ _('Loading data') }}    ' +
                       '<div class="loader" >' +
@@ -58,7 +57,7 @@
       </form>
 
       <form class="form-check form-check__send_results">
-        <p class="span_send_results" id="span_send_results" style="display: none">{{ 'Send result file' }}</p>
+        <p class="span_send_results span_send_results__send-result-file" id="span_send_results" style="display: none">{{ 'Send result file' }}:</p>
         <ul class="form-check-wrap form-check-wrap__list list-reset flex">
           <li class="form-check-wrap-label form-check-wrap-label__list flex" id="send_to_email" style="display:none">
             <label class="checkbox flex" for="checkbox_send_mail">
@@ -94,7 +93,7 @@
 
     <script>
       // vanilla JS version
-      {#window.onload = FileVerifyDisabledCheck;#}
+      window.onload = FileVerifyDisabledCheck;
       // верхнюю строку можно закомментировать, чтобы убрать блокировку
       document.getElementById("disabled_control").innerHTML = "FileVerifyDisabled{{ service }}: " + localStorage.getItem('FileVerifyDisabled{{ service }}');
 
@@ -133,7 +132,7 @@
           checkBoxConfirm.style.display = "block"
 
           progressBarElement.style.backgroundColor = '#22e806';
-          progressBarMessageElement.innerHTML = "{{ _('Success') }}";
+          progressBarMessageElement.innerHTML = "<b>{{ _('Success') }}</b>";
       }
 
       function FileVerificationError(progressBarElement, progressBarMessageElement, excMessage) {
@@ -141,7 +140,7 @@
           task_file_verification_state = 'ERROR';
           resetBtn.innerHTML = select_next_file;
           progressBarElement.style.backgroundColor = '#ff0000';
-          progressBarMessageElement.innerHTML =  "{{ _('Failed') }} - " + excMessage;
+          progressBarMessageElement.innerHTML =  "<b>{{ _('Failed') }}</b> - " + excMessage;
       }
 
       function FileVerificationResult(resultElement, result) {
@@ -183,20 +182,22 @@
 
         if (result) {
             file_verification_result_elem.innerHTML +=
-              "<ul><b>{{ _('Required columns') }}</b>:<li>{{ _('Fullname') }} - " + word_column + fullname_col +  fullname_col_name +
+              "<b>&nbsp;&nbsp;{{ _('Required columns') }}</b>:<ul><li>{{ _('Fullname') }} - " + word_column + fullname_col +  fullname_col_name +
               "</li><li>{{ _('Date birth') }} - " + word_column + date_birth_col + date_birth_col_name +
               "</li><li>{{ _('Serial and passport number') }} - " + word_column + ser_num_pass_col + ser_num_pass_col_name + "</li></ul>"
 
-            if ("{{ request.path }}" === '/services/fssp/' ){
-              if (result.inn.col != null) {inn_col = result.inn.col}
-              if (result.inn.col_name != null) {inn_col_name = " [ " + result.inn.col_name +" ]"}
-              file_verification_result_elem.innerHTML +=  "<ul style='margin-top: -17px'><li>{{ _('INN') }} - " + word_column + inn_col + inn_col_name + "</li></ul>"
-            }
-
-            file_verification_result_elem.innerHTML +=
-              "<ul><b>{{ _('Optional columns') }}</b>:<li>{{ _('Date issue passport') }} - " + word_column + date_issue_pass_col + date_issue_pass_col_name +
+           file_verification_result_elem.innerHTML +=
+              "<b>&nbsp;&nbsp;{{ _('Optional columns') }}</b>:<ul><li>{{ _('Date issue passport') }} - " + word_column + date_issue_pass_col + date_issue_pass_col_name +
               "</li><li>{{ _('Passport issued by') }} - " + word_column + name_org_pass_col + name_org_pass_col_name + "</li></ul>"
           }
+
+           if ("{{ request.path }}" === '/services/fssp/' ){
+              if (result.inn.col != null) {inn_col = result.inn.col}
+              if (result.inn.col_name != null) {inn_col_name = " [ " + result.inn.col_name +" ]"}
+              file_verification_result_elem.innerHTML +=  "<ul style='margin-top: -15px'><li>{{ _('INN') }} - " + word_column + inn_col + inn_col_name + "</li></ul>"
+            }
+
+
       }
 
 

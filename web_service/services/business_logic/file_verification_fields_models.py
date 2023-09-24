@@ -108,6 +108,7 @@ class DateIssuePassport(BaseField):
 class NameOrgIssuePassport(BaseField):
     """Подкласс поиска колонки - кем выдан паспорт"""
     words_to_search_in_title = ['кем', 'выдан', 'паспорт']
+    or_words_to_search_in_title = ['наименование', 'органа', 'выдавшего', 'паспорт']
 
     def get_data(self, cell_value: str) -> tuple:
         result = False

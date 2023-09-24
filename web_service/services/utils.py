@@ -1,7 +1,6 @@
 import os
 
 from django.core.handlers.wsgi import WSGIRequest
-from web_service.settings import redis_cache
 
 
 def get_redis_key(task_name: str, request: WSGIRequest | None = None, service: str | None = None, user: int | None = None) -> str:

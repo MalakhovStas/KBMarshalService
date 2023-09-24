@@ -1,13 +1,14 @@
 import asyncio
 import json
 from datetime import datetime
-from .loader import requests_manager, logger
-from services.models import Service
-from asgiref.sync import sync_to_async
+
 from django.contrib import messages
 from django.core.handlers.wsgi import WSGIRequest
-from services.utils import get_redis_key, get_service_name
 from django.utils.translation import gettext_lazy as _
+
+from services.models import Service
+from services.utils import get_service_name
+from .loader import requests_manager, logger
 
 
 def get_url(service_title):
@@ -36,11 +37,21 @@ def key_verification(request: WSGIRequest) -> dict:
         date_limit = datetime.strptime(result.get('ДатаОконч'), "%Y-%m-%d %H:%M:%S")
         available = limit - spent
 
-        msg = f'{_("Key")} {service} {_("valid until")}: {date_limit.strftime("%d.%m.%Y %H:%M")}' if date_limit > datetime.now() else f'{_("Key")} {service} {_("not valid")}'
-        msg += f' | {_("Available requests")}: {available}' if available > 0 else ""
+        if date_limit > datetime.now():
+            msg = _("Key") + f' {service} ' + _("valid until") + f': {date_limit.strftime("%d.%m.%Y %H:%M")} | ' + \
+                  _("Available requests") + f': {available}'
+        else:
+            msg = _("Key") + f' {service} ' + _("not valid")
+
         logger.debug(msg)
 
-        result = {"service": service, "key_valid": True if date_limit > datetime.now() and available > 0 else False, "valid_until": date_limit, "available_req": available, "error": False}
+        result = {
+            "service": service,
+            "key_valid": True if date_limit > datetime.now() and available > 0 else False,
+            "valid_until": date_limit,
+            "available_req": available,
+            "error": False
+        }
     except Exception as exc:
         msg = _('Key verification error, service: ') + service
         logger.error(f'{msg} | {exc=}')

@@ -13,7 +13,7 @@ class Debtor(models.Model):
     date_issue_pass = models.DateField(null=True, blank=True, verbose_name=_('passport issue date'))
     name_org_pass = models.CharField(max_length=512, null=True, blank=True,
                                      verbose_name=_('name of the organization issuing the passport'))
-    inn = models.CharField(null=True, blank=True, max_length=10, verbose_name='INN')
+    inn = models.CharField(null=True, blank=True, max_length=12, verbose_name=_('INN'))
     isp_prs = models.JSONField(null=True, blank=True, verbose_name=_('enforcement proceedings'))
     date_added = models.DateTimeField(auto_now_add=True, verbose_name=_('date added'))
     modification_date = models.DateTimeField(auto_now=True, verbose_name=_('modification date'))
@@ -23,6 +23,10 @@ class Debtor(models.Model):
         verbose_name_plural = _('debtors')
         ordering = 'surname', 'name', 'patronymic'
 
+    def __repr__(self):
+        """Переопределение __repr__, для отображения модели."""
+        return _("Debtor") + f': {self.surname} {self.name} {self.patronymic} | ' + _("INN") + f': {self.inn}'
+
     def __str__(self):
         """Переопределение __str__, для отображения модели."""
-        return f'{_("Debtor")}: {self.surname} {self.name} {self.patronymic} | {_("INN")}: {self.inn}'
+        return _("Debtor") + f': {self.surname} {self.name} {self.patronymic} | ' + _("INN") + f': {self.inn}'

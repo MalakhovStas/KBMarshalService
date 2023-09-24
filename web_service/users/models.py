@@ -25,6 +25,10 @@ class User(AbstractUser):
         verbose_name_plural = _('users')
         ordering = '-is_superuser', '-date_joined', '-is_active'
 
+    def __repr__(self):
+        """Переопределение __repr__, для отображения email в названии объекта."""
+        return self.email
+
     def __str__(self):
         """Переопределение __str__, для отображения email в названии объекта."""
         return self.email

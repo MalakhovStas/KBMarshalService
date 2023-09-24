@@ -28,7 +28,6 @@ class RequestsManager:
             method: str = "get",
             headers: dict | None = None,
             data: dict | list | None = None,
-            list_requests: list | None = None,
             step: int = 1,
     ) -> dict | list:
         """Повторяет запрос/запросы, если нет ответа или исключение"""
@@ -38,17 +37,12 @@ class RequestsManager:
         else:
             headers = self.content_type
 
-        if list_requests:
-            result = await self.aio_request_gather(
-                list_requests=list_requests, headers=headers, method=method, data=data
-            )
-        else:
-            result = await self.aio_request(
-                url=url,
-                headers=headers,
-                method=method,
-                data=data,
-            )
+        result = await self.aio_request(
+            url=url,
+            headers=headers,
+            method=method,
+            data=data,
+        )
         if not result or not isinstance(result, dict):
             step += 1
             if step < settings.MAX_REQUEST_RETRIES:
@@ -57,16 +51,15 @@ class RequestsManager:
                     headers=headers,
                     method=method,
                     data=data,
-                    list_requests=list_requests,
                     step=step,
                 )
         return result
 
     async def aio_request(self, url: str, method: str = "get", headers: dict | None = None,
-                          data: dict | list | None = None) -> dict | list:
+                          data: dict | list | None = None, timeout: int = settings.REQUESTS_TIMEOUT) -> dict | list:
         """Основной метод http запросов, повторяет запрос, если во время выполнения запроса произошло исключение"""
         step = 1
-        result = dict()
+        result = {}
         if not headers:
             headers = self.content_type
         self.logger.debug(self.sign + f"{step=} -> request to: {url=} | {method=} | {data} | {headers}")
@@ -76,14 +69,15 @@ class RequestsManager:
             while step < settings.MAX_REQUEST_RETRIES + 1:
                 try:
                     if method == "post":
-                        async with session.post(url, json=data, timeout=settings.REQUESTS_TIMEOUT) as response:
+                        async with session.post(url, json=data, timeout=timeout) as response:
                             result = await self.__get_result(response=response)
                     else:
-                        async with session.get(url, timeout=settings.REQUESTS_TIMEOUT) as response:
+                        async with session.get(url, timeout=timeout) as response:
                             result = await self.__get_result(response=response, data=data)
                 except Exception as exc:
-                    text = (f"TRY AGAIN" if step < 3 else "BRAKE requests return EMPTY DICT")
-                    self.logger.warning(self.sign + f"ERROR -> {step=} | {exc=} | -> {text}")
+                    text = (f"TRY AGAIN" if step < 3 else "BRAKE requests return ERROR")
+                    result = {'response': {'error': f'{exc.__class__.__name__} {exc}'}, 'url': url,  **data}
+                    self.logger.warning(self.sign + f"ERROR -> {step=} -> {text} | {result=}")
                     step += 1
                 else:
                     self.logger.debug(self.sign + f"SUCCEED -> {step=} | return={result}")
@@ -107,21 +101,3 @@ class RequestsManager:
             self.logger.error(self.sign + f'response.content_type: {response.content_type} | {exc=}')
 
         return result if result else content
-
-    async def aio_request_gather(self, list_requests: list,
-                                 headers: dict, method: str = "get", data: dict | None = None) -> Iterable:
-        """Для отправки нескольких одновременных запросов"""
-        await asyncio.sleep(1)  # обязательно перед запросом чтобы можно было запускать из синхронного кода
-        # ожидание чтобы при обработке в цикле пачка запросов отправлялась не чаще 1раза в 1сек
-
-        if method == "post":
-            tasks_data = [
-                self.aio_request(url=url, headers=headers, method=method, data=data)
-                for url in list_requests
-            ]
-        else:
-            tasks_data = [self.aio_request(url=person.url, headers=headers, data=data) for person in list_requests]
-
-        results = await asyncio.gather(*tasks_data)
-        await asyncio.sleep(0)  # чтобы получить результаты
-        return results

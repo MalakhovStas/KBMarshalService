@@ -1,0 +1,26 @@
+version: "3"
+name: kb-marshal
+
+services:
+  redis:
+    container_name: redis_kb-marshal
+    image: redis
+    restart: always
+    ports:
+      - '6336:6379'
+    command: redis-server --loglevel debug
+
+  postgres:
+    container_name: postgres_kb-marshal
+    image: postgres
+    ports:
+      - '5445:5432'
+    environment:
+      POSTGRES_DB: "KBMarshalService"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "secret"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d KBMarshalService -p 5432"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

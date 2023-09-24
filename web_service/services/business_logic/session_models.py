@@ -20,6 +20,10 @@ class SessionDebtorModel:
         self.service = service
         self.task_file_verification_id = task_file_verification_id
         self.url = ''
+        self.error = None
+        self.debtor_in_db = False
+        self.update_in_db = False
+        self.all_db_operations_completed = False
 
         if service == "FNS":
             self.url = f'https://api-fns.ru/api/innfl?fam={self.surname}&nam={self.name}&otch=' \

@@ -1,0 +1,32 @@
+[
+{
+    "model": "services.service",
+    "pk": 1,
+    "fields": {
+        "title": "FNS",
+        "description": "Сервис для получения ИНН должника",
+        "host": "api-fns.ru",
+        "key": "e300e5414c60658c631b5e1ff30784cafc4a8375",
+        "timeout_for_requests": 30,
+        "num_person_in_group_request": 10,
+        "days_data_lifetime_from_service": 15,
+        "date_added": "2023-09-20T10:04:50.201Z",
+        "modification_date": "2023-09-20T10:04:50.201Z"
+    }
+},
+{
+    "model": "services.service",
+    "pk": 2,
+    "fields": {
+        "title": "FSSP",
+        "description": "Сервис для получения исполнительных производств должника",
+        "host": "api.damia.ru",
+        "key": "31f591f8e16f81da3da425855816b161b658e7f4",
+        "timeout_for_requests": 30,
+        "num_person_in_group_request": 10,
+        "days_data_lifetime_from_service": 15,
+        "date_added": "2023-09-20T10:11:48.275Z",
+        "modification_date": "2023-09-20T10:11:48.275Z"
+    }
+}
+]

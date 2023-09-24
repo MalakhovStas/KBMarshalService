@@ -1097,7 +1097,7 @@ footer {
 .form-check-wrap-label {
   margin-right: auto;
   max-width: 15rem;
-  padding: 1rem;
+  padding: 1rem 1rem 1rem 0;
   /*background: #FFFFFF;
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgb(0 0 10 / 0.2);*/
@@ -1170,8 +1170,16 @@ footer {
   font-size: 1.1rem;
 }
 
+.span_send_results__send-result-file {
+  display: inline-flex;
+  margin-right: 1rem;
+  padding-left: 0;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
 .form-check__send_results {
-  margin-bottom: 30px;
+  display: flex;
 }
 
 .form-wrapper {
@@ -1183,6 +1191,26 @@ footer {
 .form-wrappers {
   position: relative;
   content: "";
+}
+
+.form-input__wrapper-start-service-result {
+  margin: 10px 10px 10px 0;
+}
+
+.start-service-result {
+  margin-top: 30px;
+  margin-bottom:30px
+}
+
+.start-service-result-forms {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.btn_success__start-service-result {
+  width: 350px;
+  margin: 0;
 }
 
 .form-input__debtor {

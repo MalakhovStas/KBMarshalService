@@ -1,0 +1,69 @@
+[
+{
+    "model": "services.method",
+    "pk": 1,
+    "fields": {
+        "service": 1,
+        "title": "check_key",
+        "type": "get",
+        "url": "/api/stat",
+        "params": [
+            "key"
+        ],
+        "description": "Метод проверки актуальности ключа"
+    }
+},
+{
+    "model": "services.method",
+    "pk": 2,
+    "fields": {
+        "service": 1,
+        "title": "get_inn",
+        "type": "get",
+        "url": "/api/innfl",
+        "params": [
+            "fam",
+            "nam",
+            "otch",
+            "bdate",
+            "doctype",
+            "docno",
+            "key"
+        ],
+        "description": "Пример='https://api-fns.ru/api/innfl?fam=РОЖКОВ&nam=АЛЕКСЕЙ&otch=ВИКТОРОВИЧ&bdate=08.06.1970&doctype=21&docno=1003670803&key=add9a7f31295113260ec9f9bf6b701b06bdf355b'"
+    }
+},
+{
+    "model": "services.method",
+    "pk": 3,
+    "fields": {
+        "service": 2,
+        "title": "check_key",
+        "type": "get",
+        "url": "/fssp/stat",
+        "params": [
+            "key"
+        ],
+        "description": "Метод проверки актуальности ключа"
+    }
+},
+{
+    "model": "services.method",
+    "pk": 4,
+    "fields": {
+        "service": 2,
+        "title": "get_ispfl",
+        "type": "get",
+        "url": "/fssp/ispsfl",
+        "params": [
+            "fam",
+            "nam",
+            "otch",
+            "bdate",
+            "page",
+            "key"
+        ],
+        "description": "Пример=https://api.damia.ru/fssp/ispsfl?fam=РОЖКОВ&nam=АЛЕКСЕЙ&otch=ВИКТОРОВИЧ&bdate=08.06.1970&page=1&key=add9a7f31295113260ec9f9bf6b701b06bdf355b"
+    }
+}
+]

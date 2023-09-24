@@ -2,62 +2,71 @@
 
 {% block content %}
 
-  <div>
-    <div class="input__wrapper">
-      <form class="form-wrapper">
-        <div class="form-wrappers">
-          <input class="form-input form-input__debtor" type="search" name="name" placeholder="Поиск должника. Введите ФИО | ИНН | Паспорт">
-          <svg class="form__search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="7.56126" height="1.89031" transform="matrix(0.713342 0.700816 -0.713342 0.700816 18.6064 17.3762)" fill="gray"/>
-            <path d="M20.9303 10.7726C20.9303 16.1533 16.4855 20.5452 10.9652 20.5452C5.44478 20.5452 1 16.1533 1 10.7726C1 5.39198 5.44478 1 10.9652 1C16.4855 1 20.9303 5.39198 20.9303 10.7726Z" stroke="gray" stroke-width="2"/>
-          </svg>
-        </div>
-      </form>
-    </div>
-
-    <table border="1" cellspacing="0" cellpadding="10" class="table-debtor">
-      <caption class="table-debtor__title">Информация о должнике</caption>
-      <tr class="table-debtor__row">
-        <td class="table-debtor__column">{{ _('Surname') }}</td>
-        <td class="table-debtor__column-2">hgjhkjkljlkl</td>
-      </tr>
-      <tr class="table-debtor__row">
-        <td class="table-debtor__column">{{ _('Name') }}</td>
-        <td class="table-debtor__column-2"></td>
-      </tr>
-      <tr class="table-debtor__row">
-        <td class="table-debtor__column">{{ _('Patronymic') }}</td>
-        <td class="table-debtor__column-2"></td>
-      </tr>
-      <tr class="table-debtor__row">
-        <td class="table-debtor__column">{{ _('Date birth') }}</td>
-        <td class="table-debtor__column-2"></td>
-      </tr>
-      <tr class="table-debtor__row">
-        <td class="table-debtor__column">ИНН</td>
-        <td class="table-debtor__column-2"></td>
-      </tr>
-      <tr class="table-debtor__row">
-        <td class="table-debtor__column">Серия и номер паспорта</td>
-        <td class="table-debtor__column-2"></td>
-      </tr>
-      <tr class="table-debtor__row">
-        <td class="table-debtor__column">Дата выдачи паспорта</td>
-        <td class="table-debtor__column-2"></td>
-      </tr>
-      <tr class="table-debtor__row">
-        <td class="table-debtor__column">Кем выдан паспорт</td>
-        <td class="table-debtor__column-2"></td>
-      </tr>
-    </table>
-
-    <table border="1" cellspacing="0" cellpadding="10" class="table-debtor">
-      <caption class="table-debtor__title">Исполнительные производства</caption>
-      <tr class="table-debtor__row">
-        <td class="table-debtor__column">ngbhhj</td>
-
-      </tr>
-    </table>
+  <div class="input__wrapper">
+    <form class="form-wrapper">
+      <div class="form-wrappers">
+        <input class="form-input form-input__debtor" type="search" name="search_query" placeholder="{{ _('Debtor search') }}. {{ _('Enter full name') }} | {{ _('INN') }} | {{ _('Passport') }}">
+        <svg class="form__search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="7.56126" height="1.89031" transform="matrix(0.713342 0.700816 -0.713342 0.700816 18.6064 17.3762)" fill="gray"/>
+          <path d="M20.9303 10.7726C20.9303 16.1533 16.4855 20.5452 10.9652 20.5452C5.44478 20.5452 1 16.1533 1 10.7726C1 5.39198 5.44478 1 10.9652 1C16.4855 1 20.9303 5.39198 20.9303 10.7726Z" stroke="gray" stroke-width="2"/>
+        </svg>
+      </div>
+    </form>
   </div>
-{% endblock %}
+  {% if debtor %}
+    <div>
 
+      <table border="1" cellspacing="0" cellpadding="10" class="table-debtor">
+        <caption class="table-debtor__title">{{ _('Debtor information') }}</caption>
+        <tr class="table-debtor__row">
+          <td class="table-debtor__column">{{ _('Surname') }}</td>
+          <td class="table-debtor__column-2">{{ debtor.surname }}</td>
+        </tr>
+        <tr class="table-debtor__row">
+          <td class="table-debtor__column">{{ _('Name') }}</td>
+          <td class="table-debtor__column-2">{{ debtor.name }}</td>
+        </tr>
+        <tr class="table-debtor__row">
+          <td class="table-debtor__column">{{ _('Patronymic') }}</td>
+          <td class="table-debtor__column-2">{{ debtor.patronymic }}</td>
+        </tr>
+        <tr class="table-debtor__row">
+          <td class="table-debtor__column">{{ _('Date birth') }}</td>
+          <td class="table-debtor__column-2">{{ debtor.date_birth }}</td>
+        </tr>
+        <tr class="table-debtor__row">
+          <td class="table-debtor__column">{{ _('INN') }}</td>
+          <td class="table-debtor__column-2">{{ debtor.inn }}</td>
+        </tr>
+        <tr class="table-debtor__row">
+          <td class="table-debtor__column">{{ _('Series passport number') }}</td>
+          <td class="table-debtor__column-2">{{ debtor.ser_num_pass }}</td>
+        </tr>
+        <tr class="table-debtor__row">
+          <td class="table-debtor__column">{{ _('Passport issue date') }}</td>
+          <td class="table-debtor__column-2">{{ debtor.date_issue_pass }}</td>
+        </tr>
+        <tr class="table-debtor__row">
+          <td class="table-debtor__column">{{ _('Passport issued by') }}</td>
+          <td class="table-debtor__column-2">{{ debtor.name_org_pass }}</td>
+        </tr>
+      </table>
+
+      <table border="1" cellspacing="0" cellpadding="10" class="table-debtor">
+        <caption class="table-debtor__title">{{ _('Enforcement proceedings') }}</caption>
+        <tr class="table-debtor__row">
+          <td class="table-debtor__column">
+            {% if debtor.isp_prs %}
+              {% for key, value in debtor.isp_prs.items() %}
+                <p style="margin-left: 25px">{{ loop.index }}.&nbsp;&nbsp;&nbsp;{{ key }}: {% for field_name, field_data in value.items() %}<p style="margin-left: 75px">{{ field_name }}: {{ field_data }}<p>{% endfor %}</p>
+              {% endfor %}
+            {% else %}
+              {{ _('no data') }}
+            {% endif %}
+          </td>
+
+        </tr>
+      </table>
+    </div>
+  {% endif %}
+{% endblock %}

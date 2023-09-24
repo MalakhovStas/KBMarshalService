@@ -19,6 +19,7 @@ from corsheaders.defaults import default_headers
 from django.utils.translation import gettext_lazy as _
 import os
 
+DEVELOPER = "https://github.com/MalakhovStas"
 config = dotenv_values(os.path.join("..", ".env"))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -186,9 +187,17 @@ WSGI_APPLICATION = 'web_service.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'database/db.sqlite3',
+    # },
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'database/db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'KBMarshalService',
+        'USER': 'postgres',
+        'PASSWORD': 'secret',
+        'HOST': 'localhost',
+        'PORT': '5445',
     }
 }
 
@@ -358,11 +367,10 @@ CACHES = {
 # CELERY_TASK_DEFAULT_QUEUE = 'default-queue'  # celery будет использовать это имя очереди
 
 
-
 # Настройки RequestsManager
-REQUESTS_TIMEOUT = 30
+REQUESTS_TIMEOUT = 60  # по расчётам на 10тыс запросов max=8.5 часов
+MAX_REQUEST_RETRIES = 2  # 8.5 часов * 2 = 17 часов
 DEFAULT_CONTENT_TYPE = 'application/json'
-MAX_REQUEST_RETRIES = 3
 
 
 # с тем что ниже пока не разобрался

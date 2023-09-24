@@ -1,6 +1,10 @@
+import os
+from datetime import timedelta
+
 import openpyxl
 from celery import shared_task
 from django.conf import settings
+from django.utils import timezone
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 from openpyxl.worksheet.worksheet import Worksheet
@@ -10,7 +14,8 @@ from services.business_logic.custom_progress import CustomProgressRecorder
 from services.business_logic.exceptions import FileVerificationException
 from services.business_logic.file_reader import FileReader
 from services.business_logic.loader import services_storage
-from services.business_logic.fns_service import ServiceClass
+from services.business_logic.service import ServiceClass
+from services.models import Service
 
 
 @shared_task(bind=True, name='check_file_fields')
@@ -45,27 +50,52 @@ def check_file_fields(self, service, filename, language=None) -> str:
     return result
 
 
-@shared_task(bind=True, name='start_fns_fssp_service')
-def start_fns_fssp_service(self, service, filename: str, task_file_verification_id: str,
-                           available_requests: int, language=None) -> str:
+@shared_task(bind=True, name='start_fns_fssp_service', acks_late=True)
+def start_fns_fssp_service(self, service: str, filename: str,
+                           task_file_verification_id: str, available_requests: int, language=None) -> dict:
     prev_language = translation.get_language()
     language and translation.activate(language)
 
     file_reader = FileReader(service, task_file_verification_id, filename)
-    unique_passports, duplicates_or_bad_value = file_reader(
+    unique_passports, incorrect_data_or_duplicates = file_reader(
         progress=CustomProgressRecorder(self, title=_('File data loading'))
     )
 
     persons_in_db = Debtor.objects.in_bulk(unique_passports, field_name='ser_num_pass')
-    passports_for_request = [passport for passport in unique_passports if passport not in persons_in_db.keys()]
-    num_persons_for_request = len(passports_for_request)
 
-    for passport_in_db in persons_in_db:
-        services_storage.delete(
-            service=service,
-            task_file_verification_id=task_file_verification_id,
-            passport=passport_in_db
-        )
+    # FIXME
+    # passports_for_request = [passport for passport in unique_passports if passport not in persons_in_db.keys()]
+    passports_for_request = []
+
+    if service == "FNS":
+        # добавляем ИНН в SessionDebtor которые есть в БД + ставим флаг debtor_in_db = True
+        for session_debtor in services_storage.storage[service][task_file_verification_id].values():
+            if session_debtor.ser_num_pass in persons_in_db.keys():
+                session_debtor.debtor_in_db = True
+                debtor_from_db = persons_in_db[session_debtor.ser_num_pass]
+                if not debtor_from_db.inn:
+                    passports_for_request.append(session_debtor.ser_num_pass)
+                    session_debtor.update_in_db = True
+                else:
+                    session_debtor.inn = persons_in_db[session_debtor.ser_num_pass].inn
+            else:
+                passports_for_request.append(session_debtor.ser_num_pass)
+
+    elif service == "FSSP":
+        days_data_lifetime_from_service = Service.objects.get(title=service).days_data_lifetime_from_service
+        # добавляем isp_prs в SessionDebtor которые есть в БД
+        # (ели ини записаны не ранее days_data_lifetime_from_service дней назад) + ставим флаг debtor_in_db = True
+        for session_debtor in services_storage.storage[service][task_file_verification_id].values():
+            if session_debtor.ser_num_pass in persons_in_db.keys():
+                session_debtor.debtor_in_db = True
+                debtor_from_db = persons_in_db[session_debtor.ser_num_pass]  # выбираем объект БД
+                session_debtor.isp_prs = debtor_from_db.isp_prs  # записываем isp_prs из БД в SessionDebtorModel
+                if not debtor_from_db.isp_prs or (timezone.now() - debtor_from_db.modification_date
+                                                  >= timedelta(days=days_data_lifetime_from_service)):
+                    session_debtor.update_in_db = True
+                    passports_for_request.append(session_debtor.ser_num_pass)
+            else:
+                passports_for_request.append(session_debtor.ser_num_pass)
 
     services_storage.add_passports_for_requests(
         service=service,
@@ -73,25 +103,37 @@ def start_fns_fssp_service(self, service, filename: str, task_file_verification_
         passports_for_requests=passports_for_request
     )
 
+    num_persons_for_request = len(passports_for_request)
     if num_persons_for_request > available_requests:
-        msg = (
-            f"{_('Not enough available requests to start service')} {service}, "
-            f"{_('needed')}: <b style='color:#ff0000'>{num_persons_for_request}</b> | "
-            f"{_('available')}: <b style='color:#ff0000'>{available_requests}</b>"
-        )
+        msg = _('Not enough available requests to start service') + f" {service}, " + \
+              _('needed') + f": <b style='color:#ff0000'>{num_persons_for_request}</b> | " + \
+              _('available') + f": <b style='color:#ff0000'>{available_requests}</b>"
         raise FileVerificationException(message=f"{msg}")
 
-    title = f"{_('Data request debtors in service')} {service} - {_('total debtors')}: {len(unique_passports)} | " \
-            f"{_('of them in database')}: {len(persons_in_db)} | " \
-            f"{_('selected for request')}: {num_persons_for_request}"
+    title = _('Data request debtors in service') + f" {service} - " + _('total debtors') + \
+            f": {len(unique_passports)} | " + _('of them in database') + f": {len(persons_in_db)} | " + \
+            _('selected for request') + f": {num_persons_for_request}"
 
-    service_class = ServiceClass(
-        service=service, filename=filename, task_file_verification_id=task_file_verification_id)
+    service_class = ServiceClass(service=service, filename=filename,
+                                 task_file_verification_id=task_file_verification_id)
     service_class(progress=CustomProgressRecorder(self,  title=title))
 
-    not_found, added_in_db = services_storage.save_operation_results(
+    service_and_requests_errors, debtors_save_in_result_file, debtors_added_in_db = services_storage.save_operation_results(
         service=service, task_file_verification_id=task_file_verification_id, filename=filename)
 
+    result_message = "<b>" + _('Recorded in result') + f" {debtors_save_in_result_file} " + _('debtors')
+    if debtors_added_in_db:
+        result_message += " | " + _('added to the database') + f" {debtors_added_in_db}"
+    if service_and_requests_errors:
+        result_message += " | " + _('data') + f" {service_and_requests_errors} " + _('debtors not received') + "</b>"
+
     translation.activate(prev_language)
-    return f"<b>{added_in_db} {_('debtors added to the database')} |" \
-           f" {_('data on')} {not_found} {_('debtors not received')}</b>"
+
+    # Удаляем начальный, входящий файл
+    os.remove(f'{settings.MEDIA_ROOT}/{service}/{filename}')
+
+    return {
+        'service_and_requests_errors': service_and_requests_errors,
+        'incorrect_data_or_duplicates': incorrect_data_or_duplicates,
+        'message': result_message
+    }

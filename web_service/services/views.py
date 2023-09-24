@@ -48,10 +48,8 @@ class BaseServicesPageView(TemplateView):
             return HttpResponseForbidden()
 
     def post(self, request: WSGIRequest, *args, **kwargs):
-
-        """Метод изменения данных пользователя."""
+        service = get_service_name(request)
         filename, task_file_verification, task_start_service = None, None, None
-
         if command := request.POST.get('command'):
             command, task_name, data = command.split(sep=':', maxsplit=2)
 
@@ -65,27 +63,49 @@ class BaseServicesPageView(TemplateView):
                 return redirect(self.get_success_url())
 
             elif command == 'START_SERVICE':
-                verify = key_verification(request=request)  # {"service": service, "key_valid": False, "valid_until": False, "available_req": 0, "error": True}
-                if verify["key_valid"]:
-                    if file_verification_data := redis_cache.get(name=get_redis_key(request=request, task_name='FILE_VERIFICATION')):
-                        task_file_verification_id, filename = file_verification_data.split(sep=':', maxsplit=1)
-                        task_file_verification = AsyncResult(id=task_file_verification_id)
-                        print(filename)
-                        msg, task_start_service, filename = start_services(request, filename, task_file_verification, verify['available_req'])
-                        messages.add_message(request=request, level=messages.INFO, message=msg)
+                verify = key_verification(request=request)
+                # {"service": service, "key_valid": False, "valid_until": False, "available_req": 0, "error": True}
+
+                available_req = verify['available_req']
+                if file_verification_data := redis_cache.get(
+                        name=get_redis_key(request=request, task_name='FILE_VERIFICATION')):
+                    task_file_verification_id, filename = file_verification_data.split(sep=':', maxsplit=1)
+                    task_file_verification = AsyncResult(id=task_file_verification_id)
+                    if verify["key_valid"]:
+                        # TODO добавить верификацию по количеству необходимых запросов
+                        if available_req:
+                            msg, task_start_service = start_services(
+                                request, filename, task_file_verification, verify['available_req'])
+                        else:
+                            msg = 'Невозможно запустить работу сервиса, нет доступных запросов'
+                    else:
+                        msg = 'Невозможно запустить работу сервиса, ключ не действителен'
+                    messages.add_message(request=request, level=messages.INFO, message=msg)
 
                     # redis_cache.delete(get_redis_key(request=request, task_name=task_name))
-                return redirect(self.get_success_url())
+                # return redirect(self.get_success_url())
 
-            elif command == 'DOWNLOAD_RESULT_FILE':
-                return FileResponse(open(f'media/{data}', "rb"))
+            elif command.startswith('DOWNLOAD_') and command.endswith('_FILE'):
+                incoming_filename = data.rsplit(':', maxsplit=1)[-1]
 
+                if command == 'DOWNLOAD_RESULT_FILE':
+                    return FileResponse(open(f'media/{service}/results/{service}:result:{incoming_filename}', "rb"))
+
+                elif command == 'DOWNLOAD_service_and_requests_errors_FILE':
+                    return FileResponse(open(
+                        f'media/{service}/results/{service}:service_and_requests_errors:{incoming_filename}', "rb")
+                    )
+
+                elif command == 'DOWNLOAD_incorrect_data_or_duplicates_FILE':
+                    return FileResponse(open(
+                        f'media/{service}/results/{service}:incorrect_data_or_duplicates:{incoming_filename}', "rb")
+                    )
         else:
             msg, task_file_verification, filename = load_data_file(request)
             messages.add_message(request=request, level=messages.INFO, message=msg)
 
         context = {
-            'service': get_service_name(request),
+            'service': service,
             'filename': filename,
             'task_file_verification': task_file_verification,
             'task_start_service': task_start_service

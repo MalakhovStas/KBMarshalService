@@ -4,6 +4,7 @@ from typing import Generator
 from celery.result import AsyncResult
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUploadedFile
+from django.core.handlers.wsgi import WSGIRequest
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
@@ -91,18 +92,14 @@ class Checker:
             'name_org_pass': {'col': nop_col, 'col_name': nop_name, 'start_row': nop_row},
         }
 
-        # Дата выдачи паспорта и Кем выдан паспорт - не проверяется, если нет не будет ошибки
-        columns = (f_col, db_col, snp_col)
-
         if self.service == "FSSP":
             inn_col = self.fields_table.get("inn")["column"]
             inn_row = self.fields_table.get("inn")["row"]
             innc_name = sheet.cell(row=1, column=inn_col).column_letter if inn_col else None
             result_data.update({'inn': {'col': inn_col, 'col_name': innc_name, 'start_row': inn_row}})
 
-            columns += (inn_col,)
-
-        if all(columns):
+        # Дата выдачи паспорта, Кем выдан паспорт и ИНН - не проверяется, если нет не будет ошибки
+        if all([f_col, db_col, snp_col]):
             return result_data
         else:
             not_found_columns = [self.trans_fields[key] for key, value in result_data.items() if not value["col"]]
@@ -118,7 +115,8 @@ class Checker:
             # )
 
 
-def load_data_file(request) -> tuple[str, AsyncResult, str]:
+def load_data_file(request: WSGIRequest) -> tuple[str, AsyncResult, str]:
+    """Запускает celery.task - старт проверки данных входящего файла"""
     service = get_service_name(request)
     date = datetime.strftime(datetime.now(), '%d.%m.%Y-%H:%M:%S')
     filename = None
