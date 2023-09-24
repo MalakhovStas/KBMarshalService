@@ -1,9 +1,7 @@
-import json
-
+from typing import Union
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
-from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 
 from .models import Debtor
@@ -26,7 +24,7 @@ def get_fullname(search_query: str) -> tuple:
     return surname, name, patronymic
 
 
-def get_passport(search_query: str) -> int | bool:
+def get_passport(search_query: str) -> Union[int, bool]:
     result = False
     search_query = search_query.replace(' ', '')
     if search_query.isdigit() and len(search_query) == 10:
@@ -34,7 +32,7 @@ def get_passport(search_query: str) -> int | bool:
     return result
 
 
-def get_inn(search_query: str) -> int | bool:
+def get_inn(search_query: str) -> Union[int, bool]:
     result = False
     search_query = search_query.replace(' ', '')
     if search_query.isdigit() and len(search_query) == 12:

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Generator
+from typing import Generator, Union, Dict
 
 from celery.result import AsyncResult
 from django.core.files.storage import FileSystemStorage
@@ -62,7 +62,7 @@ class Checker:
             for column in range(1, max_column+1):
                 yield title_row, column
 
-    def check_fields_result(self, sheet) -> str | dict:
+    def check_fields_result(self, sheet) -> Union[str, Dict]:
         # try:
         f_col = self.fields_table["fullname"]["column"]
         f_row = self.fields_table["fullname"]["row"]
@@ -123,7 +123,9 @@ def load_data_file(request: WSGIRequest) -> tuple[str, AsyncResult, str]:
     task = None
 
     if request.FILES:
-        file: TemporaryUploadedFile | InMemoryUploadedFile = request.FILES['datafile']
+        # file: TemporaryUploadedFile | InMemoryUploadedFile = request.FILES['datafile']
+        # исправлено для python3.8
+        file = request.FILES['datafile']
 
         if file.name.endswith(('.xls', '.xlsx')):
             file_system = FileSystemStorage()

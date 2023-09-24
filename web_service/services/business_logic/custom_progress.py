@@ -1,10 +1,11 @@
+from typing import Optional
 from celery_progress.backend import ProgressRecorder
 
 
 class CustomProgressRecorder(ProgressRecorder):
     """Изменение дефолтного класса ProgressRecorder для добавления поля title"""
 
-    def __init__(self, task, title: str | None = None):
+    def __init__(self, task, title: Optional[str] = None):
         self.task = task
         self.title = title
         super().__init__(self.task)

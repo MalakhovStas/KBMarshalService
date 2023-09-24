@@ -1,4 +1,6 @@
 import json
+from typing import Optional
+
 from django.utils.translation import gettext_lazy as _
 from .loader import services_storage
 
@@ -7,7 +9,7 @@ class SessionDebtorModel:
     """Класс для хранения данных должника в сессии"""
     def __init__(self, surname: str,  name: str, patronymic: str,
                  date_birth: str, ser_num_pass: str, date_issue_pass: str, name_org_pass: str,
-                 service: str, task_file_verification_id: str, service_key: str, inn: str | None = None):
+                 service: str, task_file_verification_id: str, service_key: str, inn: Optional[str] = None):
         self.surname = surname
         self.name = name
         self.patronymic = patronymic

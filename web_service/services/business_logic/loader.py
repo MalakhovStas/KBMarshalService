@@ -35,27 +35,27 @@ LOGGER_DEBUG = {
     "sink": PATH_FILE_DEBUG_LOGS,
     "level": "DEBUG",
     "format": debug_format,
-} | logger_common_args
+    **logger_common_args}
 
 LOGGER_ERRORS = {
     "sink": PATH_FILE_ERRORS_LOGS,
     "level": "WARNING",
     "format": errors_format,
-} | logger_common_args
+    **logger_common_args}
 
 LOGGER_RequestsManager = {
     "sink": PATH_FILE_RequestsManager,
     "level": "DEBUG",
     "format": debug_format,
-    "filter": lambda msg: msg.get("message").startswith('RequestsManager')
-} | logger_common_args
+    "filter": lambda msg: msg.get("message").startswith('RequestsManager'),
+    **logger_common_args}
 
 LOGGER_ServicesGlobalStorage = {
     "sink": PATH_FILE_ServicesGlobalStorage,
     "level": "DEBUG",
     "format": debug_format,
-    "filter": lambda msg: msg.get("message").startswith('ServicesGlobalStorage')
-} | logger_common_args
+    "filter": lambda msg: msg.get("message").startswith('ServicesGlobalStorage'),
+    **logger_common_args}
 
 
 logger.add(**LOGGER_DEBUG)

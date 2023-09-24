@@ -1,5 +1,5 @@
 import asyncio
-from typing import Iterable, Any
+from typing import Iterable, Any, Optional, Union, Dict, List
 
 import aiohttp
 
@@ -24,16 +24,16 @@ class RequestsManager:
 
     async def __call__(
             self,
-            url: str | None = None,
+            url: Optional[str] = None,
             method: str = "get",
-            headers: dict | None = None,
-            data: dict | list | None = None,
+            headers: Optional[Dict] = None,
+            data: Optional[Union[Dict, List]] = None,
             step: int = 1,
-    ) -> dict | list:
+    ) -> Union[Dict, List]:
         """Повторяет запрос/запросы, если нет ответа или исключение"""
 
         if headers:
-            headers = self.content_type | headers
+            headers = {**self.content_type, **headers}
         else:
             headers = self.content_type
 
@@ -55,8 +55,8 @@ class RequestsManager:
                 )
         return result
 
-    async def aio_request(self, url: str, method: str = "get", headers: dict | None = None,
-                          data: dict | list | None = None, timeout: int = settings.REQUESTS_TIMEOUT) -> dict | list:
+    async def aio_request(self, url: str, method: str = "get", headers: Optional[Dict] = None,
+                          data: Optional[Union[Dict, List]] = None, timeout: int = settings.REQUESTS_TIMEOUT) -> Union[Dict, List]:
         """Основной метод http запросов, повторяет запрос, если во время выполнения запроса произошло исключение"""
         step = 1
         result = {}
@@ -84,7 +84,7 @@ class RequestsManager:
                     break
         return result
 
-    async def __get_result(self, response: aiohttp.ClientResponse, data: dict | None = None) -> dict[str, Any] | list:
+    async def __get_result(self, response: aiohttp.ClientResponse, data: Optional[Dict] = None) -> Union[Dict[str, Any], List]:
         """Возвращает данные ответа"""
         result = None
         content = {"response": (await response.content.read()).decode("utf-8")}

@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import os.path
 from types import FunctionType
-from typing import Any
+from typing import Any, Union, Optional, Dict
 
 import openpyxl
 from django.conf import settings
@@ -45,11 +45,11 @@ class ServicesGlobalStorage:
         self.logger = logger
         self.decorate_methods()
 
-    def get_object(self, service, task_file_verification_id, passport) -> dict | str | Any:
+    def get_object(self, service, task_file_verification_id, passport) -> Union[Dict, str, Any]:
         # print(self.storage)
         return self.storage[service][task_file_verification_id][passport]
 
-    def get_field(self, service, task_file_verification_id, passport, field_name) -> str | None:
+    def get_field(self, service, task_file_verification_id, passport, field_name) -> Optional[str]:
         # все поля SessionDebtorModel должны быть str
         result = None
         if debtor := self.storage[service][task_file_verification_id][passport]:

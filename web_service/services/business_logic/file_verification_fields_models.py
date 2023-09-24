@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Union, Optional, Dict
 
 
 class BaseField:
@@ -12,7 +13,7 @@ class BaseField:
     words_to_search_in_title = []
     or_words_to_search_in_title = []
 
-    def check_title(self, cell_value: str, column):  # -> bool | dict:
+    def check_title(self, cell_value: str, column) -> Union[bool, Dict]:
         result = False
         cell_value = cell_value.lower()
         if all([word in cell_value for word in self.words_to_search_in_title]) or \
@@ -21,10 +22,10 @@ class BaseField:
             result = {'column': column}
         return result
 
-    def get_data(self, cell_value: str) -> tuple[bool | str | None]:
+    def get_data(self, cell_value: str) -> tuple[Optional[Union[bool, str]]]:
         pass
 
-    def check_data(self, cell_value: str, row) -> bool | dict:
+    def check_data(self, cell_value: str, row) -> Union[bool, Dict]:
         result = False
         if any(self.get_data(cell_value=cell_value)):
             result = {'row': row}
