@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from celery.result import AsyncResult
 from django.core.handlers.wsgi import WSGIRequest
@@ -11,7 +11,7 @@ from web_service.settings import redis_cache
 
 
 def start_services(request: WSGIRequest, filename: str, task_file_verification: AsyncResult,
-                   available_requests: int) -> tuple[str, Optional[AsyncResult]]:
+                   available_requests: int) -> Tuple[str, Optional[AsyncResult]]:
     """Запускает celery.task - старт сервисов"""
     service = get_service_name(request)
     task = None

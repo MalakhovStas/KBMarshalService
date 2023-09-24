@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Tuple
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 from .models import Debtor
 
 
-def get_fullname(search_query: str) -> tuple:
+def get_fullname(search_query: str) -> Tuple:
     surname, name, patronymic = None, None, None
     if search_query:
         search_query = search_query.split(' ', maxsplit=2)

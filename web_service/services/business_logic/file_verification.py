@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Generator, Union, Dict
+from typing import Generator, Union, Dict, Tuple
 
 from celery.result import AsyncResult
 from django.core.files.storage import FileSystemStorage
@@ -115,7 +115,7 @@ class Checker:
             # )
 
 
-def load_data_file(request: WSGIRequest) -> tuple[str, AsyncResult, str]:
+def load_data_file(request: WSGIRequest) -> Tuple[str, AsyncResult, str]:
     """Запускает celery.task - старт проверки данных входящего файла"""
     service = get_service_name(request)
     date = datetime.strftime(datetime.now(), '%d.%m.%Y-%H:%M:%S')

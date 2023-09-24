@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import os.path
 from types import FunctionType
-from typing import Any, Union, Optional, Dict
+from typing import Any, Union, Optional, Dict, List, Tuple
 
 import openpyxl
 from django.conf import settings
@@ -80,7 +80,7 @@ class ServicesGlobalStorage:
         del self.storage[service][task_file_verification_id][passport]
         return True
 
-    def update(self, service, task_file_verification_id, passport, data: dict) -> bool:
+    def update(self, service, task_file_verification_id, passport, data: Dict) -> bool:
         if debtor := self.storage[service][task_file_verification_id][passport]:
             if isinstance(debtor, str):
                 debtor_dict = json.loads(debtor)
@@ -96,19 +96,19 @@ class ServicesGlobalStorage:
             return True
 
     def add_passports_for_requests(
-            self, service: str, task_file_verification_id: str, passports_for_requests: list) -> bool:
+            self, service: str, task_file_verification_id: str, passports_for_requests: List) -> bool:
         self.storage[service][task_file_verification_id]['passports_for_requests'] = passports_for_requests
         return True
 
-    def get_passports_for_requests(self, service: str, task_file_verification_id: str) -> list:
+    def get_passports_for_requests(self, service: str, task_file_verification_id: str) -> List:
         return self.storage[service][task_file_verification_id]['passports_for_requests']
 
     def add_passports_with_bad_results(
-            self, service: str, task_file_verification_id: str, passports_with_bad_results: list) -> bool:
+            self, service: str, task_file_verification_id: str, passports_with_bad_results: List) -> bool:
         self.storage[service][task_file_verification_id]['passports_with_bad_results'] = passports_with_bad_results
         return True
 
-    def get_passports_with_bad_results(self, service: str, task_file_verification_id: str) -> list:
+    def get_passports_with_bad_results(self, service: str, task_file_verification_id: str) -> List:
         return self.storage[service][task_file_verification_id]['passports_with_bad_results']
 
     def clear_operation_storage(self, service, task_file_verification_id) -> bool:
@@ -119,7 +119,7 @@ class ServicesGlobalStorage:
         self.storage[service] = {}
         return True
 
-    def save_operation_results(self, service: str, task_file_verification_id: str, filename: str) -> tuple[int, int, int]:
+    def save_operation_results(self, service: str, task_file_verification_id: str, filename: str) -> Tuple[int, int, int]:
         # self.logger.info(self.sign + f'УДАЛИТЬ!!! > storage: {self.storage}')
         incoming_file = filename.split(':')[-1]
 
@@ -155,7 +155,7 @@ class ServicesGlobalStorage:
                 len([*debtors_for_save, *debtors_for_update, *add_debtors_to_result_file]), len(debtors_for_save))
 
     @staticmethod
-    def save_objects_to_file(result_objects: list, service: str, filename: str, bad_results: bool = False) -> None:
+    def save_objects_to_file(result_objects: List, service: str, filename: str, bad_results: bool = False) -> None:
         """Сохраняет данные в файл"""
         wb = openpyxl.Workbook()
         ws = wb.active
@@ -191,7 +191,7 @@ class ServicesGlobalStorage:
         )
 
     def selecting_objects_for_db_operations(self, service: str, task_file_verification_id: str) \
-            -> tuple[list['SessionDebtorModel'], list['SessionDebtorModel'], list['SessionDebtorModel']]:
+            -> Tuple[List, List, List]:
         """Выбор объектов SessionDebtorModel для совершения операций(сохранения/обновления) должников в БД"""
         debtors_for_save = []
         debtors_for_update = []
@@ -215,8 +215,7 @@ class ServicesGlobalStorage:
         return debtors_for_save, debtors_for_update, add_debtors_to_result_file
 
     @staticmethod
-    def save_objects_to_db(service: str, debtors_for_save: list['SessionDebtorModel'],
-                           debtors_for_update: list['SessionDebtorModel']) -> bool:
+    def save_objects_to_db(service: str, debtors_for_save: List, debtors_for_update: List) -> bool:
         """Сохраняет в БД объекты SessionDebtor из global_storage.storage[task_id] в которых debtor_in_db == False"""
 
         debtors_for_save_elements_as_dict = [session_debtor.to_dict() for session_debtor in debtors_for_save]

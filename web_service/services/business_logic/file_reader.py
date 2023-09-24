@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Tuple, List, Union
 
 import openpyxl
 from celery.result import AsyncResult
@@ -18,7 +19,7 @@ class FileReader:
         self.path_to_read_file = f'{settings.MEDIA_ROOT}/{self.service}/{filename}'
         self.path_to_file_with_bad_results = f'{settings.MEDIA_ROOT}/{self.service}/results/{self.service}:incorrect_data_or_duplicates:{filename.rsplit(":", maxsplit=1)[-1]}'
 
-    def __call__(self, progress) -> tuple[list[str], int]:
+    def __call__(self, progress) -> Tuple[List[str], int]:
         """Проверяет данные в файле self.path_to_read_file, возвращает кортеж с SessionDebtorModel, множество
         уникальных значений серии номера паспорта и число дубликатов или невалидных строк"""
         incorrect_data_or_duplicates = 0
@@ -105,7 +106,7 @@ class FileReader:
 
         return list(unique_pass), incorrect_data_or_duplicates
 
-    def bad_rows_to_file(self, bad_rows: list) -> None:
+    def bad_rows_to_file(self, bad_rows: List) -> None:
         """Сохраняет невалидные данные в файл"""
         wb = openpyxl.Workbook()
         ws = wb.active

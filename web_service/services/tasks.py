@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+from typing import Dict
 
 import openpyxl
 from celery import shared_task
@@ -52,7 +53,7 @@ def check_file_fields(self, service, filename, language=None) -> str:
 
 @shared_task(bind=True, name='start_fns_fssp_service', acks_late=True)
 def start_fns_fssp_service(self, service: str, filename: str,
-                           task_file_verification_id: str, available_requests: int, language=None) -> dict:
+                           task_file_verification_id: str, available_requests: int, language=None) -> Dict:
     prev_language = translation.get_language()
     language and translation.activate(language)
 

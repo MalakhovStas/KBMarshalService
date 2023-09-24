@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Union, Optional, Dict
+from typing import Union, Optional, Dict, Tuple
 
 
 class BaseField:
@@ -22,7 +22,7 @@ class BaseField:
             result = {'column': column}
         return result
 
-    def get_data(self, cell_value: str) -> tuple[Optional[Union[bool, str]]]:
+    def get_data(self, cell_value: str):
         pass
 
     def check_data(self, cell_value: str, row) -> Union[bool, Dict]:
@@ -37,7 +37,7 @@ class FullNamePerson(BaseField):
     words_to_search_in_title = ['фамилия', 'имя', 'отчество']
     or_words_to_search_in_title = ['фио']
 
-    def get_data(self, cell_value: str) -> tuple:
+    def get_data(self, cell_value: str) -> Tuple:
         surname, name, patronymic = None, None, None
         if cell_value:
             cell_value = cell_value.split(' ', maxsplit=2)
@@ -54,7 +54,7 @@ class DateBirthPerson(BaseField):
     words_to_search_in_title = ['дата', 'рождения']
     min_age_person = 18
 
-    def get_data(self, cell_value: str) -> tuple:
+    def get_data(self, cell_value: str) -> Tuple:
         result = False,
         if cell_value:
             try:
@@ -76,7 +76,7 @@ class SerNumPassport(BaseField):
     or_words_to_search_in_title = ['серия', 'номер', 'паспорта']
     max_years_after_date_issue = 30
 
-    def get_data(self, cell_value: str) -> tuple:
+    def get_data(self, cell_value: str) -> Tuple:
         result = False,
         cell_value = cell_value.replace(' ', '')
         if cell_value.isdigit() and len(cell_value) == 10:
@@ -90,7 +90,7 @@ class DateIssuePassport(BaseField):
     or_words_to_search_in_title = ['дата', 'выдачи', 'паспорт']
     max_years_after_date_issue = 30
 
-    def get_data(self, cell_value: str) -> tuple:
+    def get_data(self, cell_value: str) -> Tuple:
         result = False,
         if cell_value:
             try:
@@ -111,7 +111,7 @@ class NameOrgIssuePassport(BaseField):
     words_to_search_in_title = ['кем', 'выдан', 'паспорт']
     or_words_to_search_in_title = ['наименование', 'органа', 'выдавшего', 'паспорт']
 
-    def get_data(self, cell_value: str) -> tuple:
+    def get_data(self, cell_value: str) -> Tuple:
         result = False
         if cell_value:
             result = (cell_value,)
@@ -125,7 +125,7 @@ class INN(BaseField):
     num_digits_inn_people = 12
     num_digits_inn_company = 10
 
-    def get_data(self, cell_value: str) -> tuple:
+    def get_data(self, cell_value: str) -> Tuple:
         result = False,
         cell_value = cell_value.replace(' ', '')
         if cell_value.isdigit() and len(cell_value) == self.num_digits_inn_people:

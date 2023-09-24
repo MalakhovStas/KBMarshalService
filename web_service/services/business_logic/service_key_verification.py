@@ -1,6 +1,7 @@
 import asyncio
 import json
 from datetime import datetime
+from typing import Dict
 
 from django.contrib import messages
 from django.core.handlers.wsgi import WSGIRequest
@@ -16,7 +17,7 @@ def get_url(service_title):
     return service.methods.get(title='check_key').generate_url(key=service.key)
 
 
-def key_verification(request: WSGIRequest) -> dict:
+def key_verification(request: WSGIRequest) -> Dict:
     service = get_service_name(request)
     limit = 0
     spent = 0
