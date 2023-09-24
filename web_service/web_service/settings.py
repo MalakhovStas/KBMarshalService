@@ -187,18 +187,18 @@ WSGI_APPLICATION = 'web_service.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'database/db.sqlite3',
-    # },
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'KBMarshalService',
-        'USER': 'postgres',
-        'PASSWORD': 'secret',
-        'HOST': 'localhost',
-        'PORT': '5445',
-    }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'database/db.sqlite3',
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'KBMarshalService',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'secret',
+    #     'HOST': 'localhost',
+    #     'PORT': '5445',
+    # }
 }
 
 
