@@ -17,10 +17,12 @@ from services.business_logic.file_reader import FileReader
 from services.business_logic.loader import services_storage
 from services.business_logic.service import ServiceClass
 from services.models import Service
+# from loguru import logger
 
 
 @shared_task(bind=True, name='check_file_fields')
 def check_file_fields(self, service, filename, language=None) -> str:
+    # logger.debug('start celery task - check_file_fields')
     # FIXME
     from .business_logic.file_verification import Checker
 
@@ -48,15 +50,18 @@ def check_file_fields(self, service, filename, language=None) -> str:
     # Должна быть такая последовательность для правильного перевода
     result = checker.check_fields_result(sheet)
     translation.activate(prev_language)
+    # logger.debug(f'complete celery task - check_file_fields, {result=}')
     return result
 
 
 @shared_task(bind=True, name='start_fns_fssp_service', acks_late=True)
 def start_fns_fssp_service(self, service: str, filename: str,
                            task_file_verification_id: str, available_requests: int, language=None) -> Dict:
+    # logger.debug('start celery task - start_fns_fssp_service')
     prev_language = translation.get_language()
     language and translation.activate(language)
 
+    # logger.debug('start file_reader in task start_fns_fssp_service')
     file_reader = FileReader(service, task_file_verification_id, filename)
     unique_passports, incorrect_data_or_duplicates = file_reader(
         progress=CustomProgressRecorder(self, title=_('File data loading'))
@@ -115,6 +120,7 @@ def start_fns_fssp_service(self, service: str, filename: str,
             f": {len(unique_passports)} | " + _('of them in database') + f": {len(persons_in_db)} | " + \
             _('selected for request') + f": {num_persons_for_request}"
 
+    # logger.debug('start service in task start_fns_fssp_service')
     service_class = ServiceClass(service=service, filename=filename,
                                  task_file_verification_id=task_file_verification_id)
     service_class(progress=CustomProgressRecorder(self,  title=title))
@@ -133,6 +139,7 @@ def start_fns_fssp_service(self, service: str, filename: str,
     # Удаляем начальный, входящий файл
     os.remove(f'{settings.MEDIA_ROOT}/{service}/{filename}')
 
+    # logger.debug(f'complete celery task - start_fns_fssp_service')
     return {
         'service_and_requests_errors': service_and_requests_errors,
         'incorrect_data_or_duplicates': incorrect_data_or_duplicates,

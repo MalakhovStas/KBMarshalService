@@ -39,7 +39,7 @@ class FileReader:
         service_key = Service.objects.get(title=self.service).key
 
         for num_row in range(start_row, sheet.max_row + 1):
-            fullname = sheet.cell(row=num_row, column=fullname_column).value
+            fullname = sheet.cell(row=num_row, column=fullname_column).value if fullname_column else ''
             progress.set_progress(
                 current=num_row,
                 total=sheet.max_row - start_row,
@@ -60,15 +60,16 @@ class FileReader:
                 name = name.lower().title() if isinstance(name, str) else name
                 patronymic = patronymic.lower().title() if isinstance(patronymic, str) else patronymic
             else:
-                # Если ячейка ФИО пуста
+                # Если ячейка ФИО пуста или не найдена
+                surname, name, patronymic = '', '', ''
                 bad_rows.append(sheet.iter_rows(min_row=num_row, max_row=num_row, values_only=True))
                 incorrect_data_or_duplicates += 1
                 continue
 
-            date_birth = sheet.cell(row=num_row, column=date_birth_column).value
-            ser_num_pass = str(sheet.cell(row=num_row, column=ser_num_pass_column).value).replace(' ', '')
-            date_issue_pass = sheet.cell(row=num_row, column=date_issue_pass_column).value
-            name_org_pass = sheet.cell(row=num_row, column=name_org_pass_column).value
+            date_birth = sheet.cell(row=num_row, column=date_birth_column).value if date_birth_column else ''
+            ser_num_pass = str(sheet.cell(row=num_row, column=ser_num_pass_column).value).replace(' ', '') if ser_num_pass_column else ''
+            date_issue_pass = sheet.cell(row=num_row, column=date_issue_pass_column).value if date_issue_pass_column else ''
+            name_org_pass = sheet.cell(row=num_row, column=name_org_pass_column).value if name_org_pass_column else ''
 
             if ser_num_pass.isdigit() and len(ser_num_pass) == 10 and ser_num_pass not in unique_pass:
                 unique_pass.add(ser_num_pass)
@@ -83,7 +84,8 @@ class FileReader:
             if isinstance(date_issue_pass, datetime):
                 date_issue_pass = datetime.date(date_issue_pass).strftime('%d.%m.%Y')
 
-            # Логика ниже выполнится только если есть имя и фамилия, серия и номер паспорта, и паспорт уникальный.
+            # Логика ниже выполнится только если есть имя и фамилия, дата рождения, серия и номер паспорта,
+            # и паспорт уникальный.
             # То есть unique_pass == количеству SessionDebtorModel в
             # global_storage.storage[service][task_file_verification_id]
             if name and surname and date_birth and ser_num_pass:
