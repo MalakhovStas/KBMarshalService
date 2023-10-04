@@ -142,6 +142,7 @@ class ServicesGlobalStorage:
 
         debtors_for_save, debtors_for_update, add_debtors_to_result_file = self.selecting_objects_for_db_operations(
             service=service, task_file_verification_id=task_file_verification_id)
+
         self.save_objects_to_db(
             service=service, debtors_for_save=debtors_for_save, debtors_for_update=debtors_for_update)
 
@@ -222,10 +223,10 @@ class ServicesGlobalStorage:
         for session_debtor_dict in debtors_for_save_elements_as_dict:
             session_debtor_dict.pop('url')
             session_debtor_dict['date_birth'] = datetime.strptime(
-                session_debtor_dict['date_birth'], '%d.%m.%Y')
+                session_debtor_dict['date_birth'], '%d.%m.%Y') if session_debtor_dict['date_birth'] else None
             session_debtor_dict['date_issue_pass'] = datetime.strptime(
-                session_debtor_dict['date_issue_pass'], '%d.%m.%Y')
-
+                session_debtor_dict['date_issue_pass'], '%d.%m.%Y') \
+                if session_debtor_dict['date_issue_pass'] else None
         Debtor.objects.bulk_create([Debtor(**session_debtor) for session_debtor in debtors_for_save_elements_as_dict])
 
         #  Согласно - https://www.sankalpjonna.com/learn-django/running-a-bulk-update-with-django

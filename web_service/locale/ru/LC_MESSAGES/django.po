@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-24 16:03+0300\n"
+"POT-Creation-Date: 2023-10-04 12:05+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -83,7 +83,7 @@ msgstr "дата последнего изменения"
 msgid "debtor"
 msgstr "должник"
 
-#: debtors/models.py:23 services/tasks.py:124
+#: debtors/models.py:23
 msgid "debtors"
 msgstr "должники"
 
@@ -91,11 +91,7 @@ msgstr "должники"
 msgid "Debtor"
 msgstr "Должник"
 
-#: debtors/views.py:70
-msgid "No enforcement proceedings found"
-msgstr "Исполнительных производств не обнаружено"
-
-#: services/business_logic/file_reader.py:45
+#: services/business_logic/file_reader.py:46
 msgid "Reading row"
 msgstr "Чтение строки"
 
@@ -134,15 +130,15 @@ msgstr "не найдены колонки"
 msgid "not found column"
 msgstr "не найдена колонка"
 
-#: services/business_logic/file_verification.py:143
+#: services/business_logic/file_verification.py:145
 msgid "File verification"
 msgstr "Проверка файла"
 
-#: services/business_logic/file_verification.py:145
+#: services/business_logic/file_verification.py:147
 msgid "Unsupported file, .xls .xlsx only"
 msgstr "Неподдерживаемый тип файла, только .xls .xlsx"
 
-#: services/business_logic/file_verification.py:147
+#: services/business_logic/file_verification.py:149
 #: templates/includes/services/file_verification.j2:326
 msgid "Select File"
 msgstr "Выберите файл"
@@ -155,24 +151,24 @@ msgstr "Запрос"
 msgid "total"
 msgstr "всего"
 
-#: services/business_logic/service_key_verification.py:41
-#: services/business_logic/service_key_verification.py:44
+#: services/business_logic/service_key_verification.py:42
+#: services/business_logic/service_key_verification.py:45
 msgid "Key"
 msgstr "Ключ"
 
-#: services/business_logic/service_key_verification.py:41
+#: services/business_logic/service_key_verification.py:42
 msgid "valid until"
 msgstr "действителен до"
 
-#: services/business_logic/service_key_verification.py:42
+#: services/business_logic/service_key_verification.py:43
 msgid "Available requests"
 msgstr "Доступно запросов"
 
-#: services/business_logic/service_key_verification.py:44
+#: services/business_logic/service_key_verification.py:45
 msgid "not valid"
 msgstr "не действителен"
 
-#: services/business_logic/service_key_verification.py:56
+#: services/business_logic/service_key_verification.py:57
 msgid "Key verification error, service: "
 msgstr "Ошибка проверки ключа, сервис: "
 
@@ -247,59 +243,63 @@ msgstr "методы"
 msgid "url generation error"
 msgstr "ошибка генерации url"
 
-#: services/tasks.py:36
+#: services/tasks.py:39
 msgid "Checking if there is data in a file"
 msgstr "Проверка наличия данных в файле"
 
-#: services/tasks.py:39
+#: services/tasks.py:42
 msgid "Searching"
 msgstr "Поиск"
 
-#: services/tasks.py:61
+#: services/tasks.py:67
 msgid "File data loading"
 msgstr "Загрузка данных файла"
 
-#: services/tasks.py:108
+#: services/tasks.py:114
 msgid "Not enough available requests to start service"
 msgstr "Недостаточно запросов для запуска сервиса"
 
-#: services/tasks.py:109
+#: services/tasks.py:115
 msgid "needed"
 msgstr "необходимо"
 
-#: services/tasks.py:110
+#: services/tasks.py:116
 msgid "available"
 msgstr "доступно"
 
-#: services/tasks.py:113
+#: services/tasks.py:119
 msgid "Data request debtors in service"
 msgstr "Запрос данных о должниках на сервис"
 
-#: services/tasks.py:113
+#: services/tasks.py:119
 msgid "total debtors"
 msgstr "всего должников"
 
-#: services/tasks.py:114
+#: services/tasks.py:120
 msgid "of them in database"
 msgstr "из них в базе данных"
 
-#: services/tasks.py:115
+#: services/tasks.py:121
 msgid "selected for request"
 msgstr "выбрано для запроса"
 
-#: services/tasks.py:124
+#: services/tasks.py:131
 msgid "Recorded in result"
 msgstr "Записано в результат"
 
-#: services/tasks.py:126
+#: services/tasks.py:131
+msgid "of debtors"
+msgstr "должников"
+
+#: services/tasks.py:133
 msgid "added to the database"
 msgstr "добавлено в базу данных"
 
-#: services/tasks.py:128
+#: services/tasks.py:135
 msgid "data"
 msgstr "данные"
 
-#: services/tasks.py:128
+#: services/tasks.py:135
 msgid "debtors not received"
 msgstr "должников не получены"
 
@@ -431,7 +431,7 @@ msgstr "Дата выдачи паспорта"
 msgid "Enforcement proceedings"
 msgstr "Исполнительное производство"
 
-#: templates/debtors/debtor_detail.j2:58
+#: templates/debtors/debtor_detail.j2:64
 msgid "no data"
 msgstr "нет данных"
 
@@ -490,6 +490,10 @@ msgstr "Подтверждено"
 #: templates/includes/services/file_verification.j2:56
 msgid "Cancel verification"
 msgstr "Отменить проверку"
+
+#: templates/includes/services/file_verification.j2:60
+msgid "Send result file"
+msgstr "Отправить результат"
 
 #: templates/includes/services/file_verification.j2:91
 msgid "Start service"
@@ -721,6 +725,9 @@ msgstr "Английский"
 #: web_service/settings.py:239
 msgid "Russian"
 msgstr "Русский"
+
+#~ msgid "No enforcement proceedings found"
+#~ msgstr "Исполнительных производств не обнаружено"
 
 #~ msgid "Download bad results file"
 #~ msgstr "Скачать файл без результатов"

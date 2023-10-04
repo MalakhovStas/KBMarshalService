@@ -128,7 +128,7 @@ def start_fns_fssp_service(self, service: str, filename: str,
     service_and_requests_errors, debtors_save_in_result_file, debtors_added_in_db = services_storage.save_operation_results(
         service=service, task_file_verification_id=task_file_verification_id, filename=filename)
 
-    result_message = "<b>" + _('Recorded in result') + f" {debtors_save_in_result_file} " + _('debtors')
+    result_message = "<b>" + _('Recorded in result') + f" {debtors_save_in_result_file} " + _('of debtors')
     if debtors_added_in_db:
         result_message += " | " + _('added to the database') + f" {debtors_added_in_db}"
     if service_and_requests_errors:
