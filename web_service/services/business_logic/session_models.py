@@ -9,7 +9,9 @@ class SessionDebtorModel:
     """Класс для хранения данных должника в сессии"""
     def __init__(self, surname: str,  name: str, patronymic: str,
                  date_birth: str, ser_num_pass: str, date_issue_pass: str, name_org_pass: str,
-                 service: str, task_file_verification_id: str, service_key: str, inn: Optional[str] = None):
+                 service: str, task_file_verification_id: str, service_key: str, inn: Optional[str] = None,
+                 id_credit: Optional[str] = None):
+        self.id_credit = id_credit
         self.surname = surname
         self.name = name
         self.patronymic = patronymic
@@ -36,6 +38,7 @@ class SessionDebtorModel:
             self.url = f'https://api.damia.ru/fssp/ispsfl?fam={self.surname}&nam={self.name}&otch=' \
                        f'{self.patronymic if self.patronymic else None}&bdate={self.date_birth}&page=1&key={service_key}'
 
+        # При инициализации объекта добавляет его в global storage
         services_storage.add(
             service=self.service,
             task_file_verification_id=self.task_file_verification_id,
@@ -47,6 +50,7 @@ class SessionDebtorModel:
 
     def to_dict(self):
         return {
+            'id_credit': self.id_credit,
             'surname': self.surname,
             'name': self.name,
             'patronymic': self.patronymic,
@@ -65,7 +69,8 @@ class SessionDebtorModel:
         return json.dumps(self.to_dict(), ensure_ascii=True)
 
     def __str__(self):
-        return f'{self.surname} {self.name} {self.patronymic} | {_("passport")}: {self.ser_num_pass}'
+        return (f'{self.surname} {self.name} {self.patronymic} | '
+                f'{_("passport")}: {self.ser_num_pass} | {_("id credit")}: {self.id_credit}')
 
 
     # self.fns_url = f'https://api-fns.ru/api/innfl?fam={self.surname}&nam={self.name}&otch=' \

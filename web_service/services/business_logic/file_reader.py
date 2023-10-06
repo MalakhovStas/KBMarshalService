@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import Tuple, List, Union
+from typing import Tuple, List
 
 import openpyxl
 from celery.result import AsyncResult
@@ -9,6 +8,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 from services.business_logic.session_models import SessionDebtorModel
 from services.models import Service
+from services import utils
 
 
 class FileReader:
@@ -30,6 +30,7 @@ class FileReader:
         sheet: Worksheet = openpyxl.load_workbook(self.path_to_read_file).active
         bad_rows.append(sheet.iter_rows(min_row=1, max_row=start_row - 1, values_only=True))
 
+        id_credit_column = self.task_file_verify.result['id_credit']['col']
         fullname_column = self.task_file_verify.result['fullname']['col']
         date_birth_column = self.task_file_verify.result['date_birth']['col']
         ser_num_pass_column = self.task_file_verify.result['ser_num_pass']['col']
@@ -39,11 +40,16 @@ class FileReader:
         service_key = Service.objects.get(title=self.service).key
 
         for num_row in range(start_row, sheet.max_row + 1):
-            fullname = sheet.cell(row=num_row, column=fullname_column).value if fullname_column else ''
+            fullname = str(sheet.cell(row=num_row, column=fullname_column).value) if fullname_column else ''
+            id_credit = str(sheet.cell(row=num_row, column=id_credit_column).value) if id_credit_column else ''
+            ser_num_pass = str(sheet.cell(row=num_row, column=ser_num_pass_column).value).replace(
+                ' ', '') if ser_num_pass_column else ''
+
             progress.set_progress(
                 current=num_row,
                 total=sheet.max_row - start_row,
-                description=_('Reading row') + f': {num_row}. {fullname}'
+                description=_('Reading row') + f': {num_row}. {fullname} | {_("id credit")}: {id_credit} | '
+                                               f'{_("passport")}: {ser_num_pass}'
             )
             if fullname:
                 fullname = fullname.split(' ', maxsplit=2)
@@ -66,10 +72,14 @@ class FileReader:
                 incorrect_data_or_duplicates += 1
                 continue
 
-            date_birth = sheet.cell(row=num_row, column=date_birth_column).value if date_birth_column else ''
-            ser_num_pass = str(sheet.cell(row=num_row, column=ser_num_pass_column).value).replace(' ', '') if ser_num_pass_column else ''
-            date_issue_pass = sheet.cell(row=num_row, column=date_issue_pass_column).value if date_issue_pass_column else ''
-            name_org_pass = sheet.cell(row=num_row, column=name_org_pass_column).value if name_org_pass_column else ''
+            date_birth = utils.date_identifier_and_converter(
+                value=sheet.cell(row=num_row, column=date_birth_column).value)[0] if date_birth_column else ''
+
+            date_issue_pass = utils.date_identifier_and_converter(
+                value=sheet.cell(row=num_row, column=date_issue_pass_column).value)[0] if date_issue_pass_column else ''
+
+            name_org_pass = str(sheet.cell(
+                row=num_row, column=name_org_pass_column).value) if name_org_pass_column else ''
 
             if ser_num_pass.isdigit() and len(ser_num_pass) == 10 and ser_num_pass not in unique_pass:
                 unique_pass.add(ser_num_pass)
@@ -79,23 +89,27 @@ class FileReader:
                 incorrect_data_or_duplicates += 1
                 continue
 
-            if isinstance(date_birth, datetime):
-                date_birth = datetime.date(date_birth).strftime('%d.%m.%Y')
-            if isinstance(date_issue_pass, datetime):
-                date_issue_pass = datetime.date(date_issue_pass).strftime('%d.%m.%Y')
-
             # Логика ниже выполнится только если есть имя и фамилия, дата рождения, серия и номер паспорта,
             # и паспорт уникальный.
             # То есть unique_pass == количеству SessionDebtorModel в
             # global_storage.storage[service][task_file_verification_id]
             if name and surname and date_birth and ser_num_pass:
                 session_debtor = SessionDebtorModel(
-                    surname, name, patronymic, date_birth, ser_num_pass, date_issue_pass, name_org_pass,
-                    self.service, self.task_file_verify.task_id, service_key
+                    surname=surname,
+                    name=name,
+                    patronymic=patronymic,
+                    date_birth=date_birth,
+                    ser_num_pass=ser_num_pass,
+                    date_issue_pass=date_issue_pass,
+                    name_org_pass=name_org_pass,
+                    service=self.service,
+                    task_file_verification_id=self.task_file_verify.task_id,
+                    service_key=service_key,
+                    id_credit=id_credit
                 )
                 if self.service == "FSSP":
                     if inn_column := self.task_file_verify.result['inn']['col']:
-                        if inn := sheet.cell(row=num_row, column=inn_column).value:
+                        if inn := str(sheet.cell(row=num_row, column=inn_column).value):
                             session_debtor.inn = inn
 
             else:

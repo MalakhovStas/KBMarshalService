@@ -81,6 +81,7 @@ class ServicesGlobalStorage:
         return True
 
     def update(self, service, task_file_verification_id, passport, data: Dict) -> bool:
+        """Обновляет значения полей SessionDebtor[passport] по данным data"""
         if debtor := self.storage[service][task_file_verification_id][passport]:
             if isinstance(debtor, str):
                 debtor_dict = json.loads(debtor)
@@ -161,19 +162,20 @@ class ServicesGlobalStorage:
         wb = openpyxl.Workbook()
         ws = wb.active
         if service == "FNS":
-            ws.append(('Фамилия, имя, отчество', 'Дата рождения', 'Серия и номер паспорта',
+            ws.append(('Id кредит', 'Фамилия, имя, отчество', 'Дата рождения', 'Серия и номер паспорта',
                        'Дата выдачи паспорта', 'Кем выдан паспорт', 'ОШИБКИ' if bad_results else 'ИНН'))
             for it_object in result_objects:
-                ws.append((f'{it_object.surname} {it_object.name} {it_object.patronymic}', it_object.date_birth,
-                           it_object.ser_num_pass, it_object.date_issue_pass, it_object.name_org_pass,
-                           it_object.error if bad_results else it_object.inn))
+                ws.append((it_object.id_credit, f'{it_object.surname} {it_object.name} {it_object.patronymic}',
+                           it_object.date_birth, it_object.ser_num_pass, it_object.date_issue_pass,
+                           it_object.name_org_pass, it_object.error if bad_results else it_object.inn))
         elif service == "FSSP":
-            ws.append(('Фамилия, имя, отчество', 'Дата рождения', 'Серия и номер паспорта',
+            ws.append(('Id кредит', 'Фамилия, имя, отчество', 'Дата рождения', 'Серия и номер паспорта',
                        'Дата выдачи паспорта', 'Кем выдан паспорт', 'ИНН',
                        'ОШИБКИ' if bad_results else 'Исполнительные производства'))
             for it_object in result_objects:
-                ws.append((f'{it_object.surname} {it_object.name} {it_object.patronymic}', it_object.date_birth,
-                           it_object.ser_num_pass, it_object.date_issue_pass, it_object.name_org_pass, it_object.inn,
+                ws.append((it_object.id_credit, f'{it_object.surname} {it_object.name} {it_object.patronymic}',
+                           it_object.date_birth, it_object.ser_num_pass, it_object.date_issue_pass,
+                           it_object.name_org_pass, it_object.inn,
                            it_object.error if bad_results else str(it_object.isp_prs)))
         else:
             ws.append((f'Настройки сохранения данных, результатов работы сервиса:{service} не найдены. '
@@ -197,6 +199,7 @@ class ServicesGlobalStorage:
         debtors_for_save = []
         debtors_for_update = []
         add_debtors_to_result_file = []
+
         for session_debtor in self.storage[service][task_file_verification_id].values():
             if not session_debtor.all_db_operations_completed:
                 if not session_debtor.debtor_in_db:
@@ -212,33 +215,50 @@ class ServicesGlobalStorage:
                             debtors_for_update.append(session_debtor)
                         else:
                             add_debtors_to_result_file.append(session_debtor)
+                    # не уверен, что это правильное решение
+                    if session_debtor.update_in_db and session_debtor not in debtors_for_update:
+                        debtors_for_update.append(session_debtor)
 
         return debtors_for_save, debtors_for_update, add_debtors_to_result_file
 
     @staticmethod
     def save_objects_to_db(service: str, debtors_for_save: List, debtors_for_update: List) -> bool:
-        """Сохраняет в БД объекты SessionDebtor из global_storage.storage[task_id] в которых debtor_in_db == False"""
+        """Сохраняет в БД объекты SessionDebtor из global_storage.storage[task_id] в которых debtor_in_db == False и
+           обновляет объекты в которых debtor_in_db == True и update_in_db=True из списка debtors_for_update"""
 
-        debtors_for_save_elements_as_dict = [session_debtor.to_dict() for session_debtor in debtors_for_save]
-        for session_debtor_dict in debtors_for_save_elements_as_dict:
-            session_debtor_dict.pop('url')
-            session_debtor_dict['date_birth'] = datetime.strptime(
-                session_debtor_dict['date_birth'], '%d.%m.%Y') if session_debtor_dict['date_birth'] else None
-            session_debtor_dict['date_issue_pass'] = datetime.strptime(
-                session_debtor_dict['date_issue_pass'], '%d.%m.%Y') \
-                if session_debtor_dict['date_issue_pass'] else None
-        Debtor.objects.bulk_create([Debtor(**session_debtor) for session_debtor in debtors_for_save_elements_as_dict])
+        if debtors_for_save:
+            debtors_for_save_elements_as_dict = [session_debtor.to_dict() for session_debtor in debtors_for_save]
+            for session_debtor_dict in debtors_for_save_elements_as_dict:
+                session_debtor_dict.pop('url')
+                session_debtor_dict['date_birth'] = datetime.strptime(
+                    session_debtor_dict['date_birth'], '%d.%m.%Y') if session_debtor_dict['date_birth'] else None
+                session_debtor_dict['date_issue_pass'] = datetime.strptime(
+                    session_debtor_dict['date_issue_pass'], '%d.%m.%Y') \
+                    if session_debtor_dict['date_issue_pass'] else None
+            Debtor.objects.bulk_create(
+                [Debtor(**session_debtor) for session_debtor in debtors_for_save_elements_as_dict])
 
-        #  Согласно - https://www.sankalpjonna.com/learn-django/running-a-bulk-update-with-django
-        #  эта операция эффективнее чем bulk_update
-        with transaction.atomic():
-            for session_debtor in debtors_for_update:
-                if service == "FNS":
-                    Debtor.objects.filter(
-                        ser_num_pass=session_debtor.ser_num_pass).update(inn=session_debtor.inn)
-                elif service == "FSSP":
-                    Debtor.objects.filter(
-                        ser_num_pass=session_debtor.ser_num_pass).update(isp_prs=session_debtor.isp_prs)
+        if debtors_for_update:
+            with transaction.atomic():
+                #  Согласно - https://www.sankalpjonna.com/learn-django/running-a-bulk-update-with-django
+                #  эта операция эффективнее чем bulk_update
+                for session_debtor in debtors_for_update:
+                    update_fields = {}
+
+                    if session_debtor.id_credit:
+                        # обновляет id кредит в БД
+                        # (попадёт сюда только если в БД не было этого поля или оно отличалось от данных в файле)
+                        update_fields.update({'id_credit': session_debtor.id_credit})
+
+                    if service == "FNS" and session_debtor.inn:
+                        # обновляет ИНН в БД
+                        update_fields.update({'inn': session_debtor.inn})
+
+                    elif service == "FSSP" and session_debtor.isp_prs:
+                        # обновляет исп. производства в БД
+                        update_fields.update({'isp_prs': session_debtor.isp_prs})
+
+                    Debtor.objects.filter(ser_num_pass=session_debtor.ser_num_pass).update(**update_fields)
 
         # Отмечаем в SessionDebtorModel, что все операции с БД для этого должника завершены и он в находится в БД
         for session_debtor in [*debtors_for_save, *debtors_for_update]:

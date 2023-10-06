@@ -3,13 +3,12 @@ from typing import Generator, Union, Dict, Tuple
 
 from celery.result import AsyncResult
 from django.core.files.storage import FileSystemStorage
-from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUploadedFile
 from django.core.handlers.wsgi import WSGIRequest
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
 from services.business_logic.exceptions import FileVerificationException
-from services.business_logic.file_verification_fields_models import FullNamePerson, DateBirthPerson, \
+from services.business_logic.file_verification_fields_models import IdCreditPerson, FullNamePerson, DateBirthPerson, \
     DateIssuePassport, SerNumPassport, NameOrgIssuePassport, INN
 from services.tasks import check_file_fields
 from services.utils import get_redis_key, get_service_name
@@ -22,6 +21,7 @@ class Checker:
     max_title_row = 10
 
     trans_fields = {
+        'id_credit': _('Id credit'),
         'fullname': _('Fullname'),
         'date_birth': _('Date birth'),
         'ser_num_pass': _('Serial and passport number'),
@@ -33,6 +33,7 @@ class Checker:
     def __init__(self, service: str):
         self.service = service
         self.fields_table = {
+            'id_credit': {'column': None, 'row': None, 'class_field': IdCreditPerson()},
             'fullname': {'column': None, 'row': None, 'class_field': FullNamePerson()},
             'date_birth': {'column': None, 'row': None, 'class_field': DateBirthPerson()},
             'ser_num_pass': {'column': None, 'row': None, 'class_field': SerNumPassport()},
@@ -64,6 +65,10 @@ class Checker:
 
     def check_fields_result(self, sheet) -> Union[str, Dict]:
         # try:
+        idc_col = self.fields_table["id_credit"]["column"]
+        idc_row = self.fields_table["id_credit"]["row"]
+        idc_name = sheet.cell(row=1, column=idc_col).column_letter if idc_col else None
+
         f_col = self.fields_table["fullname"]["column"]
         f_row = self.fields_table["fullname"]["row"]
         fc_name = sheet.cell(row=1, column=f_col).column_letter if f_col else None
@@ -85,6 +90,7 @@ class Checker:
         nop_name = sheet.cell(row=1, column=nop_col).column_letter if nop_col else None
 
         result_data = {
+            'id_credit': {'col': idc_col, 'col_name': idc_name, 'start_row': idc_row},
             'fullname': {'col': f_col, 'col_name': fc_name, 'start_row': f_row},
             'date_birth': {'col': db_col, 'col_name': dbc_name, 'start_row': db_row},
             'ser_num_pass': {'col': snp_col, 'col_name': snpc_name, 'start_row': snp_row},
@@ -98,7 +104,7 @@ class Checker:
             innc_name = sheet.cell(row=1, column=inn_col).column_letter if inn_col else None
             result_data.update({'inn': {'col': inn_col, 'col_name': innc_name, 'start_row': inn_row}})
 
-        # Дата выдачи паспорта, Кем выдан паспорт и ИНН - не проверяется, если нет не будет ошибки
+        # Дата выдачи паспорта, Кем выдан паспорт, ID кредит и ИНН - не проверяется, если нет не будет ошибки
         if all([f_col, db_col, snp_col]):
             return result_data
         else:

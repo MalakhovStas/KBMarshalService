@@ -40,6 +40,14 @@ def get_inn(search_query: str) -> Union[int, bool]:
     return result
 
 
+def get_id_credit(search_query: str) -> Union[int, bool]:
+    result = False
+    search_query = search_query.replace(' ', '')
+    if search_query.isdigit() and len(search_query) < 10:
+        result = search_query
+    return result
+
+
 class DebtorDetailPageView(TemplateView):
     """ Отображение детальной информации о должнике """
     template_name = "/debtors/debtor_detail.j2"
@@ -60,6 +68,9 @@ class DebtorDetailPageView(TemplateView):
                     debtor = Debtor.objects.filter(ser_num_pass=passport).first()
                 elif inn := get_inn(search_query):
                     debtor = Debtor.objects.filter(inn=inn).first()
+                elif id_credit := get_id_credit(search_query):
+                    debtor = Debtor.objects.filter(id_credit=id_credit).first()
+
             return render(request, self.template_name, context={'debtor': debtor})
         else:
             return HttpResponseForbidden()

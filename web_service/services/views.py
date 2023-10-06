@@ -9,11 +9,11 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 
 from services.business_logic.file_verification import load_data_file
-from web_service.celery import app
+from web_service.celery_config import app
 from web_service.settings import redis_cache
 from services.utils import get_redis_key, get_service_name
 from django.http import FileResponse
-from services.business_logic.loader import logger
+# from services.business_logic.loader import logger
 from services.business_logic.service_key_verification import key_verification
 from services.business_logic.start_services import start_services
 

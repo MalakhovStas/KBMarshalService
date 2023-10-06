@@ -1,5 +1,7 @@
 from datetime import datetime
-from typing import Union, Optional, Dict, Tuple
+from typing import Union, Dict, Tuple
+
+from services import utils
 
 
 class BaseField:
@@ -32,6 +34,19 @@ class BaseField:
         return result
 
 
+class IdCreditPerson(BaseField):
+    """Подкласс поиска колонки - id кредит"""
+    words_to_search_in_title = ['id', 'кредит']
+    or_words_to_search_in_title = ['id', 'кредита']
+
+    def get_data(self, cell_value: str) -> Tuple:
+        id_credit = False
+        cell_value = cell_value.replace(' ', '')
+        if cell_value.isdigit():
+            id_credit = cell_value
+        return (id_credit,)
+
+
 class FullNamePerson(BaseField):
     """Подкласс поиска колонки - ФИО"""
     words_to_search_in_title = ['фамилия', 'имя', 'отчество']
@@ -55,19 +70,13 @@ class DateBirthPerson(BaseField):
     min_age_person = 18
 
     def get_data(self, cell_value: str) -> Tuple:
-        result = False,
+        result = False
         if cell_value:
-            try:
-                date_birth = datetime.strptime(cell_value, '%Y-%m-%d %H:%M:%S')
-            except ValueError:
-                try:
-                    date_birth = datetime.strptime(cell_value, '%d.%m.%Y')
-                except ValueError:
-                    date_birth = None
-            if isinstance(date_birth, datetime) and (
-                    (datetime.now() - date_birth).days + 5) / 365 >= self.min_age_person:
-                result = (date_birth.strftime('%d.%m.%Y'),)
-        return result
+            date_birth_string, date_birth_datetime = utils.date_identifier_and_converter(cell_value)
+            if date_birth_datetime and (
+                    (datetime.now() - date_birth_datetime).days + 5) / 365 >= self.min_age_person:
+                result = date_birth_string
+        return (result,)
 
 
 class SerNumPassport(BaseField):
@@ -77,11 +86,11 @@ class SerNumPassport(BaseField):
     max_years_after_date_issue = 30
 
     def get_data(self, cell_value: str) -> Tuple:
-        result = False,
+        result = False
         cell_value = cell_value.replace(' ', '')
         if cell_value.isdigit() and len(cell_value) == 10:
-            result = (cell_value,)
-        return result
+            result = cell_value
+        return (result,)
 
 
 class DateIssuePassport(BaseField):
@@ -91,19 +100,14 @@ class DateIssuePassport(BaseField):
     max_years_after_date_issue = 30
 
     def get_data(self, cell_value: str) -> Tuple:
-        result = False,
+        result = False
         if cell_value:
-            try:
-                date_issue = datetime.strptime(cell_value, '%Y-%m-%d %H:%M:%S')
-            except ValueError:
-                try:
-                    date_issue = datetime.strptime(cell_value, '%d.%m.%Y')
-                except ValueError:
-                    date_issue = None
-            if isinstance(date_issue, datetime) and (
-                    datetime.now() - date_issue).days / 365 <= self.max_years_after_date_issue:
-                result = (date_issue.strftime('%d.%m.%Y'),)
-        return result
+            if cell_value:
+                date_issue_string, date_issue_datetime = utils.date_identifier_and_converter(cell_value)
+                if date_issue_datetime and (
+                        datetime.now() - date_issue_datetime).days / 365 <= self.max_years_after_date_issue:
+                    result = date_issue_string
+        return (result,)
 
 
 class NameOrgIssuePassport(BaseField):
@@ -114,8 +118,8 @@ class NameOrgIssuePassport(BaseField):
     def get_data(self, cell_value: str) -> Tuple:
         result = False
         if cell_value:
-            result = (cell_value,)
-        return result
+            result = cell_value
+        return (result,)
 
 
 class INN(BaseField):
@@ -126,8 +130,8 @@ class INN(BaseField):
     num_digits_inn_company = 10
 
     def get_data(self, cell_value: str) -> Tuple:
-        result = False,
+        result = False
         cell_value = cell_value.replace(' ', '')
         if cell_value.isdigit() and len(cell_value) == self.num_digits_inn_people:
-            result = (cell_value,)
-        return result
+            result = cell_value
+        return (result,)

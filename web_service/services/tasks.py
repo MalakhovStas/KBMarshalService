@@ -50,7 +50,7 @@ def check_file_fields(self, service, filename, language=None) -> str:
     # Должна быть такая последовательность для правильного перевода
     result = checker.check_fields_result(sheet)
     translation.activate(prev_language)
-    # logger.debug(f'complete celery task - check_file_fields, {result=}')
+    # logger.debug(f'completed the celery task - check_file_fields, {result=}')
     return result
 
 
@@ -69,39 +69,35 @@ def start_fns_fssp_service(self, service: str, filename: str,
 
     persons_in_db = Debtor.objects.in_bulk(unique_passports, field_name='ser_num_pass')
 
-    # FIXME
-    # passports_for_request = [passport for passport in unique_passports if passport not in persons_in_db.keys()]
     passports_for_request = []
 
-    if service == "FNS":
-        # добавляем ИНН в SessionDebtor которые есть в БД + ставим флаг debtor_in_db = True
-        for session_debtor in services_storage.storage[service][task_file_verification_id].values():
-            if session_debtor.ser_num_pass in persons_in_db.keys():
-                session_debtor.debtor_in_db = True
-                debtor_from_db = persons_in_db[session_debtor.ser_num_pass]
-                if not debtor_from_db.inn:
-                    passports_for_request.append(session_debtor.ser_num_pass)
-                    session_debtor.update_in_db = True
-                else:
-                    session_debtor.inn = persons_in_db[session_debtor.ser_num_pass].inn
-            else:
-                passports_for_request.append(session_debtor.ser_num_pass)
+    days_data_lifetime_from_service = Service.objects.get(title=service).days_data_lifetime_from_service
 
-    elif service == "FSSP":
-        days_data_lifetime_from_service = Service.objects.get(title=service).days_data_lifetime_from_service
-        # добавляем isp_prs в SessionDebtor которые есть в БД
-        # (ели ини записаны не ранее days_data_lifetime_from_service дней назад) + ставим флаг debtor_in_db = True
-        for session_debtor in services_storage.storage[service][task_file_verification_id].values():
-            if session_debtor.ser_num_pass in persons_in_db.keys():
-                session_debtor.debtor_in_db = True
-                debtor_from_db = persons_in_db[session_debtor.ser_num_pass]  # выбираем объект БД
+    for session_debtor in services_storage.storage[service][task_file_verification_id].values():
+        if session_debtor.ser_num_pass in persons_in_db.keys():
+            session_debtor.debtor_in_db = True
+            debtor_from_db = persons_in_db[session_debtor.ser_num_pass]  # выбираем объект БД
+
+            if not debtor_from_db.id_credit or debtor_from_db.id_credit != session_debtor.id_credit:
+                session_debtor.update_in_db = True
+
+            if service == "FNS":
+                if not debtor_from_db.inn:
+                    session_debtor.update_in_db = True
+                    passports_for_request.append(session_debtor.ser_num_pass)
+                else:
+                    session_debtor.inn = debtor_from_db.inn
+            elif service == "FSSP":
+                if not session_debtor.inn and debtor_from_db.inn:
+                    session_debtor.inn = debtor_from_db.inn
                 session_debtor.isp_prs = debtor_from_db.isp_prs  # записываем isp_prs из БД в SessionDebtorModel
                 if not debtor_from_db.isp_prs or (timezone.now() - debtor_from_db.modification_date
                                                   >= timedelta(days=days_data_lifetime_from_service)):
                     session_debtor.update_in_db = True
                     passports_for_request.append(session_debtor.ser_num_pass)
-            else:
-                passports_for_request.append(session_debtor.ser_num_pass)
+
+        else:
+            passports_for_request.append(session_debtor.ser_num_pass)
 
     services_storage.add_passports_for_requests(
         service=service,
@@ -125,8 +121,9 @@ def start_fns_fssp_service(self, service: str, filename: str,
                                  task_file_verification_id=task_file_verification_id)
     service_class(progress=CustomProgressRecorder(self,  title=title))
 
-    service_and_requests_errors, debtors_save_in_result_file, debtors_added_in_db = services_storage.save_operation_results(
-        service=service, task_file_verification_id=task_file_verification_id, filename=filename)
+    service_and_requests_errors, debtors_save_in_result_file, debtors_added_in_db \
+        = services_storage.save_operation_results(
+            service=service, task_file_verification_id=task_file_verification_id, filename=filename)
 
     result_message = "<b>" + _('Recorded in result') + f" {debtors_save_in_result_file} " + _('of debtors')
     if debtors_added_in_db:
@@ -139,7 +136,7 @@ def start_fns_fssp_service(self, service: str, filename: str,
     # Удаляем начальный, входящий файл
     os.remove(f'{settings.MEDIA_ROOT}/{service}/{filename}')
 
-    # logger.debug(f'complete celery task - start_fns_fssp_service')
+    # logger.debug('completed the celery task - start_fns_fssp_service')
     return {
         'service_and_requests_errors': service_and_requests_errors,
         'incorrect_data_or_duplicates': incorrect_data_or_duplicates,

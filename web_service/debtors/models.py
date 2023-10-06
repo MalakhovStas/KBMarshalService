@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Debtor(models.Model):
     """ Модель Debtor(должник), для хранения информации о должниках """
-
+    id_credit = models.CharField(max_length=12, null=True, blank=True, verbose_name=_('id credit'))
     surname = models.CharField(max_length=256, null=False, verbose_name=_('surname'))
     name = models.CharField(max_length=256, null=False, verbose_name=_('name'))
     patronymic = models.CharField(max_length=256, null=True, blank=True, verbose_name=_('patronymic'))

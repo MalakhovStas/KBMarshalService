@@ -147,6 +147,9 @@
         const word_column = "{{ _('column') }}: ";
         const word_not_found = "<b style='color:#ff0000'>{{ _('not found') }}</b>";
 
+        let id_credit_col = "";
+        let id_credit_col_name = word_not_found;
+
         let fullname_col = "";
         let fullname_col_name = word_not_found;
 
@@ -164,6 +167,9 @@
 
         let inn_col = "";
         let inn_col_name = word_not_found;
+
+        if (result.id_credit.col != null) {id_credit_col = result.id_credit.col}
+        if (result.id_credit.col_name != null) {id_credit_col_name = " [ " + result.id_credit.col_name +" ]"}
 
         if (result.fullname.col != null) {fullname_col = result.fullname.col}
         if (result.fullname.col_name != null) {fullname_col_name = " [ " + result.fullname.col_name +" ]"}
@@ -187,7 +193,9 @@
               "</li><li>{{ _('Serial and passport number') }} - " + word_column + ser_num_pass_col + ser_num_pass_col_name + "</li></ul>"
 
            file_verification_result_elem.innerHTML +=
-              "<b>&nbsp;&nbsp;{{ _('Optional columns') }}</b>:<ul><li>{{ _('Date issue passport') }} - " + word_column + date_issue_pass_col + date_issue_pass_col_name +
+              "<b>&nbsp;&nbsp;{{ _('Optional columns') }}</b>:<ul>" +
+              "<li>{{ _('Id credit') }} - " + word_column + id_credit_col + id_credit_col_name +
+              "</li><li>{{ _('Date issue passport') }} - " + word_column + date_issue_pass_col + date_issue_pass_col_name +
               "</li><li>{{ _('Passport issued by') }} - " + word_column + name_org_pass_col + name_org_pass_col_name + "</li></ul>"
           }
 

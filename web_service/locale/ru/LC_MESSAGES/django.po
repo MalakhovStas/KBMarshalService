@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-04 12:05+0300\n"
+"POT-Creation-Date: 2023-10-06 14:19+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,6 +31,10 @@ msgstr "Пароли не совпадают!"
 #: account/services.py:77
 msgid "Profile changed successfully."
 msgstr "Профиль успешно изменен."
+
+#: debtors/models.py:7
+msgid "id credit"
+msgstr "Id кредит"
 
 #: debtors/models.py:8
 msgid "surname"
@@ -62,8 +66,8 @@ msgstr "наименование организации, выдавшей пас
 
 #: debtors/models.py:16 debtors/models.py:28 debtors/models.py:32
 #: services/business_logic/file_verification.py:30
-#: templates/debtors/debtor_detail.j2:8 templates/debtors/debtor_detail.j2:38
-#: templates/includes/services/file_verification.j2:197
+#: templates/debtors/debtor_detail.j2:8 templates/debtors/debtor_detail.j2:50
+#: templates/includes/services/file_verification.j2:205
 msgid "INN"
 msgstr "ИНН"
 
@@ -91,55 +95,61 @@ msgstr "должники"
 msgid "Debtor"
 msgstr "Должник"
 
-#: services/business_logic/file_reader.py:46
+#: services/business_logic/file_reader.py:51
 msgid "Reading row"
 msgstr "Чтение строки"
 
+#: services/business_logic/file_verification.py:24
+#: templates/debtors/debtor_detail.j2:8 templates/debtors/debtor_detail.j2:24
+#: templates/includes/services/file_verification.j2:197
+msgid "Id credit"
+msgstr "Id кредит"
+
 #: services/business_logic/file_verification.py:25
-#: templates/includes/services/file_verification.j2:185
+#: templates/includes/services/file_verification.j2:191
 msgid "Fullname"
 msgstr "Ф И О"
 
 #: services/business_logic/file_verification.py:26
-#: templates/debtors/debtor_detail.j2:34
-#: templates/includes/services/file_verification.j2:186
+#: templates/debtors/debtor_detail.j2:45
+#: templates/includes/services/file_verification.j2:192
 msgid "Date birth"
 msgstr "Дата рождения"
 
 #: services/business_logic/file_verification.py:27
-#: templates/includes/services/file_verification.j2:187
+#: templates/includes/services/file_verification.j2:193
 msgid "Serial and passport number"
 msgstr "Серия номер паспорта"
 
 #: services/business_logic/file_verification.py:28
-#: templates/includes/services/file_verification.j2:190
+#: templates/includes/services/file_verification.j2:198
 msgid "Date issue passport"
 msgstr "Дата выдачи паспорта"
 
 #: services/business_logic/file_verification.py:29
-#: templates/debtors/debtor_detail.j2:50
-#: templates/includes/services/file_verification.j2:191
+#: templates/debtors/debtor_detail.j2:65
+#: templates/includes/services/file_verification.j2:199
 msgid "Passport issued by"
 msgstr "Кем выдан паспорт"
 
-#: services/business_logic/file_verification.py:107
+#: services/business_logic/file_verification.py:113
 msgid "not found columns"
 msgstr "не найдены колонки"
 
-#: services/business_logic/file_verification.py:109
+#: services/business_logic/file_verification.py:115
 msgid "not found column"
 msgstr "не найдена колонка"
 
-#: services/business_logic/file_verification.py:145
+#: services/business_logic/file_verification.py:151
 msgid "File verification"
 msgstr "Проверка файла"
 
-#: services/business_logic/file_verification.py:147
+#: services/business_logic/file_verification.py:153
 msgid "Unsupported file, .xls .xlsx only"
 msgstr "Неподдерживаемый тип файла, только .xls .xlsx"
 
-#: services/business_logic/file_verification.py:149
-#: templates/includes/services/file_verification.j2:326
+#: services/business_logic/file_verification.py:155
+#: templates/includes/services/file_verification.j2:334
 msgid "Select File"
 msgstr "Выберите файл"
 
@@ -255,51 +265,51 @@ msgstr "Поиск"
 msgid "File data loading"
 msgstr "Загрузка данных файла"
 
-#: services/tasks.py:114
+#: services/tasks.py:110
 msgid "Not enough available requests to start service"
 msgstr "Недостаточно запросов для запуска сервиса"
 
-#: services/tasks.py:115
+#: services/tasks.py:111
 msgid "needed"
 msgstr "необходимо"
 
-#: services/tasks.py:116
+#: services/tasks.py:112
 msgid "available"
 msgstr "доступно"
 
-#: services/tasks.py:119
+#: services/tasks.py:115
 msgid "Data request debtors in service"
 msgstr "Запрос данных о должниках на сервис"
 
-#: services/tasks.py:119
+#: services/tasks.py:115
 msgid "total debtors"
 msgstr "всего должников"
 
-#: services/tasks.py:120
+#: services/tasks.py:116
 msgid "of them in database"
 msgstr "из них в базе данных"
 
-#: services/tasks.py:121
+#: services/tasks.py:117
 msgid "selected for request"
 msgstr "выбрано для запроса"
 
-#: services/tasks.py:131
+#: services/tasks.py:128
 msgid "Recorded in result"
 msgstr "Записано в результат"
 
-#: services/tasks.py:131
+#: services/tasks.py:128
 msgid "of debtors"
 msgstr "должников"
 
-#: services/tasks.py:133
+#: services/tasks.py:130
 msgid "added to the database"
 msgstr "добавлено в базу данных"
 
-#: services/tasks.py:135
+#: services/tasks.py:132
 msgid "data"
 msgstr "данные"
 
-#: services/tasks.py:135
+#: services/tasks.py:132
 msgid "debtors not received"
 msgstr "должников не получены"
 
@@ -407,31 +417,31 @@ msgstr "Паспорт"
 msgid "Debtor information"
 msgstr "Информация о должнике"
 
-#: templates/debtors/debtor_detail.j2:22
+#: templates/debtors/debtor_detail.j2:30
 msgid "Surname"
 msgstr "Фамилия"
 
-#: templates/debtors/debtor_detail.j2:26
+#: templates/debtors/debtor_detail.j2:35
 msgid "Name"
 msgstr "Имя"
 
-#: templates/debtors/debtor_detail.j2:30
+#: templates/debtors/debtor_detail.j2:40
 msgid "Patronymic"
 msgstr "Отчество"
 
-#: templates/debtors/debtor_detail.j2:42
+#: templates/debtors/debtor_detail.j2:55
 msgid "Series passport number"
 msgstr "Серия номер паспорта"
 
-#: templates/debtors/debtor_detail.j2:46
+#: templates/debtors/debtor_detail.j2:60
 msgid "Passport issue date"
 msgstr "Дата выдачи паспорта"
 
-#: templates/debtors/debtor_detail.j2:56
+#: templates/debtors/debtor_detail.j2:71
 msgid "Enforcement proceedings"
 msgstr "Исполнительное производство"
 
-#: templates/debtors/debtor_detail.j2:64
+#: templates/debtors/debtor_detail.j2:79
 msgid "no data"
 msgstr "нет данных"
 
@@ -521,19 +531,19 @@ msgstr "колонка"
 msgid "not found"
 msgstr "не найдена"
 
-#: templates/includes/services/file_verification.j2:185
+#: templates/includes/services/file_verification.j2:191
 msgid "Required columns"
 msgstr "Обязательные столбцы"
 
-#: templates/includes/services/file_verification.j2:190
+#: templates/includes/services/file_verification.j2:196
 msgid "Optional columns"
 msgstr "Дополнительные столбцы"
 
-#: templates/includes/services/file_verification.j2:324
+#: templates/includes/services/file_verification.j2:332
 msgid "Select a file with initial data"
 msgstr "Выберите файл с начальными данными"
 
-#: templates/includes/services/file_verification.j2:328
+#: templates/includes/services/file_verification.j2:336
 msgid "Download"
 msgstr "Загрузить"
 

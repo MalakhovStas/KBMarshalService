@@ -5,7 +5,7 @@
   <div class="input__wrapper">
     <form class="form-wrapper">
       <div class="form-wrappers">
-        <input class="form-input form-input__debtor" type="search" name="search_query" placeholder="{{ _('Debtor search') }}. {{ _('Enter full name') }} | {{ _('INN') }} | {{ _('Passport') }}">
+        <input class="form-input form-input__debtor" type="search" name="search_query" placeholder="{{ _('Debtor search') }}. {{ _('Enter full name') }} | {{ _('INN') }} | {{ _('Passport') }} | {{ _('Id credit') }}">
         <svg class="form__search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="7.56126" height="1.89031" transform="matrix(0.713342 0.700816 -0.713342 0.700816 18.6064 17.3762)" fill="gray"/>
           <path d="M20.9303 10.7726C20.9303 16.1533 16.4855 20.5452 10.9652 20.5452C5.44478 20.5452 1 16.1533 1 10.7726C1 5.39198 5.44478 1 10.9652 1C16.4855 1 20.9303 5.39198 20.9303 10.7726Z" stroke="gray" stroke-width="2"/>
@@ -18,34 +18,49 @@
 
       <table border="1" cellspacing="0" cellpadding="10" class="table-debtor">
         <caption class="table-debtor__title">{{ _('Debtor information') }}</caption>
+
+        {% if debtor.id_credit %}
+          <tr class="table-debtor__row">
+            <td class="table-debtor__column">{{ _('Id credit') }}</td>
+            <td class="table-debtor__column-2">{{ debtor.id_credit }}</td>
+          </tr>
+        {% endif %}
+
         <tr class="table-debtor__row">
           <td class="table-debtor__column">{{ _('Surname') }}</td>
           <td class="table-debtor__column-2">{{ debtor.surname }}</td>
         </tr>
+
         <tr class="table-debtor__row">
           <td class="table-debtor__column">{{ _('Name') }}</td>
           <td class="table-debtor__column-2">{{ debtor.name }}</td>
         </tr>
+
         <tr class="table-debtor__row">
           <td class="table-debtor__column">{{ _('Patronymic') }}</td>
           <td class="table-debtor__column-2">{{ debtor.patronymic }}</td>
         </tr>
+
         <tr class="table-debtor__row">
           <td class="table-debtor__column">{{ _('Date birth') }}</td>
-          <td class="table-debtor__column-2">{{ debtor.date_birth }}</td>
+          <td class="table-debtor__column-2">{{ debtor.date_birth.strftime('%d.%m.%Y') }}</td>
         </tr>
+
         <tr class="table-debtor__row">
           <td class="table-debtor__column">{{ _('INN') }}</td>
           <td class="table-debtor__column-2">{{ debtor.inn }}</td>
         </tr>
+
         <tr class="table-debtor__row">
           <td class="table-debtor__column">{{ _('Series passport number') }}</td>
-          <td class="table-debtor__column-2">{{ debtor.ser_num_pass }}</td>
+          <td class="table-debtor__column-2">{% for symbol in debtor.ser_num_pass %}{% if loop.index == 5 %} {% endif %}{{ symbol }}{% endfor %}</td>
         </tr>
+
         <tr class="table-debtor__row">
           <td class="table-debtor__column">{{ _('Passport issue date') }}</td>
-          <td class="table-debtor__column-2">{{ debtor.date_issue_pass }}</td>
+          <td class="table-debtor__column-2">{{ debtor.date_issue_pass.strftime('%d.%m.%Y') }}</td>
         </tr>
+
         <tr class="table-debtor__row">
           <td class="table-debtor__column">{{ _('Passport issued by') }}</td>
           <td class="table-debtor__column-2">{{ debtor.name_org_pass }}</td>
