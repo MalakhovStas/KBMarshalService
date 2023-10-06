@@ -43,7 +43,7 @@
 
         <tr class="table-debtor__row">
           <td class="table-debtor__column">{{ _('Date birth') }}</td>
-          <td class="table-debtor__column-2">{{ debtor.date_birth.strftime('%d.%m.%Y') }}</td>
+          <td class="table-debtor__column-2">{% if debtor.date_birth %}{{ debtor.date_birth.strftime('%d.%m.%Y') }}{% endif %}</td>
         </tr>
 
         <tr class="table-debtor__row">
@@ -53,12 +53,12 @@
 
         <tr class="table-debtor__row">
           <td class="table-debtor__column">{{ _('Series passport number') }}</td>
-          <td class="table-debtor__column-2">{% for symbol in debtor.ser_num_pass %}{% if loop.index == 5 %} {% endif %}{{ symbol }}{% endfor %}</td>
+          <td class="table-debtor__column-2">{% if debtor.ser_num_pass %}{% for symbol in debtor.ser_num_pass %}{% if loop.index == 5 %} {% endif %}{{ symbol }}{% endfor %}{% endif %}</td>
         </tr>
 
         <tr class="table-debtor__row">
           <td class="table-debtor__column">{{ _('Passport issue date') }}</td>
-          <td class="table-debtor__column-2">{{ debtor.date_issue_pass.strftime('%d.%m.%Y') }}</td>
+          <td class="table-debtor__column-2">{% if debtor.date_issue_pass %}{{ debtor.date_issue_pass.strftime('%d.%m.%Y') }}{% endif %}</td>
         </tr>
 
         <tr class="table-debtor__row">
