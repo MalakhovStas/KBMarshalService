@@ -45,9 +45,42 @@ class ServicesGlobalStorage:
         self.logger = logger
         self.decorate_methods()
 
-    def get_object(self, service, task_file_verification_id, passport) -> Union[Dict, str, Any]:
-        # print(self.storage)
-        return self.storage[service][task_file_verification_id][passport]
+    @staticmethod
+    def exception_wrapper(method: FunctionType):
+        """Декоратор для логирования"""
+        def wrapper(self, *args, **kwargs):
+            result = None
+            try:
+                result = method(self, *args, **kwargs)
+                # if self.__DEBUG:
+                #     self.logger.debug(self.sign + f'method: {method.__name__.upper()} > {args=} | {kwargs=} | {result=}')
+            except Exception as exc:
+                pass
+                # self.logger.error(self.sign + f'method: {method.__name__.upper()} > {args=} | {kwargs=} | {exc.__class__.__name__} - {exc}')
+            return result
+        return wrapper
+
+    @classmethod
+    def decorate_methods(cls) -> None:
+        """Для установки декоратора всем пользовательским методам"""
+        for attr_name in cls.__dict__:
+            if not attr_name.startswith('__') and attr_name not in ['']:
+                method = cls.__getattribute__(cls, attr_name)
+                if type(method) is FunctionType:
+                    setattr(cls, attr_name, cls.exception_wrapper(method))
+
+    def get_task_object(self, service, task_file_verification_id, passport):
+        """Возвращает объект SessionDebtorModel в случае исключения декоратор exception_wrapper вернёт None"""
+        task_object = self.storage[service][task_file_verification_id][passport]
+        return task_object if task_object.__class__.__name__ == 'SessionDebtorModel' else None
+
+    def get_task_objects_list(self, service, task_file_verification_id) -> List:
+        """Возвращает список объектов SessionDebtorModel из хранилища таски"""
+        task_objects = []
+        for session_debtor in self.storage[service][task_file_verification_id].values():
+            if session_debtor.__class__.__name__ == 'SessionDebtorModel':
+                task_objects.append(session_debtor)
+        return task_objects
 
     def get_field(self, service, task_file_verification_id, passport, field_name) -> Optional[str]:
         # все поля SessionDebtorModel должны быть str
@@ -113,6 +146,7 @@ class ServicesGlobalStorage:
         return self.storage[service][task_file_verification_id]['passports_with_bad_results']
 
     def clear_operation_storage(self, service, task_file_verification_id) -> bool:
+        """Удаляет словарь с данными таски"""
         del self.storage[service][task_file_verification_id]
         return True
 
@@ -152,7 +186,7 @@ class ServicesGlobalStorage:
             service=service,
             filename=f'{service}:result:{incoming_file}'
         )
-
+        self.clear_operation_storage(service=service, task_file_verification_id=task_file_verification_id)
         return (len(service_and_requests_errors),
                 len([*debtors_for_save, *debtors_for_update, *add_debtors_to_result_file]), len(debtors_for_save))
 
@@ -182,43 +216,54 @@ class ServicesGlobalStorage:
                        f'Для обновления/добавления логики обратитесь к разработчику: {settings.DEVELOPER}',))
         wb.save(f'{settings.MEDIA_ROOT}/{service}/results/{filename}')
 
-    def operations_with_debtors_in_db(self, service: str, task_file_verification_id: str) -> bool:
+    def operations_with_debtors_in_db(self, service: str, task_file_verification_id: str,
+                                      passports_mid_save: list | None = None) -> bool:
         """Для вызова сохранения/обновления данных должников в БД, на основе имеющихся данных в global_storage.
         Из любой точки приложения в любой момент времени."""
         debtors_for_save, debtors_for_update, add_debtors_to_result_file = self.selecting_objects_for_db_operations(
-            service=service, task_file_verification_id=task_file_verification_id)
+            service=service,
+            task_file_verification_id=task_file_verification_id,
+            passports_mid_save=passports_mid_save
+        )
+
         return self.save_objects_to_db(
             service=service,
             debtors_for_save=debtors_for_save,
             debtors_for_update=debtors_for_update
         )
 
-    def selecting_objects_for_db_operations(self, service: str, task_file_verification_id: str) \
-            -> Tuple[List, List, List]:
+    def selecting_objects_for_db_operations(self, service: str, task_file_verification_id: str,
+                                            passports_mid_save: list | None = None) -> Tuple[List, List, List]:
         """Выбор объектов SessionDebtorModel для совершения операций(сохранения/обновления) должников в БД"""
         debtors_for_save = []
         debtors_for_update = []
         add_debtors_to_result_file = []
 
-        for session_debtor in self.storage[service][task_file_verification_id].values():
-            if not session_debtor.all_db_operations_completed:
+        if passports_mid_save:
+            selecting_list = [self.get_task_object(
+                service, task_file_verification_id, passport) for passport in passports_mid_save]
+        else:
+            selecting_list = self.get_task_objects_list(service, task_file_verification_id)
+
+        for session_debtor in selecting_list:
+            if session_debtor:
                 if not session_debtor.debtor_in_db:
                     debtors_for_save.append(session_debtor)
                 else:
                     if service == "FNS" and session_debtor.inn:
-                        if session_debtor.update_in_db:
+                        if session_debtor.update_in_db and not session_debtor.all_db_operations_completed:
                             debtors_for_update.append(session_debtor)
                         else:
                             add_debtors_to_result_file.append(session_debtor)
                     elif service == "FSSP" and session_debtor.isp_prs is not None:
-                        if session_debtor.update_in_db:
+                        if session_debtor.update_in_db and not session_debtor.all_db_operations_completed:
                             debtors_for_update.append(session_debtor)
                         else:
                             add_debtors_to_result_file.append(session_debtor)
                     # не уверен, что это правильное решение
-                    if session_debtor.update_in_db and session_debtor not in debtors_for_update:
+                    if (session_debtor.update_in_db and not session_debtor.all_db_operations_completed
+                            and session_debtor not in debtors_for_update):
                         debtors_for_update.append(session_debtor)
-
         return debtors_for_save, debtors_for_update, add_debtors_to_result_file
 
     @staticmethod
@@ -227,6 +272,13 @@ class ServicesGlobalStorage:
            обновляет объекты в которых debtor_in_db == True и update_in_db=True из списка debtors_for_update"""
 
         if debtors_for_save:
+            if service == 'FNS':
+                update_fields = ['inn']
+            elif service == 'FSSP':
+                update_fields = ['isp_prs']
+            else:
+                update_fields = ['name']  # нужно что-то указать
+
             debtors_for_save_elements_as_dict = [session_debtor.to_dict() for session_debtor in debtors_for_save]
             for session_debtor_dict in debtors_for_save_elements_as_dict:
                 session_debtor_dict.pop('url')
@@ -235,8 +287,10 @@ class ServicesGlobalStorage:
                 session_debtor_dict['date_issue_pass'] = datetime.strptime(
                     session_debtor_dict['date_issue_pass'], '%d.%m.%Y') \
                     if session_debtor_dict['date_issue_pass'] else None
+
             Debtor.objects.bulk_create(
-                [Debtor(**session_debtor) for session_debtor in debtors_for_save_elements_as_dict])
+                [Debtor(**session_debtor) for session_debtor in debtors_for_save_elements_as_dict],
+                update_conflicts=True, unique_fields=['ser_num_pass'], update_fields=update_fields)
 
         if debtors_for_update:
             with transaction.atomic():
@@ -266,27 +320,3 @@ class ServicesGlobalStorage:
             session_debtor.all_db_operations_completed = True
 
         return True
-
-    @staticmethod
-    def exception_wrapper(method: FunctionType):
-        """Декоратор для логирования"""
-        def wrapper(self, *args, **kwargs):
-            result = None
-            try:
-                result = method(self, *args, **kwargs)
-                # if self.__DEBUG:
-                #     self.logger.debug(self.sign + f'method: {method.__name__.upper()} > {args=} | {kwargs=} | {result=}')
-            except Exception as exc:
-                pass
-                # self.logger.error(self.sign + f'method: {method.__name__.upper()} > {args=} | {kwargs=} | {exc.__class__.__name__} - {exc}')
-            return result
-        return wrapper
-
-    @classmethod
-    def decorate_methods(cls) -> None:
-        """Для установки декоратора всем пользовательским методам"""
-        for attr_name in cls.__dict__:
-            if not attr_name.startswith('__') and attr_name not in ['']:
-                method = cls.__getattribute__(cls, attr_name)
-                if type(method) is FunctionType:
-                    setattr(cls, attr_name, cls.exception_wrapper(method))

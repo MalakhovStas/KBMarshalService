@@ -46,6 +46,7 @@ class ServiceClass:
             for num in range(0, len(passports), self.service_dm_model.num_person_in_group_request)
         ]
         num_total_requests = len(groups)
+        passports_mid_save = []
 
         for num_group, group in enumerate(groups, 1):
 
@@ -72,16 +73,26 @@ class ServiceClass:
                 next_page = False
                 passport = result['passport']
                 raw_response = result['response']
-                response = raw_response if isinstance(raw_response, dict) else json.loads(raw_response)
+
+                if isinstance(raw_response, dict):
+                    response = raw_response
+                else:
+                    try:
+                        response = json.loads(raw_response)
+                    except json.decoder.JSONDecodeError:
+                        response = {}
+
                 error = response.get('error')
 
                 if self.service_dm_model.title == "FNS" and response.get('items'):
-                    inn = response.get('items')[0].get('ИНН')
+                    if isinstance(response.get('items'), list) and isinstance(response.get('items')[0], dict):
+                        inn = response.get('items')[0].get('ИНН')
 
                 elif self.service_dm_model.title == "FSSP":
                     isp_prs = response.get("result")
                     count = response.get("count", 0)
                     next_page = response.get("next_page", False)
+
                     if isp_prs is None and not error:
                         error = str(response)
 
@@ -94,8 +105,10 @@ class ServiceClass:
                 if not error:
                     if self.service_dm_model.title == "FNS" and inn is not None:
                         data = {'inn': inn}
+                        passports_mid_save.append(passport)
                     elif self.service_dm_model.title == "FSSP" and isp_prs is not None:
                         data = {'isp_prs': isp_prs}
+                        passports_mid_save.append(passport)
                     else:
                         data = {'error': f'{self.service_dm_model.title} service data processing is not configured'}
                 else:
@@ -106,7 +119,11 @@ class ServiceClass:
             # Сохраняем полученные данные в БД после каждого 10го группового запроса
             if num_group % 10 == 0:
                 services_storage.operations_with_debtors_in_db(
-                    service=self.service_dm_model.title, task_file_verification_id=self.task_file_verification_id)
+                    service=self.service_dm_model.title,
+                    task_file_verification_id=self.task_file_verification_id,
+                    passports_mid_save=passports_mid_save
+                )
+                passports_mid_save.clear()
 
         services_storage.add_passports_with_bad_results(
             **self.storage_kwargs, passports_with_bad_results=passports_with_bad_results

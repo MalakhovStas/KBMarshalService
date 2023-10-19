@@ -27,6 +27,7 @@ class BaseServicesPageView(TemplateView):
     def get(self, request: WSGIRequest, *args, **kwargs):
         if request.user.groups.filter(name__in=['users', 'admins']).exists() or request.user.is_superuser:
             filename, task_file_verification, task_start_service = None, None, None
+            key_verification(request=request)
 
             if file_verification_data := redis_cache.get(get_redis_key(request=request, task_name='FILE_VERIFICATION')):
                 task_file_verification_id, filename = file_verification_data.split(sep=':', maxsplit=1)
@@ -52,13 +53,13 @@ class BaseServicesPageView(TemplateView):
         filename, task_file_verification, task_start_service = None, None, None
         if command := request.POST.get('command'):
             command, task_name, data = command.split(sep=':', maxsplit=2)
-
             if command == 'STOP_TASK':
                 if task_name == 'ALL':
                     redis_cache.delete(get_redis_key(request=request, task_name='FILE_VERIFICATION'))
                     redis_cache.delete(get_redis_key(request=request, task_name='START_SERVICE'))
                 else:
-                    app.control.revoke(task_id=data, terminate=True)
+                    # app.control.revoke(task_id=data, terminate=True)
+                    app.control.revoke(task_id=data, terminate=True, signal='SIGKILL')
                     redis_cache.delete(get_redis_key(request=request, task_name=task_name))
                 return redirect(self.get_success_url())
 
@@ -114,7 +115,7 @@ class BaseServicesPageView(TemplateView):
 
 
 class ServiceFNSPageView(BaseServicesPageView):
-    """ Отображение страницы политики конфиденциальности сайта """
+    """ Отображение страницы Сервис ФНС """
     template_name = "/services/FNS/fns_service.j2"
 
     def get_success_url(self):
@@ -123,7 +124,7 @@ class ServiceFNSPageView(BaseServicesPageView):
 
 
 class ServiceFSSPPageView(BaseServicesPageView):
-    """ Отображение страницы политики конфиденциальности сайта """
+    """ Отображение страницы Сервис ФССП """
     template_name = "/services/FSSP/fssp_service.j2"
 
     def get_success_url(self):

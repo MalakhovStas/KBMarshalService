@@ -54,7 +54,7 @@ def check_file_fields(self, service, filename, language=None) -> str:
     return result
 
 
-@shared_task(bind=True, name='start_fns_fssp_service', acks_late=True)
+@shared_task(bind=True, name='start_fns_fssp_service')
 def start_fns_fssp_service(self, service: str, filename: str,
                            task_file_verification_id: str, available_requests: int, language=None) -> Dict:
     # logger.debug('start celery task - start_fns_fssp_service')
