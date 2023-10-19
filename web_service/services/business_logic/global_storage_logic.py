@@ -217,7 +217,7 @@ class ServicesGlobalStorage:
         wb.save(f'{settings.MEDIA_ROOT}/{service}/results/{filename}')
 
     def operations_with_debtors_in_db(self, service: str, task_file_verification_id: str,
-                                      passports_mid_save: list | None = None) -> bool:
+                                      passports_mid_save: Optional[list] = None) -> bool:
         """Для вызова сохранения/обновления данных должников в БД, на основе имеющихся данных в global_storage.
         Из любой точки приложения в любой момент времени."""
         debtors_for_save, debtors_for_update, add_debtors_to_result_file = self.selecting_objects_for_db_operations(
@@ -233,7 +233,7 @@ class ServicesGlobalStorage:
         )
 
     def selecting_objects_for_db_operations(self, service: str, task_file_verification_id: str,
-                                            passports_mid_save: list | None = None) -> Tuple[List, List, List]:
+                                            passports_mid_save: Optional[list] = None) -> Tuple[List, List, List]:
         """Выбор объектов SessionDebtorModel для совершения операций(сохранения/обновления) должников в БД"""
         debtors_for_save = []
         debtors_for_update = []
