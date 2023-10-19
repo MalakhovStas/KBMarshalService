@@ -45,7 +45,7 @@
       <form class="form-input__wrapper form-input__wrapper-start-service-result" method="post" id="command_stop_all_form">
         {% csrf_token %}
         <label for="command_stop_all"></label>
-        <input type="text" value="STOP_TASK:ALL:{{ filename }}" id="command_stop_all" name="command" hidden="hidden">
+        <input type="text" value="STOP_TASK:ALL:{{ task_start_service.task_id }}" id="command_stop_all" name="command" hidden="hidden">
         <button class="btn btn_success btn_success__form-check btn_success__start-service-result" id="stop_all" onclick="clickStopBtn()">{{ _('Stop') }}</button>
       </form>
     </div>

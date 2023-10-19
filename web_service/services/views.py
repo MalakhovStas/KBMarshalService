@@ -57,9 +57,8 @@ class BaseServicesPageView(TemplateView):
                 if task_name == 'ALL':
                     redis_cache.delete(get_redis_key(request=request, task_name='FILE_VERIFICATION'))
                     redis_cache.delete(get_redis_key(request=request, task_name='START_SERVICE'))
+                    app.control.revoke(task_id=data, terminate=True)  # signal='SIGKILL')
                 else:
-                    # app.control.revoke(task_id=data, terminate=True)
-                    app.control.revoke(task_id=data, terminate=True, signal='SIGKILL')
                     redis_cache.delete(get_redis_key(request=request, task_name=task_name))
                 return redirect(self.get_success_url())
 
