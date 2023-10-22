@@ -207,10 +207,27 @@ class ServicesGlobalStorage:
                        'Дата выдачи паспорта', 'Кем выдан паспорт', 'ИНН',
                        'ОШИБКИ' if bad_results else 'Исполнительные производства'))
             for it_object in result_objects:
-                ws.append((it_object.id_credit, f'{it_object.surname} {it_object.name} {it_object.patronymic}',
-                           it_object.date_birth, it_object.ser_num_pass, it_object.date_issue_pass,
-                           it_object.name_org_pass, it_object.inn,
-                           it_object.error if bad_results else str(it_object.isp_prs)))
+                if bad_results:
+                    isp_prs_list = [it_object.error]
+                else:
+                    try:
+                        isp_prs_list = [
+                            key + '\n' + '\n'.join([f"{k}: {v}" for k, v in value.items() if v and k != "Должник"])
+                            for key, value in it_object.isp_prs.items()] \
+                            if isinstance(it_object.isp_prs, Dict) else ['Не найдено']
+                    except Exception as exc:
+                        isp_prs_list = [exc.__class__.__name__]
+
+                ws.append((
+                    it_object.id_credit,
+                    f'{it_object.surname} {it_object.name} {it_object.patronymic  if it_object.patronymic else ""}',
+                    it_object.date_birth,
+                    it_object.ser_num_pass,
+                    it_object.date_issue_pass,
+                    it_object.name_org_pass,
+                    it_object.inn,
+                    *isp_prs_list
+                ))
         else:
             ws.append((f'Настройки сохранения данных, результатов работы сервиса:{service} не найдены. '
                        f'Для обновления/добавления логики обратитесь к разработчику: {settings.DEVELOPER}',))

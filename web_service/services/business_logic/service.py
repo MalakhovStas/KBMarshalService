@@ -80,7 +80,7 @@ class ServiceClass:
                     try:
                         response = json.loads(raw_response)
                     except json.decoder.JSONDecodeError:
-                        response = {}
+                        response = {'error': 'service returned empty string'}
 
                 error = response.get('error')
 
