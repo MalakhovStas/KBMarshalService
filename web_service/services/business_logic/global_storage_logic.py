@@ -205,8 +205,8 @@ class ServicesGlobalStorage:
                     it_object.date_birth,
                     it_object.ser_num_pass,
                     it_object.date_issue_pass,
-                    it_object.name_org_pass if it_object.name_org_pass else "",
-                    it_object.error if bad_results else it_object.inn if it_object.inn else ""
+                    it_object.name_org_pass if (it_object.name_org_pass and it_object.name_org_pass != 'None') else "",
+                    it_object.error if bad_results else it_object.inn if (it_object.inn and it_object.inn != 'None') else ""
                 ))
 
         elif service == "FSSP":
@@ -231,8 +231,8 @@ class ServicesGlobalStorage:
                     it_object.date_birth,
                     it_object.ser_num_pass,
                     it_object.date_issue_pass,
-                    it_object.name_org_pass if it_object.name_org_pass else "",
-                    it_object.inn if it_object.inn else "",
+                    it_object.name_org_pass if (it_object.name_org_pass and it_object.name_org_pass != 'None') else "",
+                    it_object.inn if (it_object.inn and it_object.inn != 'None') else "",
                     *isp_prs_list
                 ))
         else:
