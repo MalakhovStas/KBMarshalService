@@ -199,9 +199,16 @@ class ServicesGlobalStorage:
             ws.append(('Id кредит', 'Фамилия, имя, отчество', 'Дата рождения', 'Серия и номер паспорта',
                        'Дата выдачи паспорта', 'Кем выдан паспорт', 'ОШИБКИ' if bad_results else 'ИНН'))
             for it_object in result_objects:
-                ws.append((it_object.id_credit, f'{it_object.surname} {it_object.name} {it_object.patronymic}',
-                           it_object.date_birth, it_object.ser_num_pass, it_object.date_issue_pass,
-                           it_object.name_org_pass, it_object.error if bad_results else it_object.inn))
+                ws.append((
+                    it_object.id_credit,
+                    f'{it_object.surname} {it_object.name} {it_object.patronymic  if it_object.patronymic else ""}',
+                    it_object.date_birth,
+                    it_object.ser_num_pass,
+                    it_object.date_issue_pass,
+                    it_object.name_org_pass if it_object.name_org_pass else "",
+                    it_object.error if bad_results else it_object.inn if it_object.inn else ""
+                ))
+
         elif service == "FSSP":
             ws.append(('Id кредит', 'Фамилия, имя, отчество', 'Дата рождения', 'Серия и номер паспорта',
                        'Дата выдачи паспорта', 'Кем выдан паспорт', 'ИНН',
@@ -224,8 +231,8 @@ class ServicesGlobalStorage:
                     it_object.date_birth,
                     it_object.ser_num_pass,
                     it_object.date_issue_pass,
-                    it_object.name_org_pass,
-                    it_object.inn,
+                    it_object.name_org_pass if it_object.name_org_pass else "",
+                    it_object.inn if it_object.inn else "",
                     *isp_prs_list
                 ))
         else:
