@@ -21,7 +21,8 @@ class UserRegAdmin(UserAdmin):
              'phone_number',
              'photo',
              "tg_user_id",
-             "tg_username"
+             "tg_username",
+             "code_tg_register_link",
          )}),
         (
             _('permissions'),
