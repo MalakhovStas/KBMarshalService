@@ -12,7 +12,7 @@ class CustomProgressRecorder(ProgressRecorder):
 
     def set_progress(self, current, total, description: str = "", title: str = ""):
         state, meta = super().set_progress(current, total, description)
-        meta['title'] = self.title if self.title else title
+        meta['title'] = f"<b>{self.title if self.title else title}</b>"
         self.task.update_state(
             state=state,
             meta=meta

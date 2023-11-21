@@ -10,8 +10,13 @@ from services.utils import get_service_name, get_redis_key
 from web_service.settings import redis_cache
 
 
-def start_services(request: WSGIRequest, filename: str, task_file_verification: AsyncResult,
-                   available_requests: int) -> Tuple[str, Optional[AsyncResult]]:
+def start_services(
+        request: WSGIRequest,
+        filename: str,
+        task_file_verification: AsyncResult,
+        available_requests: int,
+        result_send_email: bool,
+        result_send_telegram: bool) -> Tuple[str, Optional[AsyncResult]]:
     """Запускает celery.task - старт сервисов"""
     service = get_service_name(request)
     task = None
@@ -22,7 +27,10 @@ def start_services(request: WSGIRequest, filename: str, task_file_verification: 
             task_file_verification_id=task_file_verification.task_id,
             filename=filename,
             available_requests=available_requests,
-            language=translation.get_language()
+            result_send_email=result_send_email,
+            result_send_telegram=result_send_telegram,
+            tg_user_id=request.user.tg_user_id,
+            language=translation.get_language(),
         )
 
     if task:

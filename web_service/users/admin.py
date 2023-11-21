@@ -13,7 +13,16 @@ class UserRegAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password',)}),
         (_('personal information'),
-         {'fields': ('username', 'first_name', 'last_name', 'surname', 'phone_number', 'photo',)}),
+         {'fields': (
+             'username',
+             'first_name',
+             'last_name',
+             'surname',
+             'phone_number',
+             'photo',
+             "tg_user_id",
+             "tg_username"
+         )}),
         (
             _('permissions'),
             {

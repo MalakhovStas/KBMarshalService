@@ -1,15 +1,15 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView
 
 from users.models import User
-# from account.models import HistorySearch
 from .services import change_profile
-from datetime import datetime
 
 
 class AccountUser(DetailView):
@@ -48,13 +48,3 @@ class ProfileUser(SuccessMessageMixin, View):
         info = change_profile(request, self.get_queryset())
         messages.add_message(self.request, messages.INFO, info)
         return HttpResponseRedirect(self.get_success_url())
-
-
-# class HistorySearchView(ListView):
-#     """ Представление для отображения страницы истории просмотров пользователя """
-#     template_name = 'account/history.j2'
-#     context_object_name = 'history'
-#
-#     def get_queryset(self):
-#         queryset = HistorySearch.objects.get(user=self.request.user.pk)
-#         return queryset

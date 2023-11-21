@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import json
 from pathlib import Path
 
 import django.conf
@@ -20,7 +20,7 @@ from django.utils.translation import gettext_lazy as _
 import os
 
 DEVELOPER = "https://github.com/MalakhovStas"
-config = dotenv_values(os.path.join("..", ".env"))
+env_file = dotenv_values(os.path.join("..", ".env"))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     # "django.contrib.sites",
     # "django_extensions",
     'django_celery_results',
@@ -69,6 +70,7 @@ INSTALLED_APPS = [
     'account',
     'debtors',
     'services',
+    'tg_bot'
 ]
 
 MIDDLEWARE = [
@@ -89,6 +91,10 @@ if DEBUG:
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
 
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+}
 
 TEMPLATES = [
     {
@@ -202,6 +208,7 @@ DATABASES = {
 }
 
 
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -271,10 +278,14 @@ LOGOUT_REDIRECT_URL = '/'
 # Данные для отправки сообщений на почту пользователя.
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = config['EMAIL_HOST_USER']
-EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
+EMAIL_HOST_USER = env_file['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = env_file['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+# Данные для отправки сообщений в Телеграм пользователя.
+BOT_TOKEN = env_file['BOT_TOKEN']
+
 
 # FIXME - ValueError: Unable to configure handler 'file'
 #  такая ошибка из-за логирования, позже разобраться
@@ -328,11 +339,11 @@ from web_service.local_settings import *
 
 from redis import StrictRedis
 
-REDIS_URL = f"redis://{config['REDIS_HOST']}:{config['REDIS_PORT']}/{config['REDIS_DATABASE']}"
+REDIS_URL = f"redis://{env_file['REDIS_HOST']}:{env_file['REDIS_PORT']}/{env_file['REDIS_DATABASE']}"
 redis_cache = StrictRedis(
-    host=config['REDIS_HOST'],
-    port=int(config['REDIS_PORT']),
-    db=int(config['REDIS_DATABASE']),
+    host=env_file['REDIS_HOST'],
+    port=int(env_file['REDIS_PORT']),
+    db=int(env_file['REDIS_DATABASE']),
     decode_responses=True,
     charset="utf-8",
 )
@@ -340,7 +351,7 @@ redis_cache = StrictRedis(
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://{config['REDIS_HOST']}:{config['REDIS_PORT']}/{config['REDIS_DJANGO_CACHE_DATABASE']}",
+        "LOCATION": f"redis://{env_file['REDIS_HOST']}:{env_file['REDIS_PORT']}/{env_file['REDIS_DJANGO_CACHE_DATABASE']}",
     }
 }
 

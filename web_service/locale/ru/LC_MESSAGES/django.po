@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-06 14:19+0300\n"
+"POT-Creation-Date: 2023-11-22 00:20+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,15 +20,15 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: account/services.py:62
+#: account/services.py:58
 msgid "Email does not meet the requirements!"
 msgstr "Электронная почта не соответствует требованиям!"
 
-#: account/services.py:76
+#: account/services.py:72
 msgid "Password mismatch!"
 msgstr "Пароли не совпадают!"
 
-#: account/services.py:77
+#: account/services.py:73
 msgid "Profile changed successfully."
 msgstr "Профиль успешно изменен."
 
@@ -67,7 +67,7 @@ msgstr "наименование организации, выдавшей пас
 #: debtors/models.py:16 debtors/models.py:28 debtors/models.py:32
 #: services/business_logic/file_verification.py:30
 #: templates/debtors/debtor_detail.j2:8 templates/debtors/debtor_detail.j2:50
-#: templates/includes/services/file_verification.j2:205
+#: templates/includes/services/file_verification.j2:210
 msgid "INN"
 msgstr "ИНН"
 
@@ -95,40 +95,40 @@ msgstr "должники"
 msgid "Debtor"
 msgstr "Должник"
 
-#: services/business_logic/file_reader.py:51
+#: services/business_logic/file_reader.py:53
 msgid "Reading row"
 msgstr "Чтение строки"
 
 #: services/business_logic/file_verification.py:24
 #: templates/debtors/debtor_detail.j2:8 templates/debtors/debtor_detail.j2:24
-#: templates/includes/services/file_verification.j2:197
+#: templates/includes/services/file_verification.j2:202
 msgid "Id credit"
 msgstr "Id кредит"
 
 #: services/business_logic/file_verification.py:25
-#: templates/includes/services/file_verification.j2:191
+#: templates/includes/services/file_verification.j2:196
 msgid "Fullname"
 msgstr "Ф И О"
 
 #: services/business_logic/file_verification.py:26
 #: templates/debtors/debtor_detail.j2:45
-#: templates/includes/services/file_verification.j2:192
+#: templates/includes/services/file_verification.j2:197
 msgid "Date birth"
 msgstr "Дата рождения"
 
 #: services/business_logic/file_verification.py:27
-#: templates/includes/services/file_verification.j2:193
+#: templates/includes/services/file_verification.j2:198
 msgid "Serial and passport number"
 msgstr "Серия номер паспорта"
 
 #: services/business_logic/file_verification.py:28
-#: templates/includes/services/file_verification.j2:198
+#: templates/includes/services/file_verification.j2:203
 msgid "Date issue passport"
 msgstr "Дата выдачи паспорта"
 
 #: services/business_logic/file_verification.py:29
 #: templates/debtors/debtor_detail.j2:65
-#: templates/includes/services/file_verification.j2:199
+#: templates/includes/services/file_verification.j2:204
 msgid "Passport issued by"
 msgstr "Кем выдан паспорт"
 
@@ -149,15 +149,15 @@ msgid "Unsupported file, .xls .xlsx only"
 msgstr "Неподдерживаемый тип файла, только .xls .xlsx"
 
 #: services/business_logic/file_verification.py:155
-#: templates/includes/services/file_verification.j2:334
+#: templates/includes/services/file_verification.j2:347
 msgid "Select File"
 msgstr "Выберите файл"
 
-#: services/business_logic/service.py:55
+#: services/business_logic/service.py:56
 msgid "Request"
 msgstr "Запрос"
 
-#: services/business_logic/service.py:55
+#: services/business_logic/service.py:56
 msgid "total"
 msgstr "всего"
 
@@ -253,63 +253,67 @@ msgstr "методы"
 msgid "url generation error"
 msgstr "ошибка генерации url"
 
-#: services/tasks.py:39
+#: services/tasks.py:41
 msgid "Checking if there is data in a file"
 msgstr "Проверка наличия данных в файле"
 
-#: services/tasks.py:42
+#: services/tasks.py:44
 msgid "Searching"
 msgstr "Поиск"
 
-#: services/tasks.py:67
+#: services/tasks.py:92
 msgid "File data loading"
 msgstr "Загрузка данных файла"
 
-#: services/tasks.py:110
+#: services/tasks.py:136
 msgid "Not enough available requests to start service"
 msgstr "Недостаточно запросов для запуска сервиса"
 
-#: services/tasks.py:111
+#: services/tasks.py:137
 msgid "needed"
 msgstr "необходимо"
 
-#: services/tasks.py:112
+#: services/tasks.py:138
 msgid "available"
 msgstr "доступно"
 
-#: services/tasks.py:115
+#: services/tasks.py:141
 msgid "Data request debtors in service"
 msgstr "Запрос данных о должниках на сервис"
 
-#: services/tasks.py:115
+#: services/tasks.py:141
 msgid "total debtors"
 msgstr "всего должников"
 
-#: services/tasks.py:116
+#: services/tasks.py:142
 msgid "of them in database"
 msgstr "из них в базе данных"
 
-#: services/tasks.py:117
+#: services/tasks.py:143
 msgid "selected for request"
 msgstr "выбрано для запроса"
 
-#: services/tasks.py:128
-msgid "Recorded in result"
-msgstr "Записано в результат"
+#: services/tasks.py:155
+msgid "Result"
+msgstr "Результат"
 
-#: services/tasks.py:128
+#: services/tasks.py:155
+msgid "recorded in result"
+msgstr "записано в результат"
+
+#: services/tasks.py:155
 msgid "of debtors"
 msgstr "должников"
 
-#: services/tasks.py:130
+#: services/tasks.py:157
 msgid "added to the database"
 msgstr "добавлено в базу данных"
 
-#: services/tasks.py:132
+#: services/tasks.py:159
 msgid "data"
 msgstr "данные"
 
-#: services/tasks.py:132
+#: services/tasks.py:159
 msgid "debtors not received"
 msgstr "должников не получены"
 
@@ -317,20 +321,40 @@ msgstr "должников не получены"
 msgid "no avatar"
 msgstr "нет аватара"
 
-#: templates/account/account.j2:19 templates/account/profile.j2:34
+#: templates/account/account.j2:27 templates/account/profile.j2:34
 msgid "Full name"
 msgstr "Ф И О"
 
-#: templates/account/account.j2:24
+#: templates/account/account.j2:30
 msgid "Registration date"
 msgstr "Дата регистрации"
 
-#: templates/account/account.j2:26 templates/account/profile.j2:42
+#: templates/account/account.j2:31 templates/account/profile.j2:42
 #: templates/users/register.j2:19
 msgid "Nickname"
 msgstr "Никнейм"
 
-#: templates/account/account.j2:28
+#: templates/account/account.j2:32
+msgid "Email"
+msgstr "электронная почта"
+
+#: templates/account/account.j2:33 templates/account/profile.j2:56
+msgid "Phone number"
+msgstr "Номер телефона"
+
+#: templates/account/account.j2:35
+msgid "Telegram id"
+msgstr "Телеграм id"
+
+#: templates/account/account.j2:36
+msgid "Telegram username"
+msgstr "Телеграм username"
+
+#: templates/account/account.j2:38
+msgid "Link to activate Telegram bot"
+msgstr "Ссылка для активации телеграм бота"
+
+#: templates/account/account.j2:40
 msgid "Edit profile"
 msgstr "Редактировать профиль"
 
@@ -363,13 +387,9 @@ msgstr "Загрузить другой аватар"
 msgid "Upload avatar"
 msgstr "Загрузить аватар"
 
-#: templates/account/profile.j2:51
+#: templates/account/profile.j2:55
 msgid "Phone"
 msgstr "Телефон"
-
-#: templates/account/profile.j2:52
-msgid "Phone number"
-msgstr "Номер телефона"
 
 #: templates/account/profile.j2:59 templates/users/register.j2:25
 msgid "Password"
@@ -505,45 +525,45 @@ msgstr "Отменить проверку"
 msgid "Send result file"
 msgstr "Отправить результат"
 
-#: templates/includes/services/file_verification.j2:91
+#: templates/includes/services/file_verification.j2:96
 msgid "Start service"
 msgstr "Старт сервиса"
 
-#: templates/includes/services/file_verification.j2:102
+#: templates/includes/services/file_verification.j2:107
 msgid "Select a different file"
 msgstr "Выбрать другой файл"
 
-#: templates/includes/services/file_verification.j2:135
+#: templates/includes/services/file_verification.j2:140
 #: templates/includes/services/start_service.j2:83
 msgid "Success"
 msgstr "Успешно"
 
-#: templates/includes/services/file_verification.j2:143
+#: templates/includes/services/file_verification.j2:148
 #: templates/includes/services/start_service.j2:90
 msgid "Failed"
 msgstr "Неудача"
 
-#: templates/includes/services/file_verification.j2:147
+#: templates/includes/services/file_verification.j2:152
 msgid "column"
 msgstr "колонка"
 
-#: templates/includes/services/file_verification.j2:148
+#: templates/includes/services/file_verification.j2:153
 msgid "not found"
 msgstr "не найдена"
 
-#: templates/includes/services/file_verification.j2:191
+#: templates/includes/services/file_verification.j2:196
 msgid "Required columns"
 msgstr "Обязательные столбцы"
 
-#: templates/includes/services/file_verification.j2:196
+#: templates/includes/services/file_verification.j2:201
 msgid "Optional columns"
 msgstr "Дополнительные столбцы"
 
-#: templates/includes/services/file_verification.j2:332
+#: templates/includes/services/file_verification.j2:345
 msgid "Select a file with initial data"
 msgstr "Выберите файл с начальными данными"
 
-#: templates/includes/services/file_verification.j2:336
+#: templates/includes/services/file_verification.j2:349
 msgid "Download"
 msgstr "Загрузить"
 
@@ -608,15 +628,15 @@ msgstr "Зарегистрироваться"
 msgid "personal information"
 msgstr "персональная информация"
 
-#: users/admin.py:18
+#: users/admin.py:27
 msgid "permissions"
 msgstr "разрешения"
 
-#: users/admin.py:29
+#: users/admin.py:38
 msgid "important dates"
 msgstr "важные даты"
 
-#: users/admin.py:45
+#: users/admin.py:54
 msgid "Admin panel \"KB Marshal\" service"
 msgstr "Админ-панель сервиса \"КБ Маршал\""
 
@@ -664,11 +684,23 @@ msgstr "номер телефона"
 msgid "photo"
 msgstr "фотография"
 
-#: users/models.py:24
+#: users/models.py:16
+msgid "telegram user_id"
+msgstr "телеграм user_id"
+
+#: users/models.py:17
+msgid "telegram username"
+msgstr "телеграм username"
+
+#: users/models.py:18
+msgid "code telegram register link"
+msgstr "код для регистрационной ссылки телеграм"
+
+#: users/models.py:27
 msgid "user"
 msgstr "пользователь"
 
-#: users/models.py:25
+#: users/models.py:28
 msgid "users"
 msgstr "пользователи"
 
@@ -676,23 +708,23 @@ msgstr "пользователи"
 msgid "Wrong login or password. Check the entered data"
 msgstr "Не верный логин или пароль. Проверьте введенные данные"
 
-#: users/views.py:71
+#: users/views.py:72
 msgid "You have successfully registered! Please enter your full name."
 msgstr "Вы успешно зарегистрировались! Пожалуйста введите ФИО."
 
-#: users/views.py:76
+#: users/views.py:77
 msgid "Unfortunately, the request failed, please try again later!"
 msgstr "К сожалению, запрос не выполнен, повторите попытку позже!"
 
-#: users/views.py:79
+#: users/views.py:80
 msgid "You are already registered!"
 msgstr "Вы уже зарегистрированы!"
 
-#: users/views.py:89
+#: users/views.py:90
 msgid "A password recovery email has been sent to your email."
 msgstr "На вашу электронную почту отправлено письмо для восстановления пароля."
 
-#: users/views.py:97
+#: users/views.py:98
 msgid "Password changed successfully"
 msgstr "Пароль успешно изменен"
 
@@ -728,11 +760,11 @@ msgstr "по будням с 10:00 до 19:00"
 msgid "Functionality of this block is under development"
 msgstr "Функционал этого блока находится в разработке"
 
-#: web_service/settings.py:238
+#: web_service/settings.py:245
 msgid "English"
 msgstr "Английский"
 
-#: web_service/settings.py:239
+#: web_service/settings.py:246
 msgid "Russian"
 msgstr "Русский"
 

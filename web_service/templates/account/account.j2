@@ -15,17 +15,29 @@
           </div>
           <div class="account-column">
             <div class="account-name">
-              {% if not user.last_name and not user.first_nme and not user.surname %}
-                {{ _('Full name') }}
+              {% if user.username and user.first_name and user.last_name %}
+                {{ user.surname }}&nbsp;{{ user.first_name }}&nbsp;{{ user.last_name }}
+              {% elif user.username and user.first_name and not user.last_name %}
+                {{ user.surname }}&nbsp;{{ user.first_name }}}
+              {% elif user.username and not user.first_name and not user.last_name %}
+                {{ user.surname }}
+              {% elif user.first_name and not user.surname and not user.last_name %}
+                {{ user.first_name }}
               {% else %}
-                {{ user.last_name }}&nbsp;{{ user.first_name }}&nbsp;{{ user.surname }}
+                {{ _('Full name') }}
               {% endif %}
             </div>
             <div>{{ _('Registration date') }}:&nbsp;{{ date_joined }}</div>
-            {% if user.username %}
-              <div>{{ _('Nickname') }}:&nbsp;{{ user.username }}</div>
+            {% if user.username %}<div>{{ _('Nickname') }}:&nbsp;{{ user.username }}</div>{% endif %}
+            {% if user.username %}<div>{{ _('Email') }}:&nbsp;{{ user.email }}</div>{% endif %}
+            {% if user.username %}<div>{{ _('Phone number') }}:&nbsp;{{ user.phone_number }}</div>{% endif %}
+            {% if user.tg_user_id %}
+              <div>{{ _('Telegram id') }}:&nbsp;{{ user.tg_user_id }}</div>
+              {% if user.tg_username %}<div>{{ _('Telegram username') }}:&nbsp;{{ user.tg_username }}</div>{% endif %}
+            {% else %}
+              <p><div><span style="font-weight: bold">{{ _('Link to activate Telegram bot') }}:</span>&nbsp;<a class="account-editLink a-active" href="https://t.me/BotForDev_bot?start={{ user.code_tg_register_link }}">https://t.me/BotForDev_bot?start={{ user.code_tg_register_link }}</a></div>
             {% endif %}
-            <a class="account-editLink a-active" href="{{ url('account:profile_user', user.pk) }}">{{ _('Edit profile') }}</a>
+            <p><a style="font-weight: bold" class="account-editLink a-active" href="{{ url('account:profile_user', user.pk) }}">{{ _('Edit profile') }}</a>
           </div>
         </div>
       </div>

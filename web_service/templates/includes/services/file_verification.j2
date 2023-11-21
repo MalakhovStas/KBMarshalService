@@ -86,8 +86,13 @@
     </div>
     <form class="form-input__wrapper" method="post" id="start_service_command_form">
       {% csrf_token %}
+
       <label for="start_service_command"></label>
       <input type="text" value="START_SERVICE:START_SERVICE:{{ filename }}" id="start_service_command" name="command" hidden="hidden">
+
+      <label for="result_send_email"></label><input type="text" id="result_send_email" name="result_send_email" hidden="hidden">
+      <label for="result_send_telegram"></label><input type="text" id="result_send_telegram" name="result_send_telegram" hidden="hidden">
+
       <button style="display: none" class="btn btn_success btn_success__form-check" id="start_service_button" onclick="clickStartServiceBtn()">{{ _('Start service') }}</button>
     </form>
 
@@ -242,11 +247,12 @@
 
         localStorage.setItem('FileVerifyDisabled{{ service }}', 'true')
 
-        start_serviceForm.addEventListener("submit", function(event) {
+         start_serviceForm.addEventListener("submit", function(event) {
             event.preventDefault();
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "{{ request.path }}");
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
             xhr.onreadystatechange = function () {
               if (xhr.readyState === 4 && xhr.status === 200) {
                 // handle response
@@ -254,6 +260,9 @@
             };
             xhr.send(new FormData(start_serviceForm));
           });
+          document.getElementById("result_send_email").value = !!document.getElementById("checkbox_send_mail").checked;
+          document.getElementById("result_send_telegram").value = !!document.getElementById("checkbox_send_telegram").checked;
+
         start_serviceForm.submit()
       }
 
@@ -302,11 +311,15 @@
               confirmSpan2.style.display = "block";
               resetBtn.style.display = "none";
               start_serviceBtn.style.display = "block";
-              sendto_Email.style.display = "block";
-              sendto_Telegram.style.display = "block";
-              span_sendto_results.style.display  = "block";
 
-          } else {
+              {#alert(typeof "{{ user.email }}")#}
+              {#alert("{{ user.email }}")#}
+              span_sendto_results.style.display  = "block";
+              sendto_Email.style.display  = "block";
+              if (!("{{ request.user.tg_user_id }}" === 'None')) {sendto_Telegram.style.display = "block";}
+
+          }
+          else {
              confirmSpan.style.display = "block";
              confirmSpan2.style.display = "none";
              resetBtn.style.display = "block";

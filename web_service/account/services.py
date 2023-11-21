@@ -1,15 +1,11 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.core.validators import validate_email
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
-
-# from shops.models import Shop
-from users.models import User
 
 
 def change_profile(request: HttpRequest, user: QuerySet):
@@ -21,8 +17,8 @@ def change_profile(request: HttpRequest, user: QuerySet):
         while len(fio) < 3:
             fio.append('')
         user.update(
-            last_name=fio[0],
-            first_name=fio[1],
+            first_name=fio[0],
+            last_name=fio[1],
             surname=fio[2]
         )
 
@@ -75,45 +71,3 @@ def change_profile(request: HttpRequest, user: QuerySet):
         else:
             return _('Password mismatch!')
     return _('Profile changed successfully.')
-
-
-# class ShopManager:
-#     """Класс для добавления или редактирования магазина."""
-#
-#     def __init__(self, data, user_pk):
-#         """Инициализация класса."""
-#         self.name = data.get('name')
-#         self.description = data.get('description')
-#         self.phone_number = data.get('phone')
-#         self.address = data.get('address')
-#         self.email = data.get('mail')
-#         self.user = User.objects.get(pk=user_pk)
-#
-#     def create(self):
-#         """Добавление магазина."""
-#         Shop.objects.create(
-#             name=self.name,
-#             description=self.description,
-#             phone_number=self.phone_number,
-#             address=self.address,
-#             email=self.email,
-#             user=self.user
-#         )
-#         group = Group.objects.get(name='seller')
-#         self.user.groups.add(group)
-#         return _('Магазин успешно добавлен!')
-#
-#     def update(self):
-#         """Редактирование магазина."""
-#         try:
-#             validate_email(self.email)
-#             Shop.objects.filter(user_id=self.user).update(
-#                 name=self.name,
-#                 email=self.email,
-#                 description=self.description,
-#                 phone_number=self.phone_number,
-#                 address=self.address
-#             )
-#         except ValidationError:
-#             return _('Email не соответствует требованиям!')
-#         return _('Магазин успешно редактирован')

@@ -1,9 +1,6 @@
-import asyncio
-
 from loguru import logger
 
 from .global_storage_logic import ServicesGlobalStorage
-# from redis import StrictRedis
 from .requests_manager import RequestsManager
 from django.conf import settings
 
@@ -62,26 +59,6 @@ logger.add(**LOGGER_DEBUG)
 logger.add(**LOGGER_ERRORS)
 logger.add(**LOGGER_RequestsManager)
 logger.add(**LOGGER_ServicesGlobalStorage)
-
-# redis_cache = StrictRedis(
-#     host=settings.REDIS_DATA.get("host"),
-#     port=settings.REDIS_DATA.get("port"),
-#     db=settings.REDIS_DATA.get("database"),
-#     decode_responses=True,
-#     charset="utf-8",
-# )
-
-# lock = redis_cache.lock("webhook-xt-logic", timeout=10)
-# lock.acquire(blocking_timeout=10)
-
-
-# async def create_instances_async_classes():
-#     auth_instance = await XTLogicAuth(logger=logger, redis_cache=redis_cache)
-#     return auth_instance
-
-# loop = asyncio.get_event_loop()
-# task = loop.create_task(create_instances_async_classes())
-# auth = loop.run_until_complete(task)
 
 services_storage = ServicesGlobalStorage(logger=logger)
 requests_manager = RequestsManager(logger=logger)

@@ -12,10 +12,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
+from utils import utils
 
 from .forms import CustomSetPasswordForm
 from .models import User
-
 
 class LoginUserView(SuccessMessageMixin, LoginView):
     """ Аутентификация пользователя """
@@ -59,7 +59,8 @@ class RegisterView(SuccessMessageMixin, FormView):
                 user = User.objects.create(
                     username=username,
                     email=email,
-                    password=make_password(password)
+                    password=make_password(password),
+                    code_tg_register_link=utils.make_code_tg_register_link()
                 )
                 user_auth = authenticate(email=email, password=password)
                 login(request, user_auth)

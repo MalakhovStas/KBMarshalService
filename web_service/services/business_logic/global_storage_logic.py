@@ -5,6 +5,7 @@ from types import FunctionType
 from typing import Any, Union, Optional, Dict, List, Tuple
 
 import openpyxl
+from openpyxl.styles import Alignment
 from django.conf import settings
 from django.db import transaction
 
@@ -13,6 +14,7 @@ from debtors.models import Debtor
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 # from .session_models import SessionDebtorModel
+from ..utils import get_results_file_abspath
 
 
 class ServicesGlobalStorage:
@@ -154,8 +156,9 @@ class ServicesGlobalStorage:
         self.storage[service] = {}
         return True
 
-    def save_operation_results(self, service: str, task_file_verification_id: str, filename: str) -> Tuple[int, int, int]:
+    def save_operation_results(self, service: str, task_file_verification_id: str, filename: str) -> Tuple[int, int, int, List[str]]:
         # self.logger.info(self.sign + f'УДАЛИТЬ!!! > storage: {self.storage}')
+        result_files = []
         incoming_file = filename.split(':')[-1]
 
         service_and_requests_errors = []
@@ -165,10 +168,12 @@ class ServicesGlobalStorage:
             del self.storage[service][task_file_verification_id][passport]
 
         if service_and_requests_errors:
+            service_and_requests_errors_file_path = get_results_file_abspath(service=service, filename=f'{service}:service_and_requests_errors:{incoming_file}')
+            result_files.append(service_and_requests_errors_file_path)
             self.save_objects_to_file(
                 result_objects=service_and_requests_errors,
                 service=service,
-                filename=f'{service}:service_and_requests_errors:{incoming_file}',
+                filepath=service_and_requests_errors_file_path,
                 bad_results=True,
             )
 
@@ -181,20 +186,27 @@ class ServicesGlobalStorage:
         self.save_objects_to_db(
             service=service, debtors_for_save=debtors_for_save, debtors_for_update=debtors_for_update)
 
+        result_file_path = get_results_file_abspath(service=service, filename=f'{service}:result:{incoming_file}')
+        result_files.append(result_file_path)
         self.save_objects_to_file(
             result_objects=[*debtors_for_save, *debtors_for_update, *add_debtors_to_result_file],
             service=service,
-            filename=f'{service}:result:{incoming_file}'
+            filepath=result_file_path
         )
         self.clear_operation_storage(service=service, task_file_verification_id=task_file_verification_id)
-        return (len(service_and_requests_errors),
-                len([*debtors_for_save, *debtors_for_update, *add_debtors_to_result_file]), len(debtors_for_save))
+        return (
+            len(service_and_requests_errors),
+            len([*debtors_for_save, *debtors_for_update, *add_debtors_to_result_file]),
+            len(debtors_for_save),
+            result_files
+        )
 
     @staticmethod
-    def save_objects_to_file(result_objects: List, service: str, filename: str, bad_results: bool = False) -> None:
+    def save_objects_to_file(result_objects: List, service: str, filepath: str, bad_results: bool = False) -> None:
         """Сохраняет данные в файл"""
         wb = openpyxl.Workbook()
         ws = wb.active
+
         if service == "FNS":
             ws.append(('Id кредит', 'Фамилия, имя, отчество', 'Дата рождения', 'Серия и номер паспорта',
                        'Дата выдачи паспорта', 'Кем выдан паспорт', 'ОШИБКИ' if bad_results else 'ИНН'))
@@ -238,7 +250,19 @@ class ServicesGlobalStorage:
         else:
             ws.append((f'Настройки сохранения данных, результатов работы сервиса:{service} не найдены. '
                        f'Для обновления/добавления логики обратитесь к разработчику: {settings.DEVELOPER}',))
-        wb.save(f'{settings.MEDIA_ROOT}/{service}/results/{filename}')
+        # wb.save(f'{settings.MEDIA_ROOT}/{service}/results/{filename}')
+
+        # добавляет перенос по словам ко всем ячейкам
+        for row in ws.iter_rows(min_row=ws.max_row, max_row=ws.max_row,
+                                min_col=1, max_col=ws.max_column):
+            for cell in row:
+                cell.alignment = Alignment(wrapText=True)
+        # Автоматическая подгонка высоты строк
+        for row in ws.iter_rows(min_row=1, max_row=ws.max_row):
+            for cell in row:
+                ws.row_dimensions[cell.row].auto_size = True
+                # ws.row_dimensions[cell.row].height = 15
+        wb.save(filepath)
 
     def operations_with_debtors_in_db(self, service: str, task_file_verification_id: str,
                                       passports_mid_save: Optional[list] = None) -> bool:

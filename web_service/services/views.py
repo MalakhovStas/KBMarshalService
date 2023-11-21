@@ -1,4 +1,4 @@
-import asyncio
+from typing import Optional
 
 from celery.result import AsyncResult
 from django.contrib import messages
@@ -24,32 +24,42 @@ class BaseServicesPageView(TemplateView):
     def get_success_url(self):
         pass
 
+    @staticmethod
+    def get_context_logic(request: Optional[WSGIRequest] = None,
+                  service: Optional[str] = None, user: Optional[int] = None):
+        """Логика получения данных контекста для GET запросов и запросов от Телеграм бота"""
+        filename, task_file_verification, task_start_service = None, None, None
+        if file_verification_data := redis_cache.get(
+                get_redis_key(request=request, service=service, user=user, task_name='FILE_VERIFICATION')):
+            task_file_verification_id, filename = file_verification_data.split(sep=':', maxsplit=1)
+            task_file_verification = AsyncResult(id=task_file_verification_id)
+
+        if start_service_data := redis_cache.get(
+                get_redis_key(request=request, service=service, user=user, task_name=f'START_SERVICE')):
+            task_start_service_id, filename = start_service_data.split(sep=':', maxsplit=1)
+            task_start_service = AsyncResult(id=task_start_service_id)
+
+        context = {
+            'service': get_service_name(request) if request else service,
+            'filename': filename,
+            'task_file_verification': task_file_verification,
+            'task_start_service': task_start_service
+        }
+        return context
+
     def get(self, request: WSGIRequest, *args, **kwargs):
         if request.user.groups.filter(name__in=['users', 'admins']).exists() or request.user.is_superuser:
-            filename, task_file_verification, task_start_service = None, None, None
             key_verification(request=request)
-
-            if file_verification_data := redis_cache.get(get_redis_key(request=request, task_name='FILE_VERIFICATION')):
-                task_file_verification_id, filename = file_verification_data.split(sep=':', maxsplit=1)
-                task_file_verification = AsyncResult(id=task_file_verification_id)
-
-            if start_service_data := redis_cache.get(get_redis_key(request=request, task_name=f'START_SERVICE')):
-                task_start_service_id, filename = start_service_data.split(sep=':', maxsplit=1)
-                task_start_service = AsyncResult(id=task_start_service_id)
-
-            context = {
-                'service': get_service_name(request),
-                'filename': filename,
-                'task_file_verification': task_file_verification,
-                'task_start_service': task_start_service
-            }
-            # logger.warning(f'CONTEXT: {context}')
+            context = self.get_context_logic(request=request)
             return render(request, self.template_name, context=context)
         else:
             return HttpResponseForbidden()
 
     def post(self, request: WSGIRequest, *args, **kwargs):
         service = get_service_name(request)
+        result_send_email = request.POST.get('result_send_email') == "true"
+        result_send_telegram = request.POST.get('result_send_telegram') == "true"
+
         filename, task_file_verification, task_start_service = None, None, None
         if command := request.POST.get('command'):
             command, task_name, data = command.split(sep=':', maxsplit=2)
@@ -75,7 +85,13 @@ class BaseServicesPageView(TemplateView):
                         # TODO добавить верификацию по количеству необходимых запросов
                         if available_req:
                             msg, task_start_service = start_services(
-                                request, filename, task_file_verification, verify['available_req'])
+                                request=request,
+                                filename=filename,
+                                task_file_verification=task_file_verification,
+                                available_requests=verify['available_req'],
+                                result_send_email=result_send_email,
+                                result_send_telegram=result_send_telegram,
+                            )
                         else:
                             msg = 'Невозможно запустить работу сервиса, нет доступных запросов'
                     else:

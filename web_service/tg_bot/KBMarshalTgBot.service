@@ -1,0 +1,17 @@
+# Для автоматического запуска бота при перезагрузке сервера копия этого файла
+# должна лежать в папке /etc/systemd/system/
+# команда для копирования файла в нужную категорию cp KBMarshalTgBot.service /etc/systemd/system/
+# systemctl enable KBMarshalTgBot - это команда в регистрации автозапуска бота при рестарте
+# service KBMarshalTgBot start - запуск бота / stop
+
+[Unit]
+Description=KBMarshal-service-Telegram-bot
+[Service]
+WorkingDirectory=/var/KBMarshalService/web_service
+User=root
+ExecStart=/var/KBMarshalService/venv/bin/python manage.py start_tg_bot
+Restart=on-failure
+RestartSec=5s
+[Install]
+WantedBy=multi-user.target
+EOF

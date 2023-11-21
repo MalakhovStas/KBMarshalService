@@ -8,16 +8,18 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 from services.business_logic.session_models import SessionDebtorModel
 from services.models import Service
-from services import utils
+from .. import utils
 
 
 class FileReader:
+    """Загрузка, проверка данных входящих файлов"""
+
     def __init__(self, service: str, task_file_verification_id: str, filename: str):
         self.service = service
         self.filename = filename
         self.task_file_verify = AsyncResult(id=task_file_verification_id)
         self.path_to_read_file = f'{settings.MEDIA_ROOT}/{self.service}/{filename}'
-        self.path_to_file_with_bad_results = f'{settings.MEDIA_ROOT}/{self.service}/results/{self.service}:incorrect_data_or_duplicates:{filename.rsplit(":", maxsplit=1)[-1]}'
+        self.path_to_file_with_bad_results = utils.get_results_file_abspath(service=self.service, filename=f'{self.service}:incorrect_data_or_duplicates:{filename.rsplit(":", maxsplit=1)[-1]}')
 
     def __call__(self, progress) -> Tuple[List[str], int]:
         """Проверяет данные в файле self.path_to_read_file, возвращает кортеж с SessionDebtorModel, множество

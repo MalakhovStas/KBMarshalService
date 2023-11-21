@@ -13,6 +13,9 @@ class User(AbstractUser):
     surname = models.CharField(max_length=256, blank=True, null=True, verbose_name=_('patronymic'))
     phone_number = PhoneNumberField(unique=False, null=True, blank=True, verbose_name=_('phone number'))
     photo = models.ImageField(upload_to='users_foto/', null=True, blank=True, verbose_name=_('photo'))
+    tg_user_id = models.IntegerField(null=True, blank=True, verbose_name=_('telegram user_id'))
+    tg_username = models.CharField(max_length=512, null=True, blank=True, verbose_name=_('telegram username'))
+    code_tg_register_link = models.CharField(max_length=32, null=True, blank=True, verbose_name=_('code telegram register link'))
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

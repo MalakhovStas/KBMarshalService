@@ -18,6 +18,8 @@ from services.business_logic.loader import services_storage
 from services.business_logic.service import ServiceClass
 from services.models import Service
 # from loguru import logger
+import requests
+from django.conf import settings
 
 
 @shared_task(bind=True, name='check_file_fields')
@@ -54,10 +56,33 @@ def check_file_fields(self, service, filename, language=None) -> str:
     return result
 
 
+def sync_file_sender(user_id: str, file_path: str) -> None:
+    """
+    Для отправки файлов телеграм пользователю при помощи синхронной библиотеки requests
+    file_path (str): путь к файлу
+    """
+    url = f"https://api.telegram.org/bot{settings.BOT_TOKEN}/sendDocument?chat_id={user_id}"
+    try:
+        with open(file_path, 'rb') as file:
+            requests.post(url=url, files={'document': file})
+    except Exception as exc:
+        # logger.warning(f'Not send file: {file_path} | {exc=}')
+        pass
+
+
 @shared_task(bind=True, name='start_fns_fssp_service')
-def start_fns_fssp_service(self, service: str, filename: str,
-                           task_file_verification_id: str, available_requests: int, language=None) -> Dict:
+def start_fns_fssp_service(
+        self,
+        service: str,
+        filename: str,
+        task_file_verification_id: str,
+        available_requests: int,
+        result_send_email: bool,
+        result_send_telegram: bool,
+        tg_user_id: str, language=None) -> Dict:
+
     # logger.debug('start celery task - start_fns_fssp_service')
+    results_files_paths = []
     prev_language = translation.get_language()
     language and translation.activate(language)
 
@@ -66,6 +91,7 @@ def start_fns_fssp_service(self, service: str, filename: str,
     unique_passports, incorrect_data_or_duplicates = file_reader(
         progress=CustomProgressRecorder(self, title=_('File data loading'))
     )
+    results_files_paths.append(file_reader.path_to_file_with_bad_results)
 
     persons_in_db = Debtor.objects.in_bulk(unique_passports, field_name='ser_num_pass')
 
@@ -112,31 +138,37 @@ def start_fns_fssp_service(self, service: str, filename: str,
               _('available') + f": <b style='color:#ff0000'>{available_requests}</b>"
         raise FileVerificationException(message=f"{msg}")
 
-    title = _('Data request debtors in service') + f" {service} - " + _('total debtors') + \
-            f": {len(unique_passports)} | " + _('of them in database') + f": {len(persons_in_db)} | " + \
-            _('selected for request') + f": {num_persons_for_request}"
+    title = _('Data request debtors in service') + f" {service}:\n | " + _('total debtors') + \
+            f": {len(unique_passports)}\n | " + _('of them in database') + f": {len(persons_in_db)}\n | " + \
+            _('selected for request') + f": {num_persons_for_request}\n"
 
     # logger.debug('start service in task start_fns_fssp_service')
     service_class = ServiceClass(service=service, filename=filename,
                                  task_file_verification_id=task_file_verification_id)
     service_class(progress=CustomProgressRecorder(self,  title=title))
 
-    service_and_requests_errors, debtors_save_in_result_file, debtors_added_in_db \
+    service_and_requests_errors, debtors_save_in_result_file, debtors_added_in_db, service_result_files \
         = services_storage.save_operation_results(
             service=service, task_file_verification_id=task_file_verification_id, filename=filename)
+    results_files_paths.extend(service_result_files)
 
-    result_message = "<b>" + _('Recorded in result') + f" {debtors_save_in_result_file} " + _('of debtors')
+    result_message = _('Result') + ':\n | ' + _('recorded in result') + " " + _('of debtors') + ": " + f"{debtors_save_in_result_file}\n"
     if debtors_added_in_db:
-        result_message += " | " + _('added to the database') + f" {debtors_added_in_db}"
+        result_message += " | " + _('added to the database') + ": " + f"{debtors_added_in_db}\n"
     if service_and_requests_errors:
-        result_message += " | " + _('data') + f" {service_and_requests_errors} " + _('debtors not received') + "</b>"
+        result_message += " | " + _('data') + " " + _('debtors not received') + ": " + f"{service_and_requests_errors}\n"
 
     translation.activate(prev_language)
-
     # Удаляем начальный, входящий файл
     os.remove(f'{settings.MEDIA_ROOT}/{service}/{filename}')
 
     # logger.debug('completed the celery task - start_fns_fssp_service')
+
+    # отправляет файлы с результатами в Телеграм если есть telegram_id и поставлена галочка
+    if results_files_paths and result_send_telegram and tg_user_id:
+        for file_path in results_files_paths:
+            sync_file_sender(user_id=tg_user_id, file_path=file_path)
+
     return {
         'service_and_requests_errors': service_and_requests_errors,
         'incorrect_data_or_duplicates': incorrect_data_or_duplicates,

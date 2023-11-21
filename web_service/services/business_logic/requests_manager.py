@@ -27,7 +27,7 @@ class RequestsManager:
             url: Optional[str] = None,
             method: str = "get",
             headers: Optional[Dict] = None,
-            data: Optional[Union[Dict, List]] = None,
+            data: Union[Dict, List, None] = None,
             step: int = 1,
     ) -> Union[Dict, List]:
         """Повторяет запрос/запросы, если нет ответа или исключение"""
