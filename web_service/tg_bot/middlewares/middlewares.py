@@ -34,7 +34,8 @@ class AccessControlMiddleware(BaseMiddleware):
         # print(Base.general_collection)
         user = await User.objects.filter(tg_user_id=update.from_user.id).afirst()
         if not user:
-            if command == '/start' and (code := update.text.split()[1]):
+            if command == '/start' and len((command_list := update.text.split())) >= 2:
+                code = command_list[1]
                 if new_user := await User.objects.filter(code_tg_register_link=code).afirst():
                     new_user.tg_user_id = update.from_user.id
                     new_user.first_name = update.from_user.first_name
