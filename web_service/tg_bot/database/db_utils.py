@@ -1,3 +1,4 @@
+from typing import Union
 from datetime import datetime
 
 from peewee import *
@@ -12,7 +13,7 @@ databases = {
     'mysql': MySQLDatabase
 }
 
-db: SqliteDatabase | PostgresqlDatabase | MySQLDatabase = databases[DATABASE_CONFIG[0]](
+db: Union[SqliteDatabase, PostgresqlDatabase, MySQLDatabase] = databases[DATABASE_CONFIG[0]](
     **DATABASE_CONFIG[1]
 )
 
